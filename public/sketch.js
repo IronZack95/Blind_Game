@@ -11,6 +11,8 @@ let food;
 let w;
 let h;
 
+setup();
+
 function setup() {
   createCanvas(400, 400);
   w = floor(width / rez);
