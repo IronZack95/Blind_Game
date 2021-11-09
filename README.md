@@ -1,9 +1,9 @@
 # ACTAM  - S N A K E
  **Advanced Coding Tools**  _and Metodologies_ \- **Final Project**
 
- ### Authors \- ***Group 16*** :
+ ### Authors \- ***"Good teacher's kids"***
 - [Zaccaria Eliseo Carrettoni](https://github.com/IronZack95)
-- [Wendy Wang](https://github.com/WendyWang29)
+- [Wendy Wong](https://github.com/WendyWang29)
 - [Alessandro Zullo](https://github.com/Alessandro199762)
 - [Lorenzo Lellini](https://github.com/LorenzoLellini)
 
