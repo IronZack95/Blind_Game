@@ -11,14 +11,31 @@ let food;
 let w;
 let h;
 var nCibo = 0;
+const canvasWidth = 400;
+const canvasHeight = 400;
+var cnv;    // canvas element
+
+
 
 function setup() {
-  createCanvas(400, 400);
+  cnv = createCanvas(canvasWidth, canvasHeight);
+  var x = (windowWidth - width) / 2;
+  var y = (windowHeight - height) / 2;
+  cnv.position(x, y);
   w = floor(width / rez);
   h = floor(height / rez);
   frameRate(5);
   snake = new Snake();
   foodLocation();
+}
+
+function centerCanvas() {
+  var x = (windowWidth - width) / 2;
+  var y = (windowHeight - height) / 2;
+  cnv.position(x, y);
+}
+function windowResized() {
+  centerCanvas();
 }
 
 function foodLocation() {
