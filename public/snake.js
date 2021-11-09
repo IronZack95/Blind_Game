@@ -13,6 +13,10 @@ class Snake {
     this.ydir = y;
   }
 
+  getBody(){
+    return this.body;
+  }
+
   update() {
   	let head = this.body[this.body.length-1].copy();
     this.body.shift();

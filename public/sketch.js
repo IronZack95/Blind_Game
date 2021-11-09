@@ -10,8 +10,7 @@ let rez = 20;
 let food;
 let w;
 let h;
-
-setup();
+var nCibo = 0;
 
 function setup() {
   createCanvas(400, 400);
@@ -48,6 +47,11 @@ function draw() {
   scale(rez);
   background(220);
   if (snake.eat(food)) {
+    var s = "ho mangiato";
+    var data = {}
+    nCibo++;
+    data = {s: s, n: nCibo};
+    post(data)
     foodLocation();
   }
   snake.update();
@@ -64,3 +68,18 @@ function draw() {
   fill(0, 255, 0);
   rect(food.x, food.y, 1, 1);
 }
+
+async function post(data){
+  // chiedo i dati
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  };
+  const response =  await fetch('/game',options);
+  let risultato = await response.json();
+  console.log(risultato);
+
+};
