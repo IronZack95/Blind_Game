@@ -7,6 +7,8 @@
 - [Alessandro Zullo](https://github.com/Alessandro199762)
 - [Lorenzo Lellini](https://github.com/LorenzoLellini)
 
+![alt text](https://64.media.tumblr.com/32d1a40c92e7cf29f9cc49ade44f4cfd/tumblr_nztl9ihFB51rxyvj1o1_1280.jpg)
+
 ## After clone this repo (only first time):
 1. _aprire il terminale_
 2. _accedere alla cartella del progetto da terminale_
