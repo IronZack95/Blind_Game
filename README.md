@@ -1,4 +1,4 @@
-# ACTAM  - S N A K E
+# ACTAM - S N A K E
  **Advanced Coding Tools**  _and Metodologies_ \- **Final Project**
 
  ### Authors \- ***"Good teacher's kids"***
