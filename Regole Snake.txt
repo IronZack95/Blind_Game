@@ -1,0 +1,20 @@
+Si gioca in Multiplayer PvP
+
+Durante l'attesa che uno dei due giocatori si connetta, il serpente si trova un una lobby formata da una stanza più piccola del campo da gioco e cazzeggia in quella lobby giocando a snake "normale"
+
+Entrambi i giocatori svolgono lo stesso ruolo: devono raccogliere tutte le icone prima dell'avversario
+
+Le icone che deve raccogliere un giocatore però, compaiono solamente nel campo avversario
+
+Quando un giocatore si trova nel campo avversario può essere mangiato dall'altro serpente, se si trova nel suo campo non può essere mangiato e se viene toccato dall'altro giocatore, quest'ultimo muore.
+
+I serpenti possono accelelare e decelerare mediante comando vocale.
+
+Per disincentivarne l'utilizzo, quando accelera, accelera DAVVERO tanto.
+
+
+## COMMENTO ####
+Questa game logic tralascia la parte del suono (non c'è più il concetto del creare la canzone).
+Però, ci sono comunque i comandi vocali per farlo accelerare e rallentare, che comunque centra con quello che vuole Bruschi.
+Possiamo implementare i suoni emessi dal serpente quando si muove/mangia/accelera - decelera.
+
