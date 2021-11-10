@@ -1,63 +1,31 @@
-/*
-const express = require('express')
-const app = express()
-const port = 3000
+// moduco che contiene tutte le connessioni
+const server = require('./server/server')
+const game = require('./server/game')
 
-app.use(express.static('public'));
-app.use(express.json({limit : '2mb'}));
-
-// Express functions
-app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
-})
-*/
-const express = require("express");
-const { createServer } = require("http");
-const { Server } = require("socket.io");
-
-const port = 3000
-const app = express();
-const httpServer = createServer(app);
-const io = new Server(httpServer, { /* options */ });
-
-app.use(express.static('public'));
-app.use(express.json({limit : '2mb'}));
-
-
-httpServer.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`);
-})
-
-// post del game
-/*
-app.post('/game',(req,res) => {
-  console.log(req.body);
-  res.json({
-    status: 'success',
-    data: "ok, grazie ho ricevuto!"
-  });
-});
-*/
-var players = [];
 
 // socket IO instances
-io.on("connection", (socket) => {
-  if(players.length <2){
-    players.push(socket.id);
-    console.log("Connessi "+ io.engine.clientsCount +" client: "+ players);
+server.io.on("connection", (socket) => {
+
+  if(game.players.length <2){
+    game.players.push(socket.id);
+    console.log("Connessi "+ server.io.engine.clientsCount +" client: "+ game.players);
   }else{
     console.log("Server Pieno");
   }
 
+  // KEYS key pressed
   socket.on("keys", (data) => {
     console.log(data);
   });
 
+  // DATA  dati di posizione
   socket.on("data", (data) => {
-    console.log(data);
+    //console.log(data);
   });
 
-});
-io.on("connection", (socket) => {
+  socket.on("disconnect", () => {
+    console.log("disconnect client :" + socket.id);
+    game.players.pop(socket.id);
+  });
 
 });

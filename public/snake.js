@@ -6,6 +6,7 @@ class Snake {
     this.xdir = 0;
     this.ydir = 0;
     this.len = 0;
+    this.score = 0;
   }
 
   setDir(x, y) {
