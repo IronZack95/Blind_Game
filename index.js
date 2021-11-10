@@ -20,7 +20,7 @@ server.io.on("connection", (socket) => {
 
   // DATA  dati di posizione
   socket.on("data", (data) => {
-    //console.log(data);
+    console.log(data);
   });
 
   socket.on("disconnect", () => {
