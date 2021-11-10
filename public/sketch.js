@@ -16,7 +16,6 @@ const canvasHeight = 400;
 var cnv;    // canvas element
 
 
-
 function setup() {
   cnv = createCanvas(canvasWidth, canvasHeight);
   var x = (windowWidth - width) / 2;
@@ -48,12 +47,16 @@ function foodLocation() {
 function keyPressed() {
   if (keyCode === LEFT_ARROW) {
     snake.setDir(-1, 0);
+    socket.volatile.emit("keys", "LEFT");
   } else if (keyCode === RIGHT_ARROW) {
     snake.setDir(1, 0);
+    socket.volatile.emit("keys", "RIGHT");
   } else if (keyCode === DOWN_ARROW) {
     snake.setDir(0, 1);
+    socket.volatile.emit("keys", "DOWN");
   } else if (keyCode === UP_ARROW) {
     snake.setDir(0, -1);
+    socket.volatile.emit("keys", "UP");
   } else if (key == ' ') {
     snake.grow();
   }
@@ -68,11 +71,14 @@ function draw() {
     var data = {}
     nCibo++;
     data = {s: s, n: nCibo};
-    post(data)
+    //post(data)
+
     foodLocation();
   }
   snake.update();
   snake.show();
+  transmit();
+
 
 
   if (snake.endGame()) {
@@ -85,18 +91,3 @@ function draw() {
   fill(0, 255, 0);
   rect(food.x, food.y, 1, 1);
 }
-
-async function post(data){
-  // chiedo i dati
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  };
-  const response =  await fetch('/game',options);
-  let risultato = await response.json();
-  console.log(risultato);
-
-};

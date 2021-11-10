@@ -1,7 +1,7 @@
 # ACTAM - S N A K E
  **Advanced Coding Tools**  _and Metodologies_ \- **Final Project**
 
- ### Authors \- ***"Good teacher's kids"***
+ ### Authors \- **"Good teacher's kids"**
 - [Zaccaria Eliseo Carrettoni](https://github.com/IronZack95)
 - [Wendy Wang](https://github.com/WendyWang29)
 - [Alessandro Zullo](https://github.com/Alessandro199762)
@@ -18,9 +18,10 @@
 ## How to run this code:
 1. _aprire il terminale_
 2. _accedere alla cartella del progetto da terminale_
-3. _digitare:_ **$ npx nodemon index.js**
-4. _seguire le istruzioni da terminale per accedere al browser_
-5. _per spegnere il server digitare_ CTRL+C : **$ ^C**
+3. _digitare:_ **$ npx run dev**  (PER SVILUPPO)
+4. _digitare:_ **$ npx run start**  (PER RELEASE)
+5. _seguire le istruzioni da terminale per accedere al browser_
+6. _per spegnere il server digitare_ CTRL+C : **$ ^C**
 
 ## Environment for Node.js:
 package.json
