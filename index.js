@@ -20,11 +20,20 @@ server.io.on("connection", (socket) => {
 
   // DATA  dati di posizione
   socket.on("data", (data) => {
-    console.log(data);
+    //console.log(data);
   });
 
+  // GAME  dati di posizione  ACKNOWLEDGMENT
+  socket.on("game", (data, callback) => {
+    console.log(data);
+    callback({
+      status: "ack: ok"
+    });
+  });
+
+
   socket.on("disconnect", () => {
-    console.log("disconnect client :" + socket.id);
+    console.log("disconnected client : " + socket.id);
     game.players.pop(socket.id);
   });
 

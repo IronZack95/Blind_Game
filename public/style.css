@@ -17,3 +17,25 @@ body {
   /*text-align: center; */
   color: grey;
 }
+
+#start{
+  margin-left: 40px;
+  margin-top: 20px;
+}
+
+.top{
+  top: 0px;
+}
+
+.bottom{
+  bottom: 0px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.panel{
+  position: absolute;
+  width: 500px;
+  height: 90px;
+  background-color: #8e8e8e;
+}

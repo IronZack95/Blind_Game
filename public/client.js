@@ -18,20 +18,27 @@ async function post(data){
 
 // SOCKET.IO
 socket.on("connect", () => {
-  console.log("Il mio socket ID è: "+socket.id); // ojIckSD2jqNzOqIrAGzL
+  console.log("Il mio socket ID è: "+socket.id);
 });
 
 socket.on("disconnect", () => {
-  console.log("Mi sono disconnesso: "+socket.id); // undefined
+  console.log("Mi sono disconnesso: "+socket.id);
 });
 
 function transmit(){
-  var body = {};
+  var body = {"id": socket.id};
   var a = snake.getBody()
   for(var i in a){
    body[i] = {"x": a[i]["x"],"y":a[i]["y"]}
   }
   //console.log(body);
   socket.volatile.emit("data", body);
+}
 
+function readyFunc(bool){
+  var data = {"id": socket.id, "ready": bool}
+  socket.emit("game",data, (response) => {
+      console.log(response.status); // ok
+  });
+  console.log(data)
 }
