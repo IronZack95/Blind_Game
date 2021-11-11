@@ -52,6 +52,7 @@ class Snake {
     let y = this.body[this.body.length-1].y;
     if(x == pos.x && y == pos.y) {
       this.grow();
+      this.eatSound();
       return true;
     }
     return false;
@@ -63,6 +64,12 @@ class Snake {
       noStroke();
       rect(this.body[i].x, this.body[i].y, 1, 1)
     }
+  }
+
+  eatSound() {
+      var S_eat = document.getElementById("S_eat");
+      S_eat.volume = 0.2;
+      S_eat.play();
   }
 
 }
