@@ -14,6 +14,7 @@ var nCibo = 0;
 const canvasWidth = 400;
 const canvasHeight = 400;
 var cnv;    // canvas element
+const PLAIN_FOOD = 1;   //elemento cibo di tipo base
 
 
 function setup() {
