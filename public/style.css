@@ -1,20 +1,22 @@
+                    /* STILI BODY */
 html, body {
   height: 100%;
 }
 
 body {
+  /*border: 1px solid black;*/
   margin: 0;
   display: flex;
-
-  /* This centers our sketch horizontally. */
   justify-content: center;
-
-  /* This centers our sketch vertically.
+  /* This centers our sketch horizontally.
+  justify-content: center;
+  This centers our sketch vertically.
   align-items: center; */
 }
 
+                  /* STILI ID */
 #title{
-  /*text-align: center; */
+  text-align: center;
   color: grey;
 }
 
@@ -23,6 +25,7 @@ body {
   margin-top: 20px;
 }
 
+                /* STILI CLASS */
 .top{
   top: 0px;
 }
@@ -31,6 +34,15 @@ body {
   bottom: 0px;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
+}
+
+.center {
+  position: absolute;
+  border-radius: 5px;
+  top: 50%;
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
 }
 
 .panel{

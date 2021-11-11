@@ -4,7 +4,7 @@
 
 // Coding Challenge #115: Snake Game Redux
 // https://youtu.be/OMoVcohRgZA
-
+let lobby;
 let snake;
 let rez = 20;
 let food;
@@ -17,6 +17,8 @@ var cnv;    // canvas element
 
 
 function setup() {
+  lobby = new Lobby();
+  /*
   cnv = createCanvas(canvasWidth, canvasHeight);
   var x = (windowWidth - width) / 2;
   var y = (windowHeight - height) / 2;
@@ -26,6 +28,7 @@ function setup() {
   frameRate(5);
   snake = new Snake();
   foodLocation();
+  */
 }
 
 function centerCanvas() {
@@ -62,6 +65,7 @@ function keyPressed() {
   }
 
 }
+
 
 function draw() {
   scale(rez);

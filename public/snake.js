@@ -1,4 +1,4 @@
-class Snake {
+class Snake {   // oggetto serpente
 
   constructor() {
   	this.body = [];
@@ -6,7 +6,7 @@ class Snake {
     this.xdir = 0;
     this.ydir = 0;
     this.len = 0;
-    this.score = 0;
+    this.score = 0;   // score del serpente
   }
 
   setDir(x, y) {
@@ -64,5 +64,61 @@ class Snake {
       rect(this.body[i].x, this.body[i].y, 1, 1)
     }
   }
+
+}
+
+
+class Schermo {
+  constructor(){
+    // creo elemento schermo di tipo SINGLETON
+    if(!Schermo._instance){
+        Schermo._instance = this;
+        const div= document.createElement("div");
+        this.schermo = div;
+        this.schermo.id= "schermo";
+        document.body.appendChild(this.schermo);
+    }
+    return Schermo._instance;
+  }
+
+  static getInstance() {
+    return this._instance;
+  }
+
+  getSchermo() {
+    return this.schermo;
+  }
+
+  destructor(){
+    /* distruggo tutto quello che ho stampato a schermo */
+    document.getElementById(this.schermo.id).innerHTML = "";
+  }
+}
+
+class Lobby extends Schermo{    // costruisco la pagina della lobby
+  constructor() {
+    super();    // chiamo il costruttore della superclasse
+
+    // Creo Titolo
+    this.h1 = document.createElement("h1");
+    this.h1.id= "title";
+    this.h1.innerHTML = "S N A K E"
+    super.getSchermo().appendChild(this.h1);
+
+    // Center  Panel
+    const div= document.createElement("div");
+    this.centerPanel = div;
+    this.centerPanel.className = "center panel"
+    super.getSchermo().appendChild(this.centerPanel);
+    let text = '<div id = "text">Come vuoi giocare?</div>'
+    this.centerPanel.insertAdjacentHTML('afterBegin', text);
+    let bottone = '<button id = "singleplayer" class = "button">Singleplayer</button>'
+    this.centerPanel.insertAdjacentHTML('beforeEnd', bottone);
+    bottone = '<button id = "multiplayer" class = "button">Multiplayer</button>'
+    this.centerPanel.insertAdjacentHTML('beforeEnd', bottone);
+
+  }
+
+
 
 }
