@@ -41,10 +41,16 @@ function windowResized() {
 }
 
 function foodLocation() {
-  let x = floor(random(w));
-  let y = floor(random(h));
-  food = createVector(x, y);
 
+  let v = createVector( floor(random(w)), floor(random(h)) );
+  
+  //no food on top of snake
+  for (i=0; i<snake.body.length; i++) {
+    if (snake.body[i] == v) {
+      return foodLocation();
+    }
+  }
+  food = v;
 }
 
 function keyPressed() {
