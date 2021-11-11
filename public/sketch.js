@@ -11,9 +11,12 @@ let food;
 let w;
 let h;
 var nCibo = 0;
+var score = 0;
 const canvasWidth = 400;
 const canvasHeight = 400;
 var cnv;    // canvas element
+
+const PLAIN_FOOD = 100;   //punti per cibo di tipo base
 
 
 function setup() {
@@ -41,10 +44,16 @@ function windowResized() {
 }
 
 function foodLocation() {
-  let x = floor(random(w));
-  let y = floor(random(h));
-  food = createVector(x, y);
 
+  let v = createVector( floor(random(w)), floor(random(h)) );
+  
+  //no food on top of snake
+  for (i=0; i<snake.body.length; i++) {
+    if (snake.body[i] == v) {
+      return foodLocation();
+    }
+  }
+  food = v;
 }
 
 function keyPressed() {
@@ -74,7 +83,9 @@ function draw() {
     var s = "ho mangiato";
     var data = {}
     nCibo++;
-    data = {s: s, n: nCibo};
+    score = updateScore();
+
+    data = {s: s, n: nCibo, p: score};
     //post(data)
 
     foodLocation();
@@ -94,4 +105,11 @@ function draw() {
   noStroke();
   fill(0, 255, 0);
   rect(food.x, food.y, 1, 1);
+
+  function updateScore() {
+    // TODO: gestione 2 giocatori
+    let punteggio = nCibo * PLAIN_FOOD;
+    console.log('punteggio giocatore: ', punteggio);
+    return punteggio;
+  }
 }
