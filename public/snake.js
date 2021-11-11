@@ -52,7 +52,6 @@ class Snake {
     let y = this.body[this.body.length-1].y;
     if(x == pos.x && y == pos.y) {
       this.grow();
-      this.increaseScore();
       this.eatSound();
       return true;
     }
@@ -65,13 +64,6 @@ class Snake {
       noStroke();
       rect(this.body[i].x, this.body[i].y, 1, 1)
     }
-  }
-
-  increaseScore() {
-    // TODO: altri tipi di cibo
-    //       distinzione giocatore 1 e 2
-    this.score = this.score + PLAIN_FOOD;
-    console.log('Punteggio giocatore 1: ', this.score)
   }
 
   eatSound() {
