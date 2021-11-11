@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+</head>
+<body>
+  <script>
+  let sketch = function(p) {
+    p.setup = function(){
+      p.createCanvas(100, 100);
+      p.background(0);
+    }
+  };
+  let node = document.createElement('div');
+  new p5(sketch, node);
+  window.document.getElementsByTagName('body')[0].appendChild(node);
+  </script>
+</body>
+</html>
