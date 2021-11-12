@@ -92,6 +92,15 @@ class SinglePlayer extends Schermo{    // costruisco la pagina della lobby
     canvasCountainer.id = "canvas";
     document.getElementById(canvasCountainer.id).children[0].style.visibility= "visible"
     //cnv = new Canvas(this.#canvasWidth,this.#canvasHeight, this.#resolution);
+
+    // Creo counter
+    let c = document.createElement("div");
+    let n = document.createElement("h3");
+    c.id = "counter";
+    n.id = "testoCounter"; 
+    n.innerHTML = "0";
+    super.getSchermo().appendChild(c);
+    c.appendChild(n)
     }
 
     startGame(){

@@ -36,6 +36,29 @@ body {
   transform: translate(-50%, -50%);
 }
 
+      /* cose per counter */
+
+#counter {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  margin-left: -50px;
+  height: 20px;
+  width: 100px;
+  background-color: #262626;
+  z-index: -1;
+}
+
+#testoCounter {
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: right;
+  color: white;
+  font-size: 100%;
+  margin-top: 1%;
+  margin-right: 10%;
+  position: relative;
+}
+
                 /* STILI CLASS */
 .top{
   top: 0px;

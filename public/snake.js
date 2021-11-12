@@ -80,7 +80,7 @@ let sketch = function(p) {
 
   }
 
-  function foodLocation() {
+  function foodLocation() {  //TODO devo sistemarla, non va (firmato: Wendy)
 
     let v = p.createVector( p.floor(p.random(w)), p.floor(p.random(h)) );
 
@@ -137,7 +137,6 @@ let sketch = function(p) {
     p.background(220);
     if (snake.eat(food)) {
       updateScore();
-      nCibo++;
       foodLocation();
     }
     snake.update();
@@ -154,9 +153,11 @@ let sketch = function(p) {
     p.rect(food.x, food.y, 1, 1);
 
     function updateScore() {
-      // TODO: gestione 1 giocatori
+      // TODO: altri cibi etc
+      nCibo++;
       let punteggio = nCibo * PLAIN_FOOD;
-      console.log('punteggio giocatore: ', punteggio);
+      let counterText = document.getElementById('testoCounter');
+      counterText.innerHTML = punteggio;
       return punteggio;
     }
   }
