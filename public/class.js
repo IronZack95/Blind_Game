@@ -103,13 +103,9 @@ class SinglePlayer extends Schermo{    // costruisco la pagina della lobby
     c.appendChild(n)
     }
 
-    startGame(){
-      frameRate(5);
-      snake = new Snake();
-      foodLocation();
-    }
 }
 
+/*
 class Canvas{
   #w;
   #h;
@@ -138,3 +134,4 @@ class Canvas{
     this.#cnv.position(x, y);
   }
 }
+*/
