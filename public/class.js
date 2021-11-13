@@ -4,6 +4,7 @@ class Schermo {
   #schermo
   constructor(){
     // creo elemento schermo di tipo SINGLETON
+    //console.log(Schermo._instance);
     if(!Schermo._instance){
         Schermo._instance = this;
         let div= document.createElement("div");
@@ -14,7 +15,7 @@ class Schermo {
     return Schermo._instance;
   }
 
-  static getInstance() {
+  getInstance() {
     return this._instance;
   }
 
@@ -27,6 +28,8 @@ class Schermo {
     document.getElementById(this.#schermo.id).innerHTML = "";
   }
 }
+
+
 
 class Lobby extends Schermo{    // costruisco la pagina della lobby
 
@@ -50,14 +53,20 @@ class Lobby extends Schermo{    // costruisco la pagina della lobby
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
     bottone = '<button id = "multiplayer" class = "button">Multiplayer</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
-
+    let lobby = this;
+    singleplayer.onclick = function(){
+      let txt = lobby.getText()
+      txt.innerText = "Play!!";
+      setTimeout(function(){ lobby.destructor(); delete this; single = new SinglePlayer();},1000)
+      //delete lobby;
+    }
   }
 
   getText(){
     return document.getElementById("text");
   }
 
-}
+};
 
 
 
@@ -86,22 +95,24 @@ class SinglePlayer extends Schermo{    // costruisco la pagina della lobby
     super.getSchermo().appendChild(h);
 
     // Creo Canvas
-    let canvasCountainer = document.createElement('div');
-    new p5(sketch, canvasCountainer);
-    super.getSchermo().appendChild(canvasCountainer);
-    canvasCountainer.id = "canvas";
-    document.getElementById(canvasCountainer.id).children[0].style.visibility= "visible"
+    let canvasContainer = document.createElement('div');
+    new p5(sketch, canvasContainer);
+    super.getSchermo().appendChild(canvasContainer);
+    canvasContainer.id = "canvas";
+    document.getElementById(canvasContainer.id).children[0].style.visibility= "visible"
     //cnv = new Canvas(this.#canvasWidth,this.#canvasHeight, this.#resolution);
 
     // Creo counter
     let c = document.createElement("div");
     let n = document.createElement("h3");
     c.id = "counter";
-    n.id = "testoCounter"; 
+    n.id = "testoCounter";
     n.innerHTML = "0";
     super.getSchermo().appendChild(c);
     c.appendChild(n)
     }
+
+
 
 }
 
