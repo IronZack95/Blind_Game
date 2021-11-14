@@ -15,23 +15,32 @@ class Schermo {
     return Schermo._instance;
   }
 
-  getInstance() {
-    return this._instance;
+  getSchermo() {
+    return document.getElementById(this.#schermo.id);
   }
 
-  getSchermo() {
-    return this.#schermo;
+
+}
+
+class Pagina{
+  constructor(){
+    this.schermo = new Schermo();
+  }
+
+  getSchermo(){
+    return this.schermo.getSchermo();
   }
 
   destructor(){
     /* distruggo tutto quello che ho stampato a schermo */
-    document.getElementById(this.#schermo.id).innerHTML = "";
+    let padre = this.getSchermo();
+    for(var i = 0; i < padre.childElementCount; i++){
+      padre.removeChild(padre.children[i]);
+    }
   }
 }
 
-
-
-class Lobby extends Schermo{    // costruisco la pagina della lobby
+class Lobby extends Pagina{    // costruisco la pagina della lobby
 
   constructor() {
     super();    // chiamo il costruttore della superclasse
@@ -70,7 +79,7 @@ class Lobby extends Schermo{    // costruisco la pagina della lobby
 
 
 
-class SinglePlayer extends Schermo{    // costruisco la pagina della lobby
+class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
   // variabili private
   #snake;
   #resolution = 20;
@@ -111,8 +120,6 @@ class SinglePlayer extends Schermo{    // costruisco la pagina della lobby
     super.getSchermo().appendChild(c);
     c.appendChild(n)
     }
-
-
 
 }
 
