@@ -53,11 +53,17 @@ class Lobby extends Schermo{    // costruisco la pagina della lobby
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
     bottone = '<button id = "multiplayer" class = "button">Multiplayer</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
+    bottone = '<button id = "joinGame" class = "button">JoinGame</button>'
+    centerPanel.insertAdjacentHTML('beforeEnd', bottone);
     let lobby = this;
     singleplayer.onclick = function(){
       let txt = lobby.getText()
       txt.innerText = "Play!!";
       setTimeout(function(){ lobby.destructor(); delete this; single = new SinglePlayer();},1000)
+      //delete lobby;
+    }
+    multiplayer.onclick = function(){
+      setTimeout(function(){ lobby.destructor(); delete this; single = new MultiPlayer();},1000)
       //delete lobby;
     }
   }
@@ -146,3 +152,19 @@ class Canvas{
   }
 }
 */
+class MultiPlayer extends Schermo{    
+
+  constructor() {
+    super();  
+    let h = document.createElement("h1");
+    h.id= "message";
+    h.innerHTML = "Il nome della room è "
+    super.getSchermo().appendChild(h);
+
+    let m = document.createElement("h2");
+    m.id= "roomName";
+    m.innerHTML = "xxx"
+    h.appendChild(m);
+    
+  }
+}   
