@@ -96,7 +96,7 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
       //delete lobby;
     }
     multiplayer.onclick = function(){
-      setTimeout(function(){ lobby.destructor(); delete this; multi = new MultiPlayer();},1000)
+      setTimeout(function(){ lobby.destructor(); delete this; multi = new MultiPlayerLobby();},1000)
       //delete lobby;
     }
 
@@ -155,7 +155,7 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
 }
 
 
-class MultiPlayer extends Pagina{
+class MultiPlayerLobby extends Pagina{
 
   constructor() {
     super();
@@ -168,7 +168,7 @@ class MultiPlayer extends Pagina{
 
     h = document.createElement("h2");
     h.id= "title";
-    h.innerHTML = "Multi Player"
+    h.innerHTML = "Multi Player Lobby"
     super.getSchermo().appendChild(h);
 
     let centerPanel = document.createElement("div");
@@ -193,10 +193,21 @@ class MultiPlayer extends Pagina{
       console.log("Mi sono disconnesso: "+socket.id);
     });
 
+    let lobby = this;
+
     startGameMulti.onclick = function(){
         let data = true;
         socket.emit("startGame",data, (response) => {
             console.log("Il server dice: "+response.status); // ok
+
+            if(response.status == "start"){
+              document.getElementById("text").innerText = "Inizio Partita!"
+              setTimeout(function(){ lobby.destructor(); delete this; multi = new MultiPlayer();},1000)
+            }else if(response.status == "wait"){
+              document.getElementById("text").innerText = "Attesa secondo giocatore..."
+            }else if(response.status == "full"){
+              document.getElementById("text").innerText = "Server pieno";
+            }
         });
     }
 /*
@@ -220,4 +231,26 @@ class MultiPlayer extends Pagina{
     }
 */
   }
+}
+
+
+class MultiPlayer extends Pagina{
+  constructor() {
+    super();
+
+      // Creo Titolo E Sottotitolo
+      let h = document.createElement("h1");
+      h.id= "title";
+      h.innerHTML = "S N A K E"
+      super.getSchermo().appendChild(h);
+
+      h = document.createElement("h2");
+      h.id= "title";
+      h.innerHTML = "Multi Player"
+      super.getSchermo().appendChild(h);
+  }
+
+
+
+
 }

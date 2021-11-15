@@ -6,12 +6,9 @@ const game = require('./server/game')
 // socket IO instances
 server.io.on("connection", (socket) => {
 
-  if(game.players.length <2){
     game.players.push(socket.id);
     console.log("Connessi "+ server.io.engine.clientsCount +" client: "+ game.players);
-  }else{
-    console.log("Server Pieno");
-  }
+
 
   // KEYS key pressed
   socket.on("keys", (data) => {
@@ -24,6 +21,7 @@ server.io.on("connection", (socket) => {
   });
 
   // GAME  dati di posizione  ACKNOWLEDGMENT
+  // da fare con join(room)
   socket.on("startGame", (data, callback) => {
     let response;
     console.log(data);
@@ -36,7 +34,10 @@ server.io.on("connection", (socket) => {
     }else if(game.players.length == 2){
       game.rooms[0]["client"].push(socket.id);
       console.log("giocatori pronti!")
-      response = "Via!";
+      response = "start";
+    }else if(game.players.length > 2){
+      console.log("full");
+      response = "full";
     }
     console.log(game.rooms[0])
     callback({
@@ -57,6 +58,7 @@ server.io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("disconnected client : " + socket.id);
     game.players.pop(socket.id);
+    game.rooms = [];
   });
 
 });

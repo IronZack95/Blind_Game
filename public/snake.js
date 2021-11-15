@@ -80,6 +80,12 @@ let sketch = function(p) {
 
   }
 
+  class SnakeMulti extends Snake{
+    // TODO
+
+
+  }
+
   function foodLocation(snakeBody) {  //TODO devo sistemarla, non va (firmato: Wendy)
 
     let v = p.createVector( p.floor(p.random(w)), p.floor(p.random(h)) );
