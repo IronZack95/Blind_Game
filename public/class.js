@@ -52,7 +52,15 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     super.getSchermo().appendChild(h1);
 
     // Center  Panel
-    //const div= super.div;
+    //const div= super.div;  
+    let centerPanel = document.createElement("div");
+    //centerPanel.className = "center panel";
+    centerPanel.classList.add("center")
+    super.getSchermo().appendChild(centerPanel);
+    let text = '<div id = "text">Come vuoi giocare?</div>'
+    centerPanel.insertAdjacentHTML('afterBegin', text);
+
+    //IMMAGINI
     let image1 = document.createElement("img");
     image1.src = "Images/SnakeGreen.png";
     image1.classList.add("snakeGreen");
@@ -62,18 +70,24 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     image2.src = "Images/SnakeRed.png";
     image2.classList.add("snakeRed");
     document.body.appendChild(image2);
-   
-    let centerPanel = document.createElement("div");
-    centerPanel.className = "center panel";
-    super.getSchermo().appendChild(centerPanel);
-    let text = '<div id = "text">Come vuoi giocare?</div>'
-    centerPanel.insertAdjacentHTML('afterBegin', text);
+
+    
     let bottone = '<button id = "singleplayer" class = "button">SinglePlayer</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
+   
+
+    /*
+    pulsante_singlePLayer = document.createElement("button");
+    pulsante_singlePLayer.classList.add("button");
+    centerPanel.insertAdjacentHTML('beforeEnd', pulsante_singlePLayer);
+    */
+
     bottone = '<button id = "multiplayer" class = "button">MultiPlayer</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
+
     bottone = '<button id = "joinGame" class = "button">JoinGame</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
+
     let lobby = this;
     singleplayer.onclick = function(){
       let txt = lobby.getText()
