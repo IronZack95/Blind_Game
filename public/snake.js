@@ -80,15 +80,13 @@ let sketch = function(p) {
 
   }
 
-  function foodLocation(snakeBody) {  //TODO devo sistemarla, non va (firmato: Wendy)
+  function foodLocation() {  //TODO devo sistemarla, non va (firmato: Wendy)
 
     let v = p.createVector( p.floor(p.random(w)), p.floor(p.random(h)) );
-    let body=snakeBody;
-    console.log(body.length)
-
+  
     //no food on top of snake
-     for (var i=0; i<body.length; i++) {
-      if (body[i] == v) {
+     for (var i=0; i<snake.body.length; i++) {
+      if (snake.body[i] == v) {
         return foodLocation();
       }
     } 
@@ -132,8 +130,7 @@ let sketch = function(p) {
     h = p.floor(p.height / rez);
     p.frameRate(5);
     snake = new Snake();
-    let snakeBody = snake.getBody();
-    foodLocation(snakeBody);
+    foodLocation();
   }
   p.draw = function(){
     p.scale(rez);
