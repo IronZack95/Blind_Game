@@ -16,7 +16,7 @@ class Schermo {
   }
 
   getSchermo() {
-    return document.getElementById(this.#schermo.id);
+    return window.document.getElementById(this.#schermo.id);
   }
 
 
@@ -33,10 +33,13 @@ class Pagina{
 
   destructor(){
     /* distruggo tutto quello che ho stampato a schermo */
+    this.getSchermo().innerHTML = "";
+    /*
     let padre = this.getSchermo();
     for(var i = 0; i < padre.childElementCount; i++){
       padre.removeChild(padre.children[i]);
     }
+    */
   }
 }
 
@@ -56,13 +59,13 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     let image1 = document.createElement("img");
     image1.src = "Images/SnakeGreen.png";
     image1.classList.add("snakeGreen");
-    document.body.appendChild(image1);
+    super.getSchermo().appendChild(image1);
 
     let image2 = document.createElement("img");
     image2.src = "Images/SnakeRed.png";
     image2.classList.add("snakeRed");
-    document.body.appendChild(image2);
-   
+    super.getSchermo().appendChild(image2);
+
     let centerPanel = document.createElement("div");
     centerPanel.className = "center panel";
     super.getSchermo().appendChild(centerPanel);
@@ -134,7 +137,7 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     n.id = "testoCounter";
     n.innerHTML = "0";
     super.getSchermo().appendChild(c);
-    c.appendChild(n)
+    c.appendChild(n);
     }
 
 }
@@ -169,10 +172,10 @@ class Canvas{
   }
 }
 */
-class MultiPlayer extends Schermo{    
+class MultiPlayer extends Schermo{
 
   constructor() {
-    super();  
+    super();
     let h = document.createElement("h1");
     h.id= "message";
     h.innerHTML = "Il nome della room è "
@@ -182,6 +185,6 @@ class MultiPlayer extends Schermo{
     m.id= "roomName";
     m.innerHTML = "xxx"
     h.appendChild(m);
-    
+
   }
-}   
+}
