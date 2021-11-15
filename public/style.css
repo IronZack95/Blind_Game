@@ -109,11 +109,7 @@ img.snakeRed{
   height: 20px;
   width: 100px;
   background-color: #262626;
-<<<<<<< HEAD
   
-=======
-  /*z-index: -1;*/
->>>>>>> fe960d1fb4aede68c216308eec3e4fb6d9fd8398
 }
 
 #testoCounter {
@@ -170,11 +166,7 @@ img.snakeRed{
     border-radius: 18px;
     text-align: center;
     background-color: #a00101bb;
-<<<<<<< HEAD
      
-=======
-    align-items: center;
->>>>>>> fe960d1fb4aede68c216308eec3e4fb6d9fd8398
     border: 2px solid #262626;
     font-size: 18px;
     min-width: 200px;   
