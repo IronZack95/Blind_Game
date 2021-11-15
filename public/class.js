@@ -33,11 +33,9 @@ class Pagina{
 
   destructor(){
     /* distruggo tutto quello che ho stampato a schermo */
-    let padre = this.getSchermo();
-    for(var i = 0; i < padre.childElementCount; i++){
-      padre.removeChild(padre.children[i]);
-    }
+    this.schermo.getSchermo().innerHTML = "";
   }
+
 }
 
 class Lobby extends Pagina{    // costruisco la pagina della lobby
@@ -52,7 +50,7 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     super.getSchermo().appendChild(h1);
 
     // Center  Panel
-    //const div= super.div;  
+    //const div= super.div;
     let centerPanel = document.createElement("div");
     //centerPanel.className = "center panel";
     centerPanel.classList.add("center")
@@ -64,17 +62,17 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     let image1 = document.createElement("img");
     image1.src = "Images/SnakeGreen.png";
     image1.classList.add("snakeGreen");
-    document.body.appendChild(image1);
+    super.getSchermo().appendChild(image1);
 
     let image2 = document.createElement("img");
     image2.src = "Images/SnakeRed.png";
     image2.classList.add("snakeRed");
-    document.body.appendChild(image2);
+    super.getSchermo().appendChild(image2);
 
-    
+
     let bottone = '<button id = "singleplayer" class = "button">SinglePlayer</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
-   
+
 
     /*
     pulsante_singlePLayer = document.createElement("button");
@@ -183,10 +181,10 @@ class Canvas{
   }
 }
 */
-class MultiPlayer extends Schermo{    
+class MultiPlayer extends Pagina{
 
   constructor() {
-    super();  
+    super();
     let h = document.createElement("h1");
     h.id= "message";
     h.innerHTML = "Il nome della room è "
@@ -196,6 +194,6 @@ class MultiPlayer extends Schermo{
     m.id= "roomName";
     m.innerHTML = "xxx"
     h.appendChild(m);
-    
+
   }
-}   
+}

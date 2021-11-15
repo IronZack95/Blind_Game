@@ -80,7 +80,7 @@ let sketch = function(p) {
 
   }
 
-  function foodLocation() {  //TODO devo sistemarla, non va (firmato: Wendy)
+  function foodLocation(snakeBody) {  //TODO devo sistemarla, non va (firmato: Wendy)
 
     let v = p.createVector( p.floor(p.random(w)), p.floor(p.random(h)) );
 
@@ -130,7 +130,8 @@ let sketch = function(p) {
     h = p.floor(p.height / rez);
     p.frameRate(5);
     snake = new Snake();
-    foodLocation();
+    let snakeBody = snake.getBody();
+    foodLocation(snakeBody);
   }
   p.draw = function(){
     p.scale(rez);
