@@ -39,19 +39,29 @@ class Lobby extends Schermo{    // costruisco la pagina della lobby
     // Creo Titolo
     let h1 = document.createElement("h1");
     h1.id= "title";
-    h1.innerHTML = "S N A K E"
+    h1.innerHTML = "MUSICAL S N A K E"
     super.getSchermo().appendChild(h1);
 
     // Center  Panel
     //const div= super.div;
+    let image1 = document.createElement("img");
+    image1.src = "Images/SnakeGreen.png";
+    image1.classList.add("snakeGreen");
+    document.body.appendChild(image1);
+
+    let image2 = document.createElement("img");
+    image2.src = "Images/SnakeRed.png";
+    image2.classList.add("snakeRed");
+    document.body.appendChild(image2);
+   
     let centerPanel = document.createElement("div");
     centerPanel.className = "center panel";
     super.getSchermo().appendChild(centerPanel);
     let text = '<div id = "text">Come vuoi giocare?</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
-    let bottone = '<button id = "singleplayer" class = "button">Singleplayer</button>'
+    let bottone = '<button id = "singleplayer" class = "button">SinglePlayer</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
-    bottone = '<button id = "multiplayer" class = "button">Multiplayer</button>'
+    bottone = '<button id = "multiplayer" class = "button">MultiPlayer</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
     bottone = '<button id = "joinGame" class = "button">JoinGame</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
