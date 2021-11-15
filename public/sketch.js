@@ -1,5 +1,6 @@
 let lobby1;
 let single;
+let multi;
 
 // Inizio del programma
 lobby1 = new Lobby();

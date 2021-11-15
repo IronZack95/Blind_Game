@@ -87,6 +87,8 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
 
     let lobby = this;
+
+
     singleplayer.onclick = function(){
       let txt = lobby.getText()
       txt.innerText = "Play!!";
@@ -94,9 +96,10 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
       //delete lobby;
     }
     multiplayer.onclick = function(){
-      setTimeout(function(){ lobby.destructor(); delete this; single = new MultiPlayer();},1000)
+      setTimeout(function(){ lobby.destructor(); delete this; multi = new MultiPlayer();},1000)
       //delete lobby;
     }
+
   }
 
   getText(){
@@ -151,49 +154,70 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
 
 }
 
-/*
-class Canvas{
-  #w;
-  #h;
-  #id;
-  #cnv;    // canvas element
-  constructor(canvasWidth,canvasHeight,resolution){
-    // Canvas
 
-    this.#cnv = createCanvas(canvasWidth, canvasHeight);
-    this.#id = this.#cnv["canvas"]["id"];
-    console.log(this.#cnv)
-    background(220);
-    this.centerCanvas()
-    this.#w = floor(width / resolution);
-    this.#h = floor(height / resolution);
-    return this.#cnv;
-  }
-
-  getCanvasId(){
-    return this.#id;
-  }
-
-  centerCanvas(){
-    var x = (windowWidth - width) / 2;
-    var y = (windowHeight - height) / 2;
-    this.#cnv.position(x, y);
-  }
-}
-*/
 class MultiPlayer extends Pagina{
 
   constructor() {
     super();
+
+    // Creo Titolo E Sottotitolo
     let h = document.createElement("h1");
-    h.id= "message";
-    h.innerHTML = "Il nome della room è "
+    h.id= "title";
+    h.innerHTML = "S N A K E"
     super.getSchermo().appendChild(h);
 
-    let m = document.createElement("h2");
-    m.id= "roomName";
-    m.innerHTML = "xxx"
-    h.appendChild(m);
+    h = document.createElement("h2");
+    h.id= "title";
+    h.innerHTML = "Multi Player"
+    super.getSchermo().appendChild(h);
 
+    let centerPanel = document.createElement("div");
+    //centerPanel.className = "center panel";
+    centerPanel.classList.add("center")
+    super.getSchermo().appendChild(centerPanel);
+
+    let text = '<div id = "text">Pronto?</div>'
+    centerPanel.insertAdjacentHTML('afterBegin', text);
+
+    let bottone = '<button id = "startGameMulti" class = "button">Start</button>'
+    centerPanel.insertAdjacentHTML('beforeEnd', bottone);
+
+    // SOCKET IO
+    const socket = io();
+
+    socket.on("connect", () => {
+      console.log("Il mio socket ID è: "+socket.id);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Mi sono disconnesso: "+socket.id);
+    });
+
+    startGameMulti.onclick = function(){
+        let data = true;
+        socket.emit("startGame",data, (response) => {
+            console.log("Il server dice: "+response.status); // ok
+        });
+    }
+/*
+    function transmit(){
+      var body = {"id": socket.id};
+      var a = snake.getBody()
+      for(var i in a){
+       body[i] = {"x": a[i]["x"],"y":a[i]["y"]}
+      }
+      //console.log(body);
+      socket.volatile.emit("data", body);
+    }
+
+    //
+    function readyFunc(bool){
+      var data = {"id": socket.id, "ready": bool}
+      socket.emit("game",data, (response) => {
+          console.log(response.status); // ok
+      });
+      console.log(data)
+    }
+*/
   }
 }

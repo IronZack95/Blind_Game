@@ -1,3 +1,5 @@
+var room = {"room": "","client": []};
 var players = [];
+var rooms = [];
 
-module.exports = {players}
+module.exports = {rooms,players,room}

@@ -24,6 +24,28 @@ server.io.on("connection", (socket) => {
   });
 
   // GAME  dati di posizione  ACKNOWLEDGMENT
+  socket.on("startGame", (data, callback) => {
+    let response;
+    console.log(data);
+    if(game.players.length == 1){
+      let room = game.room;
+      room["client"][0] = socket.id;
+      room["room"] = "stanza";
+      game.rooms[0] = room;
+      response = "wait";
+    }else if(game.players.length == 2){
+      game.rooms[0]["client"].push(socket.id);
+      console.log("giocatori pronti!")
+      response = "Via!";
+    }
+    console.log(game.rooms[0])
+    callback({
+      status: response
+    });
+  });
+
+
+  // GAME  dati di posizione  ACKNOWLEDGMENT
   socket.on("game", (data, callback) => {
     console.log(data);
     callback({
