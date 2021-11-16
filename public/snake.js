@@ -4,6 +4,7 @@ const PLAIN_FOOD = 100;   //punti per cibo di tipo base
 
 let sketch = function(p) {
   // variabili del canvas
+  let game;
   let snake;
   let rez = 40;
   let food;
@@ -92,29 +93,18 @@ let sketch = function(p) {
 
   }
 
-  class SnakeMulti extends Snake{
+  class SingleSnake extends Snake{
     // TODO
 
 
-  }
-
-  function foodLocation(snakeBody) {  //TODO devo sistemarla, non va (firmato: Wendy)
-
-    let v = p.createVector( p.floor(p.random(w)), p.floor(p.random(h)) );
-
-    //no food on top of snake
-    for (i=0; i<snake.body.length; i++) {
-      if (snake.body[i] == v) {
-        return foodLocation();
-      }
-    }
-    food = v;
   }
 
 
 class GameLogic{
 
   constructor(){
+
+    console.log(this)
 
       p.keyPressed = function() {
 
@@ -144,16 +134,18 @@ class GameLogic{
         w = p.floor(p.width / rez);
         h = p.floor(p.height / rez);
         p.frameRate(5);
-        let snake = new Snake();
+        snake = new Snake();
         let snakeBody = snake.getBody();
-        foodLocation(snakeBody);
+        game.foodLocation();
       }
+
       p.draw = function(){
         p.scale(rez);
         p.background(220);
         if (snake.eat(food)) {
-          updateScore();
-          foodLocation();
+          game.updateScore();
+          let snakeBody = snake.getBody();
+          game.foodLocation();
         }
         snake.update();
         snake.show();
@@ -167,18 +159,41 @@ class GameLogic{
         p.noStroke();
         p.fill(0, 255, 0);
         p.rect(food.x, food.y, 1, 1);
-
-        function updateScore() {
-          // TODO: altri cibi etc
-          nCibo++;
-          let punteggio = nCibo * PLAIN_FOOD;
-          let counterText = document.getElementById('testoCounter');
-          counterText.innerHTML = punteggio;
-          return punteggio;
-        }
       }
     }
+
+    updateScore(){
+        // TODO: altri cibi etc
+        nCibo++;
+        let punteggio = nCibo * PLAIN_FOOD;
+        let counterText = document.getElementById('testoCounter');
+        counterText.innerHTML = punteggio;
+        return punteggio;
+      }
+
+    foodLocation(snakeBody){  //TODO devo sistemarla, non va (firmato: Wendy)
+
+      let v = p.createVector( p.floor(p.random(w)), p.floor(p.random(h)) );
+      //no food on top of snake
+      /*
+      for (i=0; i<snake.body.length; i++) {
+        if (snake.body[i] == v) {
+          return this.foodLocation(snakeBody);
+        }
+      }
+      */
+      food = v;
+    }
+
+
   }
 
-  let game = new GameLogic();
+game = new GameLogic();
+
+
+
+
+
+
+
 }
