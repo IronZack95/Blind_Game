@@ -204,8 +204,13 @@ class MultiPlayerLobby extends Pagina{
     socket.on("room message", (id, msg) => {
       console.log("id: "+id+" msg: "+msg);
     });
+    
+    socket.on("startMultiplayer!", () => {
+      document.getElementById("text").innerText = "Inizio Partita!"
+      setTimeout(function(){ multilobby.destructor(); delete this; multi = new MultiPlayer();},2000)
+    });
 
-    let lobby = this;
+    let multilobby = this;
 
     startGameMulti.onclick = function(){
         socket.emit("startGame",(response) => {
@@ -220,11 +225,6 @@ class MultiPlayerLobby extends Pagina{
             }
         });
     }
-
-    socket.on("startMultiplayer!", () => {
-      document.getElementById("text").innerText = "Inizio Partita!"
-      setTimeout(function(){ lobby.destructor(); delete this; multi = new MultiPlayer();},2000)
-    });
 
 /*
     function transmit(){

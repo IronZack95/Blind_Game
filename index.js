@@ -53,9 +53,8 @@ server.io.on("connection", (socket) => {
   });
 
   socket.on("startMultiplayer", (wantedRoom) => {
-    console.log("Inizio Multiplayer: "+ wantedRoom)
-    socket.to(room.client[0]).emit("startMultiplayer!");
-    socket.to(room.client[1]).emit("startMultiplayer!");
+    console.log("Inizio Multiplayer: "+ wantedRoom+ " "+room.client)
+    server.io.in(room.client[1]).in(room.client[0]).emit("startMultiplayer!");
   });
 
   // scambio messaggi privati
