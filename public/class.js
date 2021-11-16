@@ -121,6 +121,8 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
 
 
   constructor() {
+
+    //// prova Prova prova
     super();    // chiamo il costruttore della superclasse
 
     // Creo Titolo E Sottotitolo
