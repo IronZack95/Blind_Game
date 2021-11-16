@@ -156,7 +156,6 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
 
 
 class MultiPlayerLobby extends Pagina{
-
   constructor() {
     super();
 
@@ -193,23 +192,31 @@ class MultiPlayerLobby extends Pagina{
       console.log("Mi sono disconnesso: "+socket.id);
     });
 
+    socket.on("room message", (id, msg) => {
+      console.log("id: "+id+" msg: "+msg);
+    });
+
     let lobby = this;
 
     startGameMulti.onclick = function(){
-        let data = true;
-        socket.emit("startGame",data, (response) => {
-            console.log("Il server dice: "+response.status); // ok
-
+        socket.emit("startGame",(response) => {
+            console.log("Il server dice: "+response.status+ " la mia stanza è: "+response.room); // ok
+            this.room = response.room;
             if(response.status == "start"){
-              document.getElementById("text").innerText = "Inizio Partita!"
-              setTimeout(function(){ lobby.destructor(); delete this; multi = new MultiPlayer();},1000)
+              socket.emit("startMultiplayer", this.room);
             }else if(response.status == "wait"){
               document.getElementById("text").innerText = "Attesa secondo giocatore..."
             }else if(response.status == "full"){
-              document.getElementById("text").innerText = "Server pieno";
+              document.getElementById("text").innerText = "Server pieno!";
             }
         });
     }
+
+    socket.on("startMultiplayer!", () => {
+      document.getElementById("text").innerText = "Inizio Partita!"
+      setTimeout(function(){ lobby.destructor(); delete this; multi = new MultiPlayer();},2000)
+    });
+
 /*
     function transmit(){
       var body = {"id": socket.id};
