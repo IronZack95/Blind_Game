@@ -18,8 +18,6 @@ class Schermo {
   getSchermo() {
     return document.getElementById(this.#schermo.id);
   }
-
-
 }
 
 class Pagina{
@@ -46,7 +44,7 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     // Creo Titolo
     let h1 = document.createElement("h1");
     h1.id= "title";
-    h1.innerHTML = "MUSICAL S N A K E"
+    h1.innerHTML = "S N A K E"
     super.getSchermo().appendChild(h1);
 
     // Center  Panel
@@ -59,6 +57,7 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     centerPanel.insertAdjacentHTML('afterBegin', text);
 
     //IMMAGINI
+
     let image1 = document.createElement("img");
     image1.src = "Images/SnakeGreen.png";
     image1.classList.add("snakeGreen");
@@ -69,10 +68,8 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     image2.classList.add("snakeRed");
     super.getSchermo().appendChild(image2);
 
-
     let bottone = '<button id = "singleplayer" class = "button">SinglePlayer</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
-
 
     /*
     pulsante_singlePLayer = document.createElement("button");
@@ -87,7 +84,6 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
 
     let lobby = this;
-
 
     singleplayer.onclick = function(){
       let txt = lobby.getText()
@@ -182,8 +178,17 @@ class MultiPlayerLobby extends Pagina{
     let text = '<div id = "text">Pronto?</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
 
-    let bottone = '<button id = "startGameMulti" class = "button">Start</button>'
+    let bottone = '<button id = "startGameMulti" >Start</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
+
+    let pulsante1 = '<button id = "partitaRapida" class = "functionButton">Quick Game</button>'
+    centerPanel.insertAdjacentHTML('beforeEnd', pulsante1);
+
+    let pulsante2 = '<button id = "partitaRapida" class = "functionButton">Create Game</button>'
+    centerPanel.insertAdjacentHTML('beforeEnd', pulsante2);
+
+    let pulsante3 = '<button id = "partitaRapida" class = "functionButton">Join Game</button>'
+    centerPanel.insertAdjacentHTML('beforeEnd', pulsante3);
 
     // SOCKET IO
     const socket = io();
