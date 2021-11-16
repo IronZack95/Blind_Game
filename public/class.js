@@ -166,7 +166,7 @@ class MultiPlayerLobby extends Pagina{
     super.getSchermo().appendChild(h);
 
     h = document.createElement("h2");
-    h.id= "title";
+    h.id= "subtitle";
     h.innerHTML = "Multi Player Lobby"
     super.getSchermo().appendChild(h);
 
@@ -178,8 +178,10 @@ class MultiPlayerLobby extends Pagina{
     let text = '<div id = "text">Pronto?</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
 
+    /*
     let bottone = '<button id = "startGameMulti" >Start</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
+    */
 
     let pulsante1 = '<button id = "partitaRapida" class = "functionButton">Quick Game</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', pulsante1);

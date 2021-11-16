@@ -1,52 +1,26 @@
-                    /* STILI BODY */
+/* STILI BODY */
+
 html, body {
   margin: 0;
   height:100%;
-  /*background-color: rgb(143, 142, 142);*/
+  background-color: rgb(143, 142, 142);
   background: linear-gradient(0deg, #02790c 0%, #910000 100%);
   font-family: papyrus;
   font-weight: bold;
 }
 
+
 /*
 body {
-  /*border: 1px solid black;*/
-  /* This centers our sketch horizontally.
+  border: 1px solid black
+   This centers our sketch horizontally.
   justify-content: center;
   This centers our sketch vertically.
-  align-items: center; */
-/* } */
-
-/* BUTTONS */
-
-#startGameMulti{
-position: absolute;
-margin: 8px;
-top: 15%;
-left: 48%;
-transform: translate(-50%);
-/* outline: none;
-text-decoration: none; */
-padding: 10px 20px;
-cursor: pointer;
-color: black;
-background-color: red;
-border: none;
-border-radius: 10px;
-box-shadow: 0 7px #999;
-font-family: papytus;
-font-weight: bolder; 
+  align-items: center; 
 }
+*/
 
-#startGameMulti:hover {background-color: #1cd79f}
-
-#startGameMulti:active {
-background-color: #7bff00;
-box-shadow: 0 2px #666;
-/*transform: translate(-50%, -140%);*/
-transform: translate(-50%, 10%);
-}
-
+/* Pulsanti lobby iniziale */
 .button {
 position: relative;
 margin: 8px;
@@ -70,16 +44,19 @@ button:active {
 background-color: #7bff00;
 box-shadow: 0 2px #666;
 /*transform: translate(-50%, -140%);*/
-transform: translate(0%, 10%);
+transform: translate(0%, 25%);
 }
 
+
+
+/* Pulsanti lobby multi*/
 .functionButton {
   position: relative;
   margin: 8px;
   top: 10%;
   /* outline: none;
   text-decoration: none; */
-  transform: translate(0%, 150%);
+  transform: translate(0%, 20%);
   padding: 10px 20px;
   cursor: pointer;
   color: black;
@@ -96,12 +73,11 @@ transform: translate(0%, 10%);
   .functionButton:active {
   background-color: #7bff00;
   box-shadow: 0 2px #666;
-  /*transform: translate(-50%, -140%);*/
-  transform: translate(0%,170%);
+  transform: translate(0%, 40%);
   }
 
-/* IMAGES */
 
+/* IMAGES */
 img.snakeGreen{
   position: fixed;
   left: 0%;
@@ -120,9 +96,20 @@ img.snakeRed{
 
 #title {
   margin: 0;
-    text-align: center;
-    color: midnightblue;
-    background-color: olivedrab;
+  text-align: center;
+  color: midnightblue;
+  /*background-color: olivedrab;*/
+  font-size: 70px;
+  font-weight: bolder;
+}
+
+#subtitle {
+  margin: 0;
+  text-align: center;
+  color: midnightblue;
+  /*background-color: olivedrab;*/
+  font-size: 30px;
+  font-weight: bolder;
 }
 
 #schermo{
@@ -202,25 +189,23 @@ img.snakeRed{
 /* modifiche a centerpanel*/
 
 .center {
-    /*max-width: 400px;
-    /* left: 21%; */
-    /* top: 50%;
-    align-items: center;
-    justify-content: center;
-    margin: 0;*/
+  max-width: 400px;
+  width: 80%;
+  height: 15%;
+  border-radius: 18px;
+  text-align: center;
+  background-color: #a00101bb;     
+  border: 2px solid #262626;
+  font-size: 18px;
+  min-width: 200px;    
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
-    width: 80%;
-    height: 15%;
-    border-radius: 18px;
-    text-align: center;
-    background-color: #a00101bb;
-     
-    border: 2px solid #262626;
-    font-size: 18px;
-    min-width: 200px;   
-    
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  /* left: 21%; */
+  /* top: 50%;
+  align-items: center;
+  justify-content: center;
+  margin: 0;*/
 }
