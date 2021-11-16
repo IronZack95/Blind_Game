@@ -159,6 +159,8 @@ class MultiPlayerLobby extends Pagina{
   constructor() {
     super();
 
+    /* commento di zack*/
+
     // Creo Titolo E Sottotitolo
     let h = document.createElement("h1");
     h.id= "title";
