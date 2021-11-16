@@ -4,8 +4,8 @@ let multi;
 let multilobby;
 
 // Inizio del programma
-lobby = new Lobby();
-//multilobby = new MultiPlayerLobby();
+//lobby = new Lobby();
+multilobby = new MultiPlayerLobby();
 // eventi
 /*
 singleplayer.onclick = function(){
