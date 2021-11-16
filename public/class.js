@@ -80,9 +80,6 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     bottone = '<button id = "multiplayer" class = "button">MultiPlayer</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
 
-    bottone = '<button id = "joinGame" class = "button">JoinGame</button>'
-    centerPanel.insertAdjacentHTML('beforeEnd', bottone);
-
     let lobby = this;
 
     singleplayer.onclick = function(){
@@ -128,17 +125,17 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     super.getSchermo().appendChild(h);
 
     h = document.createElement("h2");
-    h.id= "title";
+    h.id= "subtitle";
     h.innerHTML = "Single Player"
     super.getSchermo().appendChild(h);
 
     // Creo Canvas
     let canvasContainer = document.createElement('div');
+    type = 'single';
     new p5(sketch, canvasContainer);
     super.getSchermo().appendChild(canvasContainer);
     canvasContainer.id = "canvas";
-    document.getElementById(canvasContainer.id).children[0].style.visibility= "visible"
-    //cnv = new Canvas(this.#canvasWidth,this.#canvasHeight, this.#resolution);
+    //document.getElementById(canvasContainer.id).children[0].style.visibility= "visible"
 
     // Creo counter
     let c = document.createElement("div");
@@ -178,18 +175,14 @@ class MultiPlayerLobby extends Pagina{
     let text = '<div id = "text">Pronto?</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
 
-    /*
-    let bottone = '<button id = "startGameMulti" >Start</button>'
-    centerPanel.insertAdjacentHTML('beforeEnd', bottone);
-    */
 
-    let pulsante1 = '<button id = "partitaRapida" class = "functionButton">Quick Game</button>'
+    let pulsante1 = '<button id = "quickGame" class = "functionButton">Quick Game</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', pulsante1);
 
-    let pulsante2 = '<button id = "partitaRapida" class = "functionButton">Create Game</button>'
+    let pulsante2 = '<button id = "createGame" class = "functionButton">Create Game</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', pulsante2);
 
-    let pulsante3 = '<button id = "partitaRapida" class = "functionButton">Join Game</button>'
+    let pulsante3 = '<button id = "joinGame" class = "functionButton">Join Game</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', pulsante3);
 
     // SOCKET IO
@@ -206,7 +199,7 @@ class MultiPlayerLobby extends Pagina{
     socket.on("room message", (id, msg) => {
       console.log("id: "+id+" msg: "+msg);
     });
-    
+
     socket.on("startMultiplayer!", () => {
       document.getElementById("text").innerText = "Inizio Partita!"
       setTimeout(function(){ multilobby.destructor(); delete this; multi = new MultiPlayer();},2000)
@@ -214,7 +207,7 @@ class MultiPlayerLobby extends Pagina{
 
     let multilobby = this;
 
-    startGameMulti.onclick = function(){
+    quickGame.onclick = function(){
         socket.emit("startGame",(response) => {
             console.log("Il server dice: "+response.status+ " la mia stanza è: "+response.room); // ok
             this.room = response.room;
@@ -263,9 +256,18 @@ class MultiPlayer extends Pagina{
       super.getSchermo().appendChild(h);
 
       h = document.createElement("h2");
-      h.id= "title";
+      h.id= "subtitle";
       h.innerHTML = "Multi Player"
       super.getSchermo().appendChild(h);
+
+      // Creo Canvas
+      let canvasContainer = document.createElement('div');
+      type = 'multi';
+      new p5(sketch, canvasContainer);
+      super.getSchermo().appendChild(canvasContainer);
+      canvasContainer.id = "canvas";
+      document.getElementById(canvasContainer.id).children[0].style.visibility= "visible"
+      //cnv = new Canvas(this.#canvasWidth,this.#canvasHeight, this.#resolution);
   }
 
 

@@ -1,10 +1,22 @@
 // SinglePlayer
-
+let type; // tipo di gioco
 const PLAIN_FOOD = 100;   //punti per cibo di tipo base
 
 let sketch = function(p) {
+  // variabili del canvas
+  let snake;
+  let rez = 40;
+  let food;
+  let w;
+  let h;
+  let nCibo = 0;
 
-  class Snake {   // oggetto serpente
+  console.log(type) //tipo del gioco
+
+
+
+
+  class Snake{   // oggetto serpente
 
     constructor() {
     	this.body = [];
@@ -98,74 +110,75 @@ let sketch = function(p) {
     }
     food = v;
   }
-/*
-  p.windowResized = function() {
-    p.centerCanvas();
-  }
-*/
-  p.keyPressed = function() {
 
-    if (p.keyCode === p.LEFT_ARROW) {
-      snake.setDir(-1, 0);
-      //socket.volatile.emit("keys", "LEFT");
-    } else if (p.keyCode === p.RIGHT_ARROW) {
-      snake.setDir(1, 0);
-      //socket.volatile.emit("keys", "RIGHT");
-    } else if (p.keyCode === p.DOWN_ARROW) {
-      snake.setDir(0, 1);
-      //socket.volatile.emit("keys", "DOWN");
-    } else if (p.keyCode === p.UP_ARROW) {
-      snake.setDir(0, -1);
-      //socket.volatile.emit("keys", "UP");
-    } else if (key == ' ') {
-      snake.grow();
+
+class GameLogic{
+
+  constructor(){
+
+      p.keyPressed = function() {
+
+        if (p.keyCode === p.LEFT_ARROW) {
+          snake.setDir(-1, 0);
+          //socket.volatile.emit("keys", "LEFT");
+        } else if (p.keyCode === p.RIGHT_ARROW) {
+          snake.setDir(1, 0);
+          //socket.volatile.emit("keys", "RIGHT");
+        } else if (p.keyCode === p.DOWN_ARROW) {
+          snake.setDir(0, 1);
+          //socket.volatile.emit("keys", "DOWN");
+        } else if (p.keyCode === p.UP_ARROW) {
+          snake.setDir(0, -1);
+          //socket.volatile.emit("keys", "UP");
+        }
+      }
+
+      p.keyTyped = function(){
+        if(p.key == ' ') {
+          snake.grow();
+        }
+      }
+
+      p.setup = function(){
+        p.createCanvas(400, 400);
+        w = p.floor(p.width / rez);
+        h = p.floor(p.height / rez);
+        p.frameRate(5);
+        let snake = new Snake();
+        let snakeBody = snake.getBody();
+        foodLocation(snakeBody);
+      }
+      p.draw = function(){
+        p.scale(rez);
+        p.background(220);
+        if (snake.eat(food)) {
+          updateScore();
+          foodLocation();
+        }
+        snake.update();
+        snake.show();
+
+        if (snake.endGame()) {
+          p.print("END GAME");
+          p.background(255, 0, 0);
+          p.noLoop();
+        }
+
+        p.noStroke();
+        p.fill(0, 255, 0);
+        p.rect(food.x, food.y, 1, 1);
+
+        function updateScore() {
+          // TODO: altri cibi etc
+          nCibo++;
+          let punteggio = nCibo * PLAIN_FOOD;
+          let counterText = document.getElementById('testoCounter');
+          counterText.innerHTML = punteggio;
+          return punteggio;
+        }
+      }
     }
-
   }
 
-  let snake;
-  let rez = 20;
-  let food;
-  let w;
-  let h;
-  let nCibo = 0;
-
-  p.setup = function(){
-    p.createCanvas(400, 400);
-    w = p.floor(p.width / rez);
-    h = p.floor(p.height / rez);
-    p.frameRate(5);
-    snake = new Snake();
-    let snakeBody = snake.getBody();
-    foodLocation(snakeBody);
-  }
-  p.draw = function(){
-    p.scale(rez);
-    p.background(220);
-    if (snake.eat(food)) {
-      updateScore();
-      foodLocation();
-    }
-    snake.update();
-    snake.show();
-
-    if (snake.endGame()) {
-      p.print("END GAME");
-      p.background(255, 0, 0);
-      p.noLoop();
-    }
-
-    p.noStroke();
-    p.fill(0, 255, 0);
-    p.rect(food.x, food.y, 1, 1);
-
-    function updateScore() {
-      // TODO: altri cibi etc
-      nCibo++;
-      let punteggio = nCibo * PLAIN_FOOD;
-      let counterText = document.getElementById('testoCounter');
-      counterText.innerHTML = punteggio;
-      return punteggio;
-    }
-  }
-};
+  let game = new GameLogic();
+}

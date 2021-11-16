@@ -16,7 +16,7 @@ body {
    This centers our sketch horizontally.
   justify-content: center;
   This centers our sketch vertically.
-  align-items: center; 
+  align-items: center;
 }
 */
 
@@ -67,9 +67,9 @@ transform: translate(0%, 25%);
   font-family: papytus;
   font-weight: bolder;
   }
-  
+
   .functionButton:hover {background-color: #1cd79f}
-  
+
   .functionButton:active {
   background-color: #7bff00;
   box-shadow: 0 2px #666;
@@ -99,7 +99,7 @@ img.snakeRed{
   text-align: center;
   color: midnightblue;
   /*background-color: olivedrab;*/
-  font-size: 70px;
+  font-size: 60px;
   font-weight: bolder;
 }
 
@@ -132,7 +132,7 @@ img.snakeRed{
 
 #counter {
   padding: 2px;
-  position: relative;  
+  position: relative;
   /*left: 50%;
   bottom: 10%;
   margin-left: -50px;
@@ -140,11 +140,11 @@ img.snakeRed{
   left: 50%;
   top: 50%;
   transform: translate(-50%, 700%);
-  
+
   height: 20px;
   width: 100px;
   background-color: #262626;
-  
+
 }
 
 #testoCounter {
@@ -194,10 +194,10 @@ img.snakeRed{
   height: 15%;
   border-radius: 18px;
   text-align: center;
-  background-color: #a00101bb;     
+  background-color: #a00101bb;
   border: 2px solid #262626;
   font-size: 18px;
-  min-width: 200px;    
+  min-width: 200px;
   position: absolute;
   top: 50%;
   left: 50%;
