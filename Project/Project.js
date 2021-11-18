@@ -1,13 +1,36 @@
+let song;
+
+/*************************************/
 function setup() {
+  
   createCanvas(800, 600);
   background(153);
-  p = new Player(width / 2, height / 10);
+  g = new GameLogic();
+
 }
 
 function draw() {
   clear();
   background(153);
-  p.update();
+  g.update();
+}
+/*
+function mousePressed() {
+  song.play();
+}
+*/
+/*************************************/
+
+class GameLogic{
+  constructor(){
+    this.p = new Player(width / 2, height / 10);
+    this.m = new Mine(width/8, height/8);
+  }
+  update(){
+    this.p.update();
+    this.m.update();
+    //console.log("x: "+mouseX+" y: "+mouseY);
+  }
 }
 
 
@@ -18,33 +41,52 @@ class Player{
     this.diameter = 20;
     this.x = x_start;
     this.y = y_start;
-    circle(this.x, this.y, this.diameter);
-    triangle(this.x - this.diameter / 2, this.y, this.x + this.diameter / 2, this.y, this.x, this.y + this.diameter / 2);
   }
   
   update(){
     // update direction
-    this.v.x = cos(2*PI*(-mouseX+width/2)/width);
-    this.v.y = sin(2*PI*(-mouseX+width/2)/width);
+    this.v.x = cos(2*PI*(mouseX+width/2)/width);
+    this.v.y = sin(2*PI*(mouseX+width/2)/width);
+    //this.v.x = ((mouseX-width/2)/width);
+    //this.v.y = ((mouseY-height/2)/height);
+    console.log("x: "+this.v.x+" y: "+this.v.y);
     // update position
-    if (keyIsDown(LEFT_ARROW)) {
+    if (keyIsDown(LEFT_ARROW)){
       this.x -= 1;
-    }if (keyIsDown(RIGHT_ARROW)) {
+    }if (keyIsDown(RIGHT_ARROW)){
       this.x += 1;
-    }if (keyIsDown(UP_ARROW)) {
+    }if (keyIsDown(UP_ARROW)){
       this.y -= 1;
-    }if (keyIsDown(DOWN_ARROW)) {
+    }if (keyIsDown(DOWN_ARROW)){
        this.y += 1;
    }
-    console.log(mouseX);
-    this.drawPlayer();
-    //triangle(this.x - this.diameter / 2, this.y, this.x + this.diameter / 2, this.y, mouseX, mouseY);
-    //triangle(this.x - this.diameter / 2, this.y, this.x + this.diameter / 2, this.y, this.x, this.y + this.diameter / 2);
+   let panning = map(mouseX, 0, width, -1.0, 1.0);
+   song.pan(panning);
+   //console.log(mouseX);
+   this.drawPlayer();
   }
    
-   
   drawPlayer(){
+    fill(color(255, 255, 255));
     circle(this.x, this.y, 20);
     line(this.x, this.y, this.x+this.diameter/2*this.v.x,this.y+this.diameter/2*this.v.y);
   } 
+}
+
+class Mine{
+  constructor(x,y){
+    song = loadSound('data/game.mp3');
+    setInterval(function(){song.play();},2000);
+    this.x = x;
+    this.y = y;
+  }
+  
+  update(){
+    this.drawMine();
+  }
+  
+  drawMine(){
+    fill(color(0, 0, 255));
+    rect(this.x, this.y, 60, 60);
+  }
 }
