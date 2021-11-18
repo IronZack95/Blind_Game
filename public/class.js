@@ -23,17 +23,15 @@ class Schermo {
 class Pagina{
   constructor(){
     this.schermo = new Schermo();
+    this.destructor();
   }
-
   getSchermo(){
     return this.schermo.getSchermo();
   }
-
   destructor(){
     /* distruggo tutto quello che ho stampato a schermo */
     this.schermo.getSchermo().innerHTML = "";
   }
-
 }
 
 class Lobby extends Pagina{    // costruisco la pagina della lobby
@@ -57,7 +55,6 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     centerPanel.insertAdjacentHTML('afterBegin', text);
 
     //IMMAGINI
-
     let image1 = document.createElement("img");
     image1.src = "Images/SnakeGreen.png";
     image1.classList.add("snakeGreen");
@@ -80,17 +77,14 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     bottone = '<button id = "multiplayer" class = "button">MultiPlayer</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
 
-    let lobby = this;
-
+    let self = this;
     singleplayer.onclick = function(){
-      let txt = lobby.getText()
+      let txt = self.getText()
       txt.innerText = "Play!!";
-      setTimeout(function(){ lobby.destructor(); delete this; single = new SinglePlayer();},1000)
-      //delete lobby;
+      setTimeout(function(){ pagina = new SinglePlayer();},1000)
     }
     multiplayer.onclick = function(){
-      setTimeout(function(){ lobby.destructor(); delete this; multi = new MultiPlayerLobby();},1000)
-      //delete lobby;
+      setTimeout(function(){ pagina = new MultiPlayerLobby();},1000)
     }
 
   }
@@ -98,8 +92,7 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
   getText(){
     return document.getElementById("text");
   }
-
-};
+}
 
 
 
@@ -129,13 +122,7 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     h.innerHTML = "Single Player"
     super.getSchermo().appendChild(h);
 
-    // Creo Canvas
-    let canvasContainer = document.createElement('div');
-    type = 'single';
-    new p5(sketch, canvasContainer);
-    super.getSchermo().appendChild(canvasContainer);
-    canvasContainer.id = "canvas";
-    //document.getElementById(canvasContainer.id).children[0].style.visibility= "visible"
+
 
     // Creo counter
     let c = document.createElement("div");
@@ -149,12 +136,23 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
 
 }
 
+class Canvas(){
+  constructor(){
+    // Creo Canvas
+    let canvasContainer = document.createElement('div');
+    type = 'single';
+    new p5(sketch, canvasContainer);
+    super.getSchermo().appendChild(canvasContainer);
+    canvasContainer.id = "canvas";
+    //document.getElementById(canvasContainer.id).children[0].style.visibility= "visible"
+  }
+
+}
+
 
 class MultiPlayerLobby extends Pagina{
   constructor() {
     super();
-
-    /* commento di zack*/
 
     // Creo Titolo E Sottotitolo
     let h = document.createElement("h1");
@@ -174,7 +172,6 @@ class MultiPlayerLobby extends Pagina{
 
     let text = '<div id = "text">Pronto?</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
-
 
     let pulsante1 = '<button id = "quickGame" class = "functionButton">Quick Game</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', pulsante1);
@@ -202,10 +199,8 @@ class MultiPlayerLobby extends Pagina{
 
     socket.on("startMultiplayer!", () => {
       document.getElementById("text").innerText = "Inizio Partita!"
-      setTimeout(function(){ multilobby.destructor(); delete this; multi = new MultiPlayer();},2000)
+      setTimeout(function(){pagina = new MultiPlayer();},2000)
     });
-
-    let multilobby = this;
 
     quickGame.onclick = function(){
         socket.emit("startGame",(response) => {
@@ -260,6 +255,7 @@ class MultiPlayer extends Pagina{
       h.innerHTML = "Multi Player"
       super.getSchermo().appendChild(h);
 
+/*
       // Creo Canvas
       let canvasContainer = document.createElement('div');
       type = 'multi';
@@ -268,9 +264,8 @@ class MultiPlayer extends Pagina{
       canvasContainer.id = "canvas";
       document.getElementById(canvasContainer.id).children[0].style.visibility= "visible"
       //cnv = new Canvas(this.#canvasWidth,this.#canvasHeight, this.#resolution);
+
+      */
   }
-
-
-
 
 }
