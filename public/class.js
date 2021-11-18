@@ -146,7 +146,6 @@ class Canvas(){
     canvasContainer.id = "canvas";
     //document.getElementById(canvasContainer.id).children[0].style.visibility= "visible"
   }
-
 }
 
 
