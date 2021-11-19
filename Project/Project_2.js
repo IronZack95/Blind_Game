@@ -1,18 +1,22 @@
-let mine_S, crystal_S;
+let skull; //images...
+let mine_S, crystal_S;  //sounds....
 
 function preload(){
-  mine_S = loadSound('data/mine.mp3');
-  crystal_S = loadSound('data/crystal.mp3')
+  mine_S = loadSound('data/sounds/mine.mp3');
+  crystal_S = loadSound('data/sounds/crystal.mp3')
   //other sounds....
   console.log('sounds loaded')
 }
 
 /*************************************/
+
 function setup() {
   
   createCanvas(800, 600);
   background(153);
   g = new GameLogic();
+  
+  skull = loadImage('data/images/skull-40.png')   //provvisoria, TEST
 
 }
 
@@ -20,6 +24,8 @@ function draw() {
   clear();
   background(64,64,64);
   g.update();
+  
+  image(skull, 200, height/2, 20,20)   //provvisoria, TEST
 }
 
 /*
@@ -28,6 +34,8 @@ function mousePressed() {
 }
 */
 /*************************************/
+
+
 
 class GameLogic{
   constructor(){
@@ -119,7 +127,7 @@ class Player{
 
 class Mine{
   constructor(x,y){
-    setInterval(function(){mine_S.play();},2000);
+    setInterval(function(){mine_S.play();},1000);
     this.x = x;
     this.y = y;
   }
@@ -150,3 +158,5 @@ class Crystal{
     rect(this.x, this.y, 30,30);
   }
 }
+
+
