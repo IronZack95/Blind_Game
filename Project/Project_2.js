@@ -74,8 +74,8 @@ class Player{
    
    let panning = map(mouseX, 0, width, -1.0, 1.0);
    song.pan(panning);
-
-   song.setVolume(g.computeDistancefromMine());
+   song.setVolume(exp(g.computeDistancefromMine()));
+   
    
   
    //console.log(mouseX);
