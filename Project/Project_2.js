@@ -32,12 +32,21 @@ class GameLogic{
     //console.log("x: "+mouseX+" y: "+mouseY);
   }
 
-  computeDistancefromMine() {
-    let distance;
-    distance = map( dist(this.p.x, this.p.y, this.m.x, this.m.y ), 0, width/2, 0, 1);
-    let distValue;
-    distValue = 0.5*(1-distance);
-    return distValue;
+  volumeOnDistancefromMine() {
+    let volumeOnDistance;
+    let basicDistance = dist(this.p.x, this.p.y, this.m.x, this.m.y );   
+
+    if (basicDistance>300){ //300 è arbitrario, è la distanza entro la quale inizio a sentire la mina
+      return volumeOnDistance = 0;
+    } 
+    else 
+    {   
+      let weightedDistance = sqrt(  basicDistance /  (300));   //nuova mappatura esponenziale
+      console.log("distanza normalizzata e pesata: ",weightedDistance);
+      let volumeOnDistance = 0.3*(1-weightedDistance);
+      return volumeOnDistance;
+    }
+
   }
 }
 
@@ -52,15 +61,14 @@ class Player{
   }
   
   update(){
+
     // update direction
-
-    //map(0, width, -270, 270)
-
     this.v.x = cos(2*PI*(mouseX+width/2)/ width);
     this.v.y = sin(2*PI*(mouseX+width/2)/ width);
     //this.v.x = ((mouseX-width/2)/width);
     //this.v.y = ((mouseY-height/2)/height);
     console.log("x: "+this.v.x+" y: "+this.v.y);
+
     // update position
     if (keyIsDown(LEFT_ARROW)){
       this.x -= 1;
@@ -74,7 +82,7 @@ class Player{
    
    let panning = map(mouseX, 0, width, -1.0, 1.0);
    song.pan(panning);
-   song.setVolume(exp(g.computeDistancefromMine()));
+   song.setVolume(g.volumeOnDistancefromMine());
    
    
   
@@ -85,14 +93,14 @@ class Player{
   drawPlayer(){
     fill(color(255, 255, 255));
     circle(this.x, this.y, 20);
-    line(this.x, this.y,      this.x+this.diameter/2*this.v.x, this.y+this.diameter/2*this.v.y);
+    line(this.x, this.y,   this.x+this.diameter/2*this.v.x, this.y+this.diameter/2*this.v.y);
   } 
 }
 
 class Mine{
   constructor(x,y){
     song = loadSound('data/game.mp3');
-    setInterval(function(){song.play();},3000);
+    setInterval(function(){song.play();},1000);
     this.x = x;
     this.y = y;
   }
