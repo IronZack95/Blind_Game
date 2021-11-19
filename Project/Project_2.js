@@ -1,4 +1,11 @@
-let song;
+let mine_S, crystal_S;
+
+function preload(){
+  mine_S = loadSound('data/mine.mp3');
+  crystal_S = loadSound('data/crystal.mp3')
+  //other sounds....
+  console.log('sounds loaded')
+}
 
 /*************************************/
 function setup() {
@@ -11,9 +18,10 @@ function setup() {
 
 function draw() {
   clear();
-  background(153);
+  background(64,64,64);
   g.update();
 }
+
 /*
 function mousePressed() {
   song.play();
@@ -25,29 +33,39 @@ class GameLogic{
   constructor(){
     this.p = new Player(width / 2, height -50);
     this.m = new Mine(width/8, height/8);
+    this.c = new Crystal(width-300, height-220);
+    
   }
   update(){
     this.p.update();
     this.m.update();
+    this.c.update();
     //console.log("x: "+mouseX+" y: "+mouseY);
   }
 
-  volumeOnDistancefromMine() {
-    let volumeOnDistance;
-    let basicDistance = dist(this.p.x, this.p.y, this.m.x, this.m.y );   
+  volume_DistancefromMine() {
+    let mineVolume;
+    let mineDistance = dist(this.p.x, this.p.y, this.m.x, this.m.y );   
 
-    if (basicDistance>300){ //300 è arbitrario, è la distanza entro la quale inizio a sentire la mina
-      return volumeOnDistance = 0;
-    } 
-    else 
-    {   
-      let weightedDistance = sqrt(  basicDistance /  (300));   //nuova mappatura esponenziale
-      console.log("distanza normalizzata e pesata: ",weightedDistance);
-      let volumeOnDistance = 0.3*(1-weightedDistance);
-      return volumeOnDistance;
-    }
+    if (mineDistance>=300){ //300 è arbitrario, è la distanza entro la quale inizio a sentire la mina
+      return mineVolume = 0;
+    } else {   //sotto 300 la sento...
+      let normMineDistance = sqrt(  mineDistance /  (300));   //nuova normalizzazione esponenziale
+      let mineVolume = 0.7 * (1 - normMineDistance);
+      return mineVolume;
+    }}
 
-  }
+  volume_DistancefromCrystal() {
+    let crystalVolume;
+    let crystalDistance = dist(this.p.x, this.p.y, this.c.x, this.c.y );   
+
+    if (crystalDistance>200){ //200 è arbitrario, è la distanza entro la quale inizio a sentire la mina
+      return crystalVolume = 0;
+    } else {   //sotto 200 lo sento...
+      let normCrystalDistance = sqrt(  crystalDistance /  (200));   //nuova normalizzazione esponenziale
+      let crystalVolume = 0.7 * (1 - normCrystalDistance);
+      return crystalVolume;
+   }}
 }
 
 
@@ -67,7 +85,7 @@ class Player{
     this.v.y = sin(2*PI*(mouseX+width/2)/ width);
     //this.v.x = ((mouseX-width/2)/width);
     //this.v.y = ((mouseY-height/2)/height);
-    console.log("x: "+this.v.x+" y: "+this.v.y);
+    //console.log("x: "+this.v.x+" y: "+this.v.y);
 
     // update position
     if (keyIsDown(LEFT_ARROW)){
@@ -80,11 +98,13 @@ class Player{
        this.y += 1;
    }
    
+   //panning e volumi
    let panning = map(mouseX, 0, width, -1.0, 1.0);
-   song.pan(panning);
-   song.setVolume(g.volumeOnDistancefromMine());
-   
-   
+
+   mine_S.pan(panning);
+   mine_S.setVolume(g.volume_DistancefromMine());
+   crystal_S.pan(panning);
+   crystal_S.setVolume(g.volume_DistancefromCrystal());
   
    //console.log(mouseX);
    this.drawPlayer();
@@ -99,8 +119,7 @@ class Player{
 
 class Mine{
   constructor(x,y){
-    song = loadSound('data/game.mp3');
-    setInterval(function(){song.play();},1000);
+    setInterval(function(){mine_S.play();},2000);
     this.x = x;
     this.y = y;
   }
@@ -112,5 +131,22 @@ class Mine{
   drawMine(){
     fill(color(0, 0, 255));
     rect(this.x, this.y, 60, 60);
+  }
+}
+
+class Crystal{
+  constructor(x,y){
+    setInterval(function(){crystal_S.play();},1000);
+    this.x = x;
+    this.y = y;
+  }
+  
+  update(){
+    this.drawCrystal();
+  }
+  
+  drawCrystal(){
+    fill(color(153, 255, 255));
+    rect(this.x, this.y, 30,30);
   }
 }
