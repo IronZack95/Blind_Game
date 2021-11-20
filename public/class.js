@@ -42,7 +42,7 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     // Creo Titolo
     let h1 = document.createElement("h1");
     h1.id= "title";
-    h1.innerHTML = "S N A K E"
+    h1.innerHTML = "B L I N D"
     super.getSchermo().appendChild(h1);
 
     // Center  Panel
@@ -53,18 +53,18 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     super.getSchermo().appendChild(centerPanel);
     let text = '<div id = "text">Come vuoi giocare?</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
-
+    /*
     //IMMAGINI
     let image1 = document.createElement("img");
-    image1.src = "Images/SnakeGreen.png";
+    image1.src = "images/SnakeGreen.png";
     image1.classList.add("snakeGreen");
     super.getSchermo().appendChild(image1);
 
     let image2 = document.createElement("img");
-    image2.src = "Images/SnakeRed.png";
+    image2.src = "images/SnakeRed.png";
     image2.classList.add("snakeRed");
     super.getSchermo().appendChild(image2);
-
+    */
     let bottone = '<button id = "singleplayer" class = "button">SinglePlayer</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
 
@@ -114,7 +114,7 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     // Creo Titolo E Sottotitolo
     let h = document.createElement("h1");
     h.id= "title";
-    h.innerHTML = "S N A K E"
+    h.innerHTML = "B L I N D"
     super.getSchermo().appendChild(h);
 
     h = document.createElement("h2");
@@ -122,7 +122,12 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     h.innerHTML = "Single Player"
     super.getSchermo().appendChild(h);
 
-
+    //this.canvas = new Canvas();
+    let canvasContainer = document.createElement('div');
+    new p5(sketch, canvasContainer);
+    super.getSchermo().appendChild(canvasContainer);
+    canvasContainer.id = "canvas";
+    document.getElementById(canvasContainer.id).children[0].style.visibility= "visible"
 
     // Creo counter
     let c = document.createElement("div");
@@ -136,15 +141,10 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
 
 }
 
-class Canvas(){
+class Canvas{
   constructor(){
     // Creo Canvas
-    let canvasContainer = document.createElement('div');
-    type = 'single';
-    new p5(sketch, canvasContainer);
-    super.getSchermo().appendChild(canvasContainer);
-    canvasContainer.id = "canvas";
-    //document.getElementById(canvasContainer.id).children[0].style.visibility= "visible"
+
   }
 }
 
@@ -156,7 +156,7 @@ class MultiPlayerLobby extends Pagina{
     // Creo Titolo E Sottotitolo
     let h = document.createElement("h1");
     h.id= "title";
-    h.innerHTML = "S N A K E"
+    h.innerHTML = "B L I N D"
     super.getSchermo().appendChild(h);
 
     h = document.createElement("h2");
@@ -172,13 +172,13 @@ class MultiPlayerLobby extends Pagina{
     let text = '<div id = "text">Pronto?</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
 
-    let pulsante1 = '<button id = "quickGame" class = "functionButton">Quick Game</button>'
+    let pulsante1 = '<button id = "quickGame" class = "button">Quick Game</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', pulsante1);
 
-    let pulsante2 = '<button id = "createGame" class = "functionButton">Create Game</button>'
+    let pulsante2 = '<button id = "createGame" class = "button">Create Game</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', pulsante2);
 
-    let pulsante3 = '<button id = "joinGame" class = "functionButton">Join Game</button>'
+    let pulsante3 = '<button id = "joinGame" class = "button">Join Game</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', pulsante3);
 
     // SOCKET IO
@@ -246,7 +246,7 @@ class MultiPlayer extends Pagina{
       // Creo Titolo E Sottotitolo
       let h = document.createElement("h1");
       h.id= "title";
-      h.innerHTML = "S N A K E"
+      h.innerHTML = "B L I N D"
       super.getSchermo().appendChild(h);
 
       h = document.createElement("h2");
