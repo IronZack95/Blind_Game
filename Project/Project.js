@@ -128,8 +128,6 @@ class GameLogic{
   }
 }
 
-
-
 class SoundLogic {
   constructor(player, mines, crystals) {
     this.player = player;
@@ -242,14 +240,13 @@ class RANDOM_Wall{
   
   drawRANDOM_Wall(){
     fill(color(150,75,0));
-    rect(this.x, this.y, 75, 25);
+    rect(this.x, this.y, 75, 20);
   }
 }
 
 class FIXED_Wall{
   //TODO
 }
-
 
 class Mine{
   constructor(x,y){
