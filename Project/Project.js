@@ -62,7 +62,7 @@ class GameLogic{
     console.log('creati questi random walls: ', this.randomWalls);
     console.log('creati questi oggetti: mine: ', this.mines, 'cristalli: ',this.crystals);
 
-    this.s = new SoundLogic(this.p, this.mines, this.crystals);
+    //this.s = new SoundLogic(this.p, this.mines, this.crystals);
   }
 
   update(){
@@ -75,7 +75,7 @@ class GameLogic{
     for(var i = 0; i < this.crystals.length; i++) { this.crystals[i].updateCrystal(); }
     
     //update suoni
-    this.s.update(this.p, this.mines, this.crystals);
+    //this.s.update(this.p, this.mines, this.crystals);
 
     //console.log("x: "+mouseX+" y: "+mouseY);
   }
@@ -242,7 +242,7 @@ class RANDOM_Wall{
   
   drawRANDOM_Wall(){
     fill(color(150,75,0));
-    rect(this.x, this.y, floor(random(20, 150)), 20);
+    rect(this.x, this.y, 75, 25);
   }
 }
 
