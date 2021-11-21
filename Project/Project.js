@@ -121,7 +121,7 @@ class GameLogic{
         y_rand = floor(random(40, height-50));
       } 
       else {
-        randomWalls[i] = new RANDOM_Wall(x_rand, y_rand);
+          randomWalls[i] = new RANDOM_Wall(x_rand, y_rand);
     }
    }
    return randomWalls;
