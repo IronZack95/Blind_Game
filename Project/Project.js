@@ -126,7 +126,6 @@ class GameLogic{
    }
    return randomWalls;
   }
-  
 }
 
 
