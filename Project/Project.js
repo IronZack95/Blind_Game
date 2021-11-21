@@ -113,12 +113,12 @@ class GameLogic{
      let giocatore = player;
      let x_rand, y_rand;
    
-     x_rand = floor(random(20, width-20));  //valori arbitrari per minimi e massimi
-     y_rand = floor(random(40, height-50));
+     x_rand = 50 + floor(random(0,1) *(width-50)/ 100)*100;
+     y_rand = 50 + floor(random(0,1) *(width-50)/ 100)*100;
   
       if(x_rand == giocatore.x && y_rand == giocatore.y) {
-        x_rand = floor(random(20, width-20));  
-        y_rand = floor(random(40, height-50));
+        x_rand = 50 + floor(random(0,1) *(width-50)/ 100)*100;
+        y_rand = 50 + floor(random(0,1) *(width-50)/ 100)*100;
       } 
       else {
           randomWalls[i] = new RANDOM_Wall(x_rand, y_rand);
@@ -253,7 +253,7 @@ class FIXED_Wall{
 
 class Mine{
   constructor(x,y){
-    setInterval(function(){mine_S.play();},1000);
+    //setInterval(function(){mine_S.play();},1000);
     this.x = x;
     this.y = y;
     this.exploded = false; //di default la mina non è stata esplosa
@@ -271,7 +271,7 @@ class Mine{
 
 class Crystal{
   constructor(x,y){
-    setInterval(function(){crystal_S.play();},1000);
+    //setInterval(function(){crystal_S.play();},1000);
     this.x = x;
     this.y = y;
     //setto il file mp3 per il cristallo
