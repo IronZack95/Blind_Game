@@ -1,18 +1,15 @@
 
 // CONSTANTS & VARS //
 //in px, distanze alle quali inizio a sentire i vari oggetti
-const MINE_DISTANCE = 100;   
-const CRYSTAL_DISTANCE = 150;
-const NUM_MINES = 10;
+const MINE_DISTANCE = 200;   
+const CRYSTAL_DISTANCE = 100;
+const NUM_MINES = 6;
 
-let mine_S, crystal_S, mine_S1, crystal_S1;  //sounds....
+let mine_S, crystal_S; //sounds....
 
 function preload(){
   mine_S = loadSound('data/sounds/mine.mp3');
-  //mine_S1 = loadSound('data/sounds/mine1.mp3');
   crystal_S = loadSound('data/sounds/crystal.mp3');
-  //crystal_S1 = loadSound('data/sounds/crystal1.mp3');
-  //walk_S = loadSound('data/sounds/walk.mp3');
   console.log('sounds loaded');
 }
 
@@ -47,26 +44,23 @@ function mousePressed() {
 class GameLogic{
 
   constructor(){
-    //giocatore, nasce in posizione fissa
+    //CREO giocatore (not random)
     this.p = new Player(width / 2, height -50);
 
-    //elemento può diventare cristallo o mina
-    this.objects = this.createObjects(NUM_MINES*2, this.p);
+    //CREO muri fissati alle estremità della canvas ***DA FARE***
+    // TODO this.fixedWalls ...
+    
+    //CREO muri random
+    this.randomWalls = this.createRandomWalls(NUM_MINES*2, this.p);
 
-    //muri random
-    this.randomWalls = this.createRandomWalls(NUM_MINES*4, this.p, this.objects);
-
-    //muri fissati alle estremità della canvas ***DA FARE***
-    //this.fixedWalls ...
-
-    this.mines = this.objects.slice(0, NUM_MINES-1);
-    this.crystals = this.objects.slice(NUM_MINES);
-    this.walls = this.randomWalls;
-
-    console.log('creati questi oggetti: ', this.objects);
+    //CREO elemento che può diventare cristallo o mina
+    this.objects = this.createObjects(NUM_MINES*2, this.p, this.randomWalls);
+    this.mines = this.objects.mines; 
+    this.crystals = this.objects.crystals;
+    console.log(this.mines); console.log(this.crystals);
+   
     console.log('creati questi random walls: ', this.randomWalls);
-    // console.log('create queste mine: ', this.mines);
-    // console.log('creati questi cristalli: ', this.crystals);
+    console.log('creati questi oggetti: mine: ', this.mines, 'cristalli: ',this.crystals);
 
     this.s = new SoundLogic(this.p, this.mines, this.crystals);
   }
@@ -74,50 +68,57 @@ class GameLogic{
   update(){
     //update posizione giocatore
     this.p.update();
-    //update grafica di tutte le mine e cristalli
+    
+    //update di tutti i muri, le mine ed i cristalli 
+    for(var i=0; i < this.randomWalls.length; i++) {this.randomWalls[i].updateRANDOM_Wall(); };
     for(var i = 0; i < this.mines.length; i++) { this.mines[i].updateMine(); }
     for(var i = 0; i < this.crystals.length; i++) { this.crystals[i].updateCrystal(); }
+    
     //update suoni
     this.s.update(this.p, this.mines, this.crystals);
 
     //console.log("x: "+mouseX+" y: "+mouseY);
   }
-
-  createObjects(numObj, player) {
-    let objects = [];
+  
+  //CREAZIONE DEGLI OGGETTI MINA E CRISTALLO 
+  createObjects(numObj, player) {  //passo un numero di oggetti totali che voglio e il player
+    let mines = []; let crystals = [];
 
     for (var i=0; i < numObj; i++ ){
      let giocatore = player;
      let x_rand, y_rand;
    
-      x_rand = Math.floor( Math.random() * (width - 0) + 0 );
-      y_rand = Math.floor( Math.random() * (height - 0) + 0 );
+     x_rand = floor(random(20, width-20));  //valori arbitrari per minimi e massimi
+     y_rand = floor(random(40, height-50));
   
-      if(x_rand == giocatore.x && y_rand == giocatore.y){
-        x_rand = Math.floor(Math.random() * (width - 0) + 0 );
-        y_rand = Math.floor(Math.random() * (height - 0) + 0 ); 
+      if( x_rand == giocatore.x && y_rand == giocatore.y){
+        x_rand = floor(random(20, width-20));  
+        y_rand = floor(random(40, height-50));
       } 
       else {
-        if(i < numObj/2 ){ objects[i] = new Mine(x_rand, y_rand)} else { objects[i] = new Crystal(x_rand, y_rand)}
+        if(i < numObj/2 ){ 
+          mines[i] = new Mine(x_rand, y_rand)
+        } else { 
+          crystals[i-(NUM_MINES)] = new Crystal(x_rand, y_rand)}
     }
    }
-   return objects;
+   return {mines, crystals};
   }
 
-  createRandomWalls(numObj, player, objects) {
+  //CREAZIONE MURI RANDOM
+  createRandomWalls(numWalls, player) {
     let randomWalls = [];
 
-    for (var i=0; i < numObj; i++ ){
+    for (var i=0; i < numWalls; i++ ){
      let giocatore = player;
-     let altri_oggetti = objects;
      let x_rand, y_rand;
    
-      x_rand = Math.floor(Math.random() * (width - 0) + 0 );
-      y_rand = Math.floor(Math.random() * (height - 0) + 0 );
+     x_rand = floor(random(20, width-20));  //valori arbitrari per minimi e massimi
+     y_rand = floor(random(40, height-50));
   
-      if(x_rand == giocatore.x && y_rand == giocatore.y || x_rand == altri_oggetti.x && y_rand == altri_oggetti.y){
-        x_rand = Math.floor( Math.random() * (width - 0) + 0 );
-        y_rand = Math.floor( Math.random() * (height - 0) + 0 ); 
+      if(x_rand == giocatore.x && y_rand == giocatore.y) {
+        x_rand = floor(random(20, width-20));  
+        y_rand = floor(random(40, height-50));
       } 
       else {
         randomWalls[i] = new RANDOM_Wall(x_rand, y_rand);
@@ -126,28 +127,9 @@ class GameLogic{
    return randomWalls;
   }
   
-  /* createCrystals(numCrystals, player, mines) {
-    let crystals = [];
-    let mines = [];
-
-    for (var i=0; i < numCrystals; i++ ){
-     let giocatore = player;
-     let x_Crys, y_Crys;
-   
-      x_Crys = Math.floor( Math.random() * (width - 0) + 0 );
-      y_Crys = Math.floor( Math.random() * (height - 0) + 0 );
-  
-      if(x_Crys == giocatore.x && y_Crys == giocatore.y ){
-        x_Crys = Math.floor( Math.random() * (width - 0) + 0 );
-        y_Crys = Math.floor( Math.random() * (height - 0) + 0 ); 
-      } 
-      else {
-        crystals[i] = new Crystal(x_Crys, y_Crys)
-    }
-   }
-   return crystals;
-  } */
 }
+
+
 
 class SoundLogic {
   constructor(player, mines, crystals) {
@@ -251,10 +233,8 @@ class Player{
 
 class RANDOM_Wall{
   constructor(x,y){
-    //setInterval(function(){wall_S.play();},1000);
     this.x = x;
     this.y = y;
-    //this.exploded = false; //di default la mina non è stata esplosa
   }
   
   updateRANDOM_Wall(){
@@ -266,9 +246,12 @@ class RANDOM_Wall{
     rect(this.x, this.y, 10, 10);
   }
 }
-class FIXED_Wall{
 
+class FIXED_Wall{
+  //TODO
 }
+
+
 class Mine{
   constructor(x,y){
     setInterval(function(){mine_S.play();},1000);
