@@ -3,6 +3,7 @@
 //in px, distanze alle quali inizio a sentire i vari oggetti
 const MINE_DISTANCE = 100;   
 const CRYSTAL_DISTANCE = 150;
+const NUM_MINES = 10;
 
 
 let mine_S, crystal_S, mine_S1, crystal_S1;  //sounds....
@@ -54,19 +55,15 @@ class GameLogic{
     //giocatore, nasce in posizione fissa
     this.p = new Player(width / 2, height -50);
 
-    //creo le mine (coordinate HARD-CODED PER ADESSOOOOOO
-    this.mines = [
-      new Mine(width/8, height/8, mine_S),
-      new Mine(width/2, height/2, mine_S)
-    ];
-    console.log('create queste mine: ',this.mines)
+    //elemento può diventare cristallo o mina
+    this.objects = this.createObjects(NUM_MINES*2, this.p);
+    console.log(this.objects);
 
-    //creo i cristalli (coordinate HARD-CODED PER ADESSOOOOOO)
-    this.crystals = [
-      new Crystal(width-100, 500, crystal_S),
-      new Crystal(width-200, 50, crystal_S)
-    ];
-    console.log('creati questi cristalli: ',this.crystals)
+    this.mines = this.objects.slice(0, NUM_MINES-1);
+    this.crystals = this.objects.slice(NUM_MINES);
+
+    console.log('create queste mine: ',this.mines);
+    console.log('creati questi cristalli: ',this.crystals);
 
     this.s = new SoundLogic(this.p, this.mines, this.crystals);
   }
@@ -83,6 +80,49 @@ class GameLogic{
 
     //console.log("x: "+mouseX+" y: "+mouseY);
   }
+
+  createObjects(numObj, player) {
+    let objects = [];
+
+    for (var i=0; i < numObj; i++ ){
+     let giocatore = player;
+     let x_rand, y_rand;
+   
+      x_rand = Math.floor( Math.random() * (width - 0) + 0 );
+      y_rand = Math.floor( Math.random() * (height - 0) + 0 );
+  
+      if(x_rand == giocatore.x && y_rand == giocatore.y){
+        x_rand = Math.floor( Math.random() * (width - 0) + 0 );
+        y_rand = Math.floor( Math.random() * (height - 0) + 0 ); 
+      } 
+      else {
+        if(i < numObj/2 ){ objects[i] = new Mine(x_rand, y_rand)} else { objects[i] = new Crystal(x_rand, y_rand)}
+    }
+   }
+   return objects;
+  }
+
+  /* createCrystals(numCrystals, player, mines) {
+    let crystals = [];
+    let mines = [];
+
+    for (var i=0; i < numCrystals; i++ ){
+     let giocatore = player;
+     let x_Crys, y_Crys;
+   
+      x_Crys = Math.floor( Math.random() * (width - 0) + 0 );
+      y_Crys = Math.floor( Math.random() * (height - 0) + 0 );
+  
+      if(x_Crys == giocatore.x && y_Crys == giocatore.y ){
+        x_Crys = Math.floor( Math.random() * (width - 0) + 0 );
+        y_Crys = Math.floor( Math.random() * (height - 0) + 0 ); 
+      } 
+      else {
+        crystals[i] = new Crystal(x_Crys, y_Crys)
+    }
+   }
+   return crystals;
+  } */
  
 }
 
@@ -193,12 +233,12 @@ class Player{
 }
 
 class Mine{
-  constructor(x,y,bip){
+  constructor(x,y){
     setInterval(function(){mine_S.play();},1000);
     this.x = x;
     this.y = y;
 
-    this.bip = bip;  //setto il file mp3 per la mina
+     
     this.exploded = false; //di default la mina non è stata esplosa
   }
   
@@ -213,12 +253,12 @@ class Mine{
 }
 
 class Crystal{
-  constructor(x,y,bip){
+  constructor(x,y){
     setInterval(function(){crystal_S.play();},1000);
     this.x = x;
     this.y = y;
 
-    this.bip = bip;  //setto il file mp3 per il cristallo
+      //setto il file mp3 per il cristallo
     this.found = false;    //di default il cristallo non è stato trovato
   }
   
