@@ -243,7 +243,7 @@ class RANDOM_Wall{
   
   drawRANDOM_Wall(){
     fill(color(150,75,0));
-    rect(this.x, this.y, 75, 25);
+    rect(this.x, this.y, floor(random(20, 150)), 20);
   }
 }
 
