@@ -3,7 +3,7 @@
 //in px, distanze alle quali inizio a sentire i vari oggetti
 const MINE_DISTANCE = 200;   
 const CRYSTAL_DISTANCE = 100;
-const NUM_MINES = 6;
+const NUM_MINES = 10;
 
 let mine_S, crystal_S; //sounds....
 
@@ -243,7 +243,7 @@ class RANDOM_Wall{
   
   drawRANDOM_Wall(){
     fill(color(150,75,0));
-    rect(this.x, this.y, 10, 10);
+    rect(this.x, this.y, 75, 25);
   }
 }
 
