@@ -12,8 +12,6 @@
 /**********************************************************/ 
   function setup(){
     ctx =  createCanvas(WIDTH, HEIGHT);
-    //graphics = createGraphics(WIDTH, HEIGHT, new Perlin_Map(ctx));
-    //perlin_map = new Perlin_Map(ctx);
     g = new GameLogic();
   }
 
@@ -25,7 +23,6 @@
   }
 /**********************************************************/
 
-
 class GameLogic{
 
   constructor(){
@@ -34,9 +31,6 @@ class GameLogic{
 
     //CREO muri fissati alle estremità della canvas ***DA FARE***
     // TODO this.fixedWalls ...
-    
-    //CREO muri random
-    //this.randomWalls = this.createRandomWalls(NUM_MINES*2, this.p);
 
     //CREO elemento che può diventare cristallo o mina
     this.objects = this.createObjects(NUM_MINES*2, this.p, this.randomWalls);
@@ -88,32 +82,7 @@ class GameLogic{
    }
    return {mines, crystals};
   }
-
-  //CREAZIONE MURI RANDOM
-  createRandomWalls(numWalls, player) {
-    let randomWalls = [];
-
-    for (var i=0; i < numWalls; i++ ){
-     let giocatore = player;
-     let x_rand, y_rand;
-   
-     x_rand = 50 + floor(random(0,1) *(width-50)/ 100)*100;
-     y_rand = 50 + floor(random(0,1) *(width-50)/ 100)*100;
-  
-      if(x_rand == giocatore.x && y_rand == giocatore.y) {
-        x_rand = 50 + floor(random(0,1) *(width-50)/ 100)*100;
-        y_rand = 50 + floor(random(0,1) *(width-50)/ 100)*100;
-      } 
-      else {
-          randomWalls[i] = new RANDOM_Wall(x_rand, y_rand);
-    }
-   }
-   return randomWalls;
-  }
 }
-
-
-
 class SoundLogic {
   constructor(player, mines, crystals) {
     this.player = player;
@@ -171,11 +140,6 @@ class SoundLogic {
   }  //**end update**/
 }
 
-
-
-
-
-
   class Player{ 
   
     constructor(x_start, y_start){
@@ -219,22 +183,6 @@ class SoundLogic {
     } 
   }
 
-  class RANDOM_Wall{
-    constructor(x,y){
-      this.x = x;
-      this.y = y;
-    }
-    
-    updateRANDOM_Wall(){
-      this.drawRANDOM_Wall();
-    }
-    
-    drawRANDOM_Wall(){
-      fill(color(150,75,0));
-      rect(this.x, this.y, 75, 20);
-    }
-  }
-  
   class FIXED_Wall{
     //TODO
   }
@@ -276,9 +224,6 @@ class SoundLogic {
     }
   }
 
- // MONDO DELLA PERLIN /////////////////////////////////////////////////////
-
-
  class Perlin_Map {
     constructor(cnvs) {
         let pixel_size = cnvs.width / RESOLUTION;
@@ -308,8 +253,7 @@ class SoundLogic {
       }
 }
 
- // PERLIN OBJECT ////////////////////////////////////////
-
+ // PERLIN OBJECT //
  'use strict';
  let perlin = {  rand_vect: function(){
                     
