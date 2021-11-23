@@ -9,8 +9,8 @@
   }
 
   function draw(){
-    //clear();
-    //background(0);
+    clear();
+    background(0);
     g.update();
   }
   
@@ -20,13 +20,14 @@ class GameLogic{
 
   constructor(){
     let ctx =  createCanvas(WIDTH, HEIGHT);
-    //CREO giocatore (not random)
-    this.p = new Player(width / 2, height -50);
+    //CREO giocatore (not really random)
+    this.p = new Player(width/2,580);
 
     //CREO muri fissati alle estremità della canvas ***DA FARE***
     // TODO this.fixedWalls ...
+
     let perlin_map = new Perlin_Map(ctx);
-    this.walls = this.createWalls(perlin_map);    
+    this.walls = this.createWalls(perlin_map, this.p); 
 
     //CREO elemento che può diventare cristallo o mina
     this.objects = this.createObjects(NUM_MINES*2, this.p);
@@ -56,10 +57,12 @@ class GameLogic{
   }
   
   //CREAZIONE MURI RANDOM
-  createWalls(map){
+  createWalls(map, player){
+    let playerX = player.x; 
     var i = 0;
-    let walls=[];
+    let walls=[]; let wallsOk=[];
     console.log(map);
+
     for(var keys1 in map){
       //console.log(map[keys1]);
       for(var keys2 in map[keys1]){
@@ -74,8 +77,10 @@ class GameLogic{
         }
       }
     }
+    //elimino ultima fila di muri così player è sempre libero
+    wallsOk = walls.filter(function(el){return el.y != 560;});
     //console.log('numero muri creat: '+i)
-    return walls;
+    return wallsOk;
   }
   
   //CREAZIONE DEGLI OGGETTI MINA E CRISTALLO 
@@ -103,6 +108,8 @@ class GameLogic{
    return {mines, crystals};
   }
 }
+
+
 class SoundLogic {
   constructor(player, mines, crystals) {
     this.player = player;
@@ -161,7 +168,7 @@ class SoundLogic {
 }
 
 
-  class Wall{
+class Wall{
   constructor(x,y){
       this.x = x;
       this.y = y;
@@ -179,11 +186,11 @@ class SoundLogic {
 
 }
 
-  class Player{ 
+class Player{ 
   
     constructor(x_start, y_start){
       this.v = createVector(width / 2, height / 2);
-      this.diameter = 25;
+      this.diameter = 26;
       this.x = x_start;
       this.y = y_start;
   
@@ -220,11 +227,11 @@ class SoundLogic {
       circle(this.x, this.y, 25);
       line(this.x, this.y, this.x+this.diameter/2*this.v.x, this.y+this.diameter/2*this.v.y);
     } 
-  }
+}
 
-  class FIXED_Wall{
+class FIXED_Wall{
     //TODO
-  }
+}
   
   class Mine{
     constructor(x,y){
@@ -283,7 +290,7 @@ class SoundLogic {
             vector[y]=[];
 
             for (let x = 0; x < GRID_SIZE; x += num_pixels/ GRID_SIZE){  //x fino a 10 a step di 0.5
-              
+                 
                  let v = parseInt(perlin.get(x, y) * COLOR_SCALE);
                  //vector[y][x]=v;
 
