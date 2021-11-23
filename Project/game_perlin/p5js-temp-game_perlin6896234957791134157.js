@@ -1,25 +1,16 @@
 
  const WIDTH = 800;   //del canvas
  const HEIGHT = 600;  //del canvas
- const GRID_SIZE = 10;
- const RESOLUTION = 2;
- const COLOR_SCALE = 1000000;
-
- const NUM_MINES = 20; 
- 
- let ctx, perlin_map, player;   //canvas e perlin
 
 /**********************************************************/ 
 
   function setup(){
-    ctx =  createCanvas(WIDTH, HEIGHT);
     g = new GameLogic();
   }
 
   function draw(){
-    clear();
-    background(0);
-    perlin_map = new Perlin_Map(ctx);
+    //clear();
+    //background(0);
     g.update();
   }
   
@@ -28,19 +19,22 @@
 class GameLogic{
 
   constructor(){
+    let ctx =  createCanvas(WIDTH, HEIGHT);
     //CREO giocatore (not random)
     this.p = new Player(width / 2, height -50);
 
     //CREO muri fissati alle estremità della canvas ***DA FARE***
     // TODO this.fixedWalls ...
+    let perlin_map = new Perlin_Map(ctx);
+    this.walls = this.createWalls(perlin_map);    
 
     //CREO elemento che può diventare cristallo o mina
-    this.objects = this.createObjects(NUM_MINES*2, this.p, this.randomWalls);
+    this.objects = this.createObjects(NUM_MINES*2, this.p);
     this.mines = this.objects.mines; 
     this.crystals = this.objects.crystals;
   
     //console.log('creati questi random walls: ', this.randomWalls);
-    console.log('creati questi oggetti: mine: ', this.mines, 'cristalli: ',this.crystals);
+    console.log('creati questi oggetti: mine: ', this.mines, 'cristalli: ',this.crystals, 'walls: ',this.walls);
 
     //this.s = new SoundLogic(this.p, this.mines, this.crystals);
   }
@@ -51,6 +45,7 @@ class GameLogic{
     
     //update di tutti i muri, le mine ed i cristalli 
     //for(var i=0; i < this.randomWalls.length; i++) {this.randomWalls[i].updateRANDOM_Wall(); };
+    for(var i = 0; i < this.walls.length; i++) { this.walls[i].updateWall(); }
     for(var i = 0; i < this.mines.length; i++) { this.mines[i].updateMine(); }
     for(var i = 0; i < this.crystals.length; i++) { this.crystals[i].updateCrystal(); }
     
@@ -58,6 +53,29 @@ class GameLogic{
     //this.s.update(this.p, this.mines, this.crystals);
 
     //console.log("x: "+mouseX+" y: "+mouseY);
+  }
+  
+  //CREAZIONE MURI RANDOM
+  createWalls(map){
+    var i = 0;
+    let walls=[];
+    console.log(map);
+    for(var keys1 in map){
+      //console.log(map[keys1]);
+      for(var keys2 in map[keys1]){
+        let v = map[keys1][keys2];
+        let row = floor(keys1*width/10);
+        let col = floor(keys2*width /10);
+        if(v == true && row<height && col <= width){
+          i++;
+          //console.log('row: '+row+' column: '+col+' value: ' +v);
+          let w = new Wall(col,row);
+          walls.push(w);
+        }
+      }
+    }
+    //console.log('numero muri creat: '+i)
+    return walls;
   }
   
   //CREAZIONE DEGLI OGGETTI MINA E CRISTALLO 
@@ -140,6 +158,25 @@ class SoundLogic {
       }
     }
   }  //**end update**/
+}
+
+
+  class Wall{
+  constructor(x,y){
+      this.x = x;
+      this.y = y;
+  }
+  
+  updateWall(){
+    this.drawWall();
+  }
+  
+  drawWall(){
+      fill(color(0,100,10));
+      rect(this.x, this.y, 40);
+  }
+  
+
 }
 
   class Player{ 
@@ -225,18 +262,60 @@ class SoundLogic {
       circle(this.x, this.y, 15,15);
     }
   }
+  
+ const GRID_SIZE = 10;
+ const RESOLUTION = 2;
+ const COLOR_SCALE = 1000000;
+ const NUM_MINES = 20; 
+ 
 
  class Perlin_Map {
+    
     constructor(cnvs) {
-        let pixel_size = cnvs.width / RESOLUTION;
-        let num_pixels = GRID_SIZE / RESOLUTION;
+        let pixel_size_w = cnvs.width / RESOLUTION;    //400
+        let pixel_size_h = cnvs.height / RESOLUTION;    //300
+        let num_pixels = GRID_SIZE / RESOLUTION;    // 5
         let ctx = drawingContext;
+        console.log(num_pixels);
+        let vector = [];
+        
+        for (let y = 0; y < GRID_SIZE; y += num_pixels / GRID_SIZE){    //y fino a 10 a step di 0.5
+            vector[y]=[];
 
+            for (let x = 0; x < GRID_SIZE; x += num_pixels/ GRID_SIZE){  //x fino a 10 a step di 0.5
+              
+                 let v = parseInt(perlin.get(x, y) * COLOR_SCALE);
+                 //vector[y][x]=v;
+
+                //ctx.fillStyle = 'hsl(' + v + ', 100%, 25%)';
+                //ctx.fillStyle = 'rgb(' + v + ', 0, 30)';
+                if(v>100000){
+                  ctx.fillStyle = 'rgb(255, 0, 0)';
+                  vector[y][x]=true;
+                }else{
+                   ctx.fillStyle = 'rgb(0, 0, 0)';
+                   vector[y][x]=false;
+                }
+              
+
+                ctx.fillRect(
+                    x / GRID_SIZE * cnvs.width,
+                    y / GRID_SIZE * cnvs.width,
+                    pixel_size_w,
+                    pixel_size_h
+                );
+            }
+        }
+        
+        
+        /*
         for (let y = 0; y < GRID_SIZE; y += num_pixels / GRID_SIZE){
+            vector[y]=[];
 
             for (let x = 0; x < GRID_SIZE; x += num_pixels/ GRID_SIZE){
-
-                let v = parseInt(perlin.get(x, y) * COLOR_SCALE);
+              
+                 let v = parseInt(perlin.get(x, y) * COLOR_SCALE);
+                 vector[y][x]=v;
 
                 //ctx.fillStyle = 'hsl(' + v + ', 100%, 25%)';
                 //ctx.fillStyle = 'rgb(' + v + ', 0, 30)';
@@ -246,12 +325,14 @@ class SoundLogic {
                 ctx.fillRect(
                     x / GRID_SIZE * cnvs.width,
                     y / GRID_SIZE * cnvs.width,
-                    pixel_size,
-                    pixel_size
+                    pixel_size_w,
+                    pixel_size_h
                 );
             }
         }
-      }
+        */
+    return vector;
+    }
 }
 
  // PERLIN OBJECT //
