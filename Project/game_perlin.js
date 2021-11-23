@@ -5,11 +5,12 @@
  const RESOLUTION = 2;
  const COLOR_SCALE = 1000000;
 
- const NUM_MINES = 10; 
+ const NUM_MINES = 20; 
  
  let ctx, perlin_map, player;   //canvas e perlin
 
 /**********************************************************/ 
+
   function setup(){
     ctx =  createCanvas(WIDTH, HEIGHT);
     g = new GameLogic();
@@ -21,6 +22,7 @@
     perlin_map = new Perlin_Map(ctx);
     g.update();
   }
+  
 /**********************************************************/
 
 class GameLogic{
@@ -249,7 +251,6 @@ class SoundLogic {
                 );
             }
         }
-
       }
 }
 
@@ -316,8 +317,3 @@ class SoundLogic {
  }
 
  perlin.seed();
-
-
-
-
-
