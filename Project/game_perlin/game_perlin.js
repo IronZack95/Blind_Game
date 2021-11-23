@@ -34,7 +34,7 @@ class GameLogic{
     this.crystals = this.objects.crystals;
   
     //console.log('creati questi random walls: ', this.randomWalls);
-    console.log('creati questi oggetti: mine: ', this.mines, 'cristalli: ',this.crystals);
+    console.log('creati questi oggetti: mine: ', this.mines, 'cristalli: ',this.crystals, 'walls: ',this.walls);
 
     //this.s = new SoundLogic(this.p, this.mines, this.crystals);
   }
@@ -67,16 +67,14 @@ class GameLogic{
         let row = floor(keys1*width/10);
         let col = floor(keys2*width /10);
         if(v == true && row<height && col <= width){
-          //let row = map(keys1,0,10,0,width);
-          //let col = map(keys2,0,10,0,width);
           i++;
-          console.log('row: '+row+' column: '+col+' value: ' +v);
+          //console.log('row: '+row+' column: '+col+' value: ' +v);
           let w = new Wall(col,row);
           walls.push(w);
         }
       }
     }
-    console.log('numero musi creat: '+i)
+    //console.log('numero muri creat: '+i)
     return walls;
   }
   
@@ -169,12 +167,12 @@ class SoundLogic {
       this.y = y;
   }
   
-    updateWall(){
-      this.drawWall();
-    }
+  updateWall(){
+    this.drawWall();
+  }
   
   drawWall(){
-      fill(color(0,200,0));
+      fill(color(0,100,10));
       rect(this.x, this.y, 40);
   }
   
