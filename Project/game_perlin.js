@@ -1,9 +1,9 @@
 
  const WIDTH = 800;   //del canvas
  const HEIGHT = 600;  //del canvas
- const GRID_SIZE = 8;
+ const GRID_SIZE = 10;
  const RESOLUTION = 2;
- const COLOR_SCALE = 500;
+ const COLOR_SCALE = 1000000;
 
  const NUM_MINES = 10; 
  
@@ -284,8 +284,7 @@ class SoundLogic {
         let pixel_size = cnvs.width / RESOLUTION;
         let num_pixels = GRID_SIZE / RESOLUTION;
         let ctx = drawingContext;
-        
-        //se metto y = 1 e x = 1 si rimpicciolisce la canvas
+
         for (let y = 0; y < GRID_SIZE; y += num_pixels / GRID_SIZE){
 
             for (let x = 0; x < GRID_SIZE; x += num_pixels/ GRID_SIZE){
@@ -293,7 +292,8 @@ class SoundLogic {
                 let v = parseInt(perlin.get(x, y) * COLOR_SCALE);
 
                 //ctx.fillStyle = 'hsl(' + v + ', 100%, 25%)';
-                ctx.fillStyle = 'rgb(' + v + ', 0, 30)';
+                //ctx.fillStyle = 'rgb(' + v + ', 0, 30)';
+                ctx.fillStyle = 'rgb(' + v + ', 0, 0)';
               
 
                 ctx.fillRect(
@@ -307,8 +307,6 @@ class SoundLogic {
 
       }
 }
-
-
 
  // PERLIN OBJECT ////////////////////////////////////////
 
@@ -367,7 +365,7 @@ class SoundLogic {
                     let xb = this.interp(x-xf, bl, br);
                     let v = this.interp(y-yf, xt, xb);
 
-                    this.memory[[x,y]] = v - 0.15;
+                    this.memory[[x,y]] = v - 0.2;
 
                     return v;
                 }
