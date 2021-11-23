@@ -19,6 +19,7 @@
 
   function draw(){
     clear();
+    background(0);
     perlin_map = new Perlin_Map(ctx);
     g.update();
   }
@@ -283,15 +284,17 @@ class SoundLogic {
         let pixel_size = cnvs.width / RESOLUTION;
         let num_pixels = GRID_SIZE / RESOLUTION;
         let ctx = drawingContext;
-
+        
+        //se metto y = 1 e x = 1 si rimpicciolisce la canvas
         for (let y = 0; y < GRID_SIZE; y += num_pixels / GRID_SIZE){
 
-            for (let x = 0; x < GRID_SIZE; x += num_pixels / GRID_SIZE){
+            for (let x = 0; x < GRID_SIZE; x += num_pixels/ GRID_SIZE){
 
                 let v = parseInt(perlin.get(x, y) * COLOR_SCALE);
 
                 //ctx.fillStyle = 'hsl(' + v + ', 100%, 25%)';
-                ctx.fillStyle = 'rgb(' + v + ', 30, 30)';
+                ctx.fillStyle = 'rgb(' + v + ', 0, 30)';
+              
 
                 ctx.fillRect(
                     x / GRID_SIZE * cnvs.width,
@@ -302,9 +305,9 @@ class SoundLogic {
             }
         }
 
-
-    }
+      }
 }
+
 
 
  // PERLIN OBJECT ////////////////////////////////////////
@@ -335,7 +338,7 @@ class SoundLogic {
 
                 smootherstep: function(x) {                    
                     return 6*x**5 - 15*x**4 + 10*x**3;
-                    //return 2*x**8 - 10*x**7 + 6*x**6;
+                    //return x - x + x;
                 },
 
                 interp: function(x, a, b){
@@ -364,7 +367,7 @@ class SoundLogic {
                     let xb = this.interp(x-xf, bl, br);
                     let v = this.interp(y-yf, xt, xb);
 
-                    this.memory[[x,y]] = v;
+                    this.memory[[x,y]] = v - 0.15;
 
                     return v;
                 }
