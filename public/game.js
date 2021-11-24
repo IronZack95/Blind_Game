@@ -90,6 +90,9 @@ class GameLogic{
     }
     //elimino ultima fila di muri così player è sempre libero
     walls = walls.filter(function(el){return el.y != 560;});
+    walls = walls.filter(function(el){return el.y != 0;});
+    walls = walls.filter(function(el){return el.x != 0;});
+    walls = walls.filter(function(el){return el.x != 760;});
     //ritorno oggetto contenente tutti i muri istanziati
     return walls;
   }
