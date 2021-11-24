@@ -40,7 +40,7 @@ class GameLogic{
     this.walls = this.createWalls(perlin_map, this.p);
 
     //CREO elemento che può diventare cristallo o mina
-    this.objects = this.createObjects(NUM_MINES*2, this.p);
+    this.objects = this.createObjects(NUM_MINES*2, this.p, this.walls);
     this.mines = this.objects.mines;
     this.crystals = this.objects.crystals;
 
@@ -98,26 +98,39 @@ class GameLogic{
   }
 
   //CREAZIONE DEGLI OGGETTI MINA E CRISTALLO
-  createObjects(numObj, player) {  //passo un numero di oggetti totali che voglio e il player
+  createObjects(numObj, player, walls) {  //passo un numero di oggetti totali che voglio e il player
     let mines = []; let crystals = [];
 
     for (var i=0; i < numObj; i++ ){
      let giocatore = player;
      let x_rand, y_rand;
+    let temp;
+    //  x_rand = 30 + p.floor(p.random(20, p.width-20));  //valori arbitrari per minimi e massimi
+    //  y_rand = 30 + p.floor(p.random(40, p.height-50));
 
-     x_rand = p.floor(p.random(20, p.width-20));  //valori arbitrari per minimi e massimi
-     y_rand = p.floor(p.random(40, p.height-50));
+     x_rand = 10 + p.floor(p.random(0,1) *(p.width-50)/50)*50;
+     y_rand = 10 + p.floor(p.random(0,1) *(p.height-50)/50)*50;
 
-      if( x_rand == giocatore.x && y_rand == giocatore.y){
-        x_rand = p.floor(p.random(20, p.width-20));
-        y_rand = p.floor(p.random(40, p.height-50));
+    for (let j = 0; j < walls[j].length; j++) {
+       
+      if((x_rand > walls[j].x && x_rand < walls[j].x + 40) && (y_rand > walls[j].y && y_rand < walls[j].y + 40)){
+        temp = true;  
+        return temp; 
+        }
       }
-      else {
-        if(i < numObj/2 ){
-          mines[i] = new Mine(x_rand, y_rand)
-        } else {
-          crystals[i-(NUM_MINES)] = new Crystal(x_rand, y_rand)}
-    }
+      
+      if(x_rand == giocatore.x && y_rand == giocatore.y || temp == true){
+
+          x_rand = 10 + p.floor(p.random(0,1) *(p.width-50)/50)*50;
+          y_rand = 10 + p.floor(p.random(0,1) *(p.height-50)/50)*50;
+
+        }
+        else {
+          if(i < numObj/2 ){
+            mines[i] = new Mine(x_rand, y_rand)
+          } else {
+            crystals[i-(NUM_MINES)] = new Crystal(x_rand, y_rand)}
+      }
    }
    return {mines, crystals};
   }
