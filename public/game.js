@@ -1,6 +1,7 @@
 
  const WIDTH = 800;   //del canvas
  const HEIGHT = 600;  //del canvas
+ const LATO = 40;     //lato dei quadrati che formano i muri random 
 
  let sketch = function(p) {
    /*
@@ -57,6 +58,9 @@ class GameLogic{
     for(var i = 0; i < this.walls.length; i++) { this.walls[i].updateWall(); }
     for(var i = 0; i < this.mines.length; i++) { this.mines[i].updateMine(); }
     for(var i = 0; i < this.crystals.length; i++) { this.crystals[i].updateCrystal(); }
+
+    //controllo che il giocatore non abbia colpito un muro
+    for(var i = 0; i < this.walls.length; i++) { this.walls[i].checkCollisions(this.p.x, this.p.y); }
 
     //update suoni
     //this.s.update(this.p, this.mines, this.crystals);
@@ -272,9 +276,28 @@ class Wall{
 
   drawWall(){
       p.fill(p.color(0,100,10));
-      p.rect(this.x, this.y, 40);
+      p.rect(this.x, this.y, LATO);
   }
-}
+
+  //funzione che per ogni singolo muro controlla se il player ci è sbattuto addosso
+  checkCollisions(giocatoreX, giocatoreY) {
+    let playerX = giocatoreX; let playerY = giocatoreY;
+    if (this.checkOverlap(playerX, playerY)){console.log('OUCH!!')}else{return};
+  }
+
+  checkOverlap(playerX, playerY){
+    let radius = 13;  //raggio del giocatore, TODO creare const
+
+        //trovo il punto più vicino tra il muro quadrato e il centro del cerchio
+        let Xn = Math.max(this.x, Math.min(playerX, this.x + LATO));
+        let Yn = Math.max(this.y, Math.min(playerY, this.y + LATO));
+        //trovo distanza tra punto più vicino e centro del cerchio
+        let Dx = Xn - playerX;
+        let Dy = Yn - playerY;
+        return (Dx*Dx + Dy*Dy) <= (radius*radius);
+  }
+
+}  //end of class Wall
 
 class Mine{
   constructor(x,y){
