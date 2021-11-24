@@ -94,7 +94,7 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
   }
 }
 
-
+let type;
 
 class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
   // variabili private
@@ -107,7 +107,6 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
 
 
   constructor() {
-
     //// prova Prova prova
     super();    // chiamo il costruttore della superclasse
 
@@ -124,10 +123,7 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
 
     //this.canvas = new Canvas();
     let canvasContainer = document.createElement('div');
-    new p5(sketch, canvasContainer);
-    super.getSchermo().appendChild(canvasContainer);
-    canvasContainer.id = "canvas";
-    document.getElementById(canvasContainer.id).children[0].style.visibility= "visible"
+    let cnv = new Canvas(canvasContainer,'SinglePlayer',super.getSchermo())
 
     // Creo counter
     let c = document.createElement("div");
@@ -142,9 +138,14 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
 }
 
 class Canvas{
-  constructor(){
+  constructor(canvasContainer,t,schermo){
     // Creo Canvas
-
+    //new sketch(canvasContainer,type)
+    type = t; //tipo del gioco
+    new p5(sketch, canvasContainer);
+    schermo.appendChild(canvasContainer);
+    canvasContainer.id = "canvas";
+    document.getElementById(canvasContainer.id).children[0].style.visibility= "visible";
   }
 }
 
@@ -196,7 +197,9 @@ class MultiPlayerLobby extends Pagina{
       console.log("id: "+id+" msg: "+msg);
     });
 
-    socket.on("startMultiplayer!", () => {
+    socket.on("startMultiplayer!", (state) => {
+      //Mi aspetto di ritorno il game state appena generato da Server
+      console.log("GAME STATE: ",state);
       document.getElementById("text").innerText = "Inizio Partita!"
       setTimeout(function(){pagina = new MultiPlayer();},2000)
     });

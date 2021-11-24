@@ -1,4 +1,4 @@
-// moduco che contiene tutte le connessioni
+// modulo che contiene tutte le connessioni
 const server = require('./server/server')
 const game = require('./server/game')
 //const game = require('./server/game')
@@ -7,44 +7,60 @@ const game = require('./server/game')
 // socket IO instances
 server.io.on("connection", (socket) => {
 
-    game.players.push(socket.id);
-    console.log("Connessi "+ server.io.engine.clientsCount +" client: "+ game.players);
+  // Messaggio che avviene alla connessione di un nuovo Client
+  game.players.push(socket.id);
+  console.log("Connessi "+ server.io.engine.clientsCount +" client: "+ game.players);
 
-  // KEYS key pressed
-  socket.on("keys", (data) => {
-    console.log(data);
-  });
-
-  // DATA  dati di posizione
-  socket.on("data", (data) => {
-    //console.log(data);
+  // Gestisce la disconnessione di un client
+  socket.on("disconnect", () => {
+    console.log("disconnected client : " + socket.id);
+    let removeThisIndex;
+    game.players.pop(socket.id);
+    game.rooms.forEach(
+      function(room, index) {
+          room.getClient().forEach((client, i) => {
+          if(client == socket.id){removeThisIndex = i;}
+        });
+      }
+    )
+    game.rooms.splice(removeThisIndex,1);
+    //game.room = JSON.parse(game.room);
   });
 
   // GAME  start game  ACKNOWLEDGMENT
   socket.on("startGame", (callback) => {
     let response;
     let stanza;
-    if(game.room.client.length == 0){
-      game.room.name = "Stanza01";
-      game.room.client.push(socket.id);
+    let lastIndex = parseInt(game.rooms.length-1);
+    if(game.rooms.length == 0 || game.rooms[lastIndex].getClient().length >= game.MAX_PLAYERS){
+      game.rooms.push(new game.GameState());
+      lastIndex = parseInt(game.rooms.length-1);
+      //assegno un nome casuale alla stanza
+      game.rooms[lastIndex].setName("Stanza"+Math.floor(Math.random()*10000));
+      game.rooms[lastIndex].pushClient(socket.id);
       // iscrivo il primo client alla stanza
       //socket.join(game.room.game.room)
       console.log("giocatore pronto!");
-      response = "wait"
-      stanza = game.room.name
-    }else if(game.room.client.length == 1){
-      game.room.client.push(socket.id);
+      response = "wait";
+      stanza = game.rooms[lastIndex].getName();
+    }else if(game.rooms[lastIndex].getClient().length == 1){
+      game.rooms[lastIndex].pushClient(socket.id)
       // iscrivo il secondo client alla stanza
       //socket.join(game.room.game.room);
       console.log("giocatori pronti!");
-      response = "start"
-      stanza = game.room.name
-    }else if(game.room.client.length >= 2){
+      response = "start";
+      stanza = game.rooms[lastIndex].getName();
+    }
+
+    /*
+    else if(game.room.client.length >= game.MAX_PLAYERS){
       console.log("full");
       response = "full"
       stanza = "---"
     }
-    console.log(game.room)
+    */
+    // stampo l'ultimo game state aggiunto
+    console.log(game.rooms[game.rooms.length-1])
     callback({
       status: response,
       room: stanza
@@ -52,8 +68,16 @@ server.io.on("connection", (socket) => {
   });
 
   socket.on("startMultiplayer", (wantedroom) => {
-    console.log("Inizio Multiplayer: "+ wantedroom+ " "+game.room.client)
-    server.io.in(game.room.client[1]).in(game.room.client[0]).emit("startMultiplayer!");
+    let client, index;
+    game.rooms.forEach((room, i) => {
+      if(room.getName() == wantedroom){client = room.getClient(); index=i;}
+    });
+
+    console.log("Inizio Multiplayer: "+ wantedroom+ " "+ client)
+    // GENERO CAMPO E GAME STATE
+    game.rooms[index].createMatch();
+    console.log("Genero campo: ",game.rooms[index].getGameState().wallsPos);
+    server.io.in(game.rooms[index].getClient()[1]).in(game.rooms[index].getClient()[0]).emit("startMultiplayer!",game.rooms[index].getGameState().wallsPos);
   });
 
   // scambio messaggi privati
@@ -65,6 +89,13 @@ server.io.on("connection", (socket) => {
       }
   });
 
+  //  ************** OPTIONAL ********************
+
+  // KEYS key pressed
+  socket.on("keys", (data) => {
+    console.log(data);
+  });
+
   // GAME  dati di posizione  ACKNOWLEDGMENT
   socket.on("game", (data, callback) => {
     console.log(data);
@@ -74,12 +105,5 @@ server.io.on("connection", (socket) => {
   });
 
 
-
-  socket.on("disconnect", () => {
-    console.log("disconnected client : " + socket.id);
-    game.players.pop(socket.id);
-    game.room = game.roomDefault;
-    //game.room = JSON.parse(game.room);
-  });
 
 });
