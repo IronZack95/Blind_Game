@@ -4,6 +4,7 @@ pagina = new Lobby();
 //multilobby = new MultiPlayerLobby();
 //single = new SinglePlayer();
 // eventi
+
 /*
 singleplayer.onclick = function(){
   lobby.getText().innerText = "Play!!";

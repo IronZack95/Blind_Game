@@ -239,15 +239,19 @@ class Player{
       //console.log("x: "+this.v.x+" y: "+this.v.y);
 
       // update position
-      if (p.keyIsDown(p.LEFT_ARROW)){
-        this.x -= 1;
-      }if (p.keyIsDown(p.RIGHT_ARROW)){
-        this.x += 1;
-      }if (p.keyIsDown(p.UP_ARROW)){
+      
+      if (p.keyIsDown(p.LEFT_ARROW) && this.x > 0 + this.diameter / 2){
+        this.x -= 1;          
+      }
+      if (p.keyIsDown(p.RIGHT_ARROW) && this.x < WIDTH - this.diameter / 2){
+          this.x += 1;
+      }
+      if (p.keyIsDown(p.UP_ARROW) && this.y > 0 + this.diameter / 2){
         this.y -= 1;
-      }if (p.keyIsDown(p.DOWN_ARROW)){
+      }
+      if (p.keyIsDown(p.DOWN_ARROW) && this.y < HEIGHT - this.diameter / 2){
          this.y += 1;
-     }
+      }
 
      //console.log(mouseX);
      this.drawPlayer();
