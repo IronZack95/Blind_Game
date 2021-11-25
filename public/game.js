@@ -2,8 +2,14 @@
  const WIDTH = 800;             //...del canvas
  const HEIGHT = 600;            //...del canvas
  const LATO = 40;               //lato dei quadrati che formano i muri random 
- const RAGGIO = 13;             //raggio del giocatore
- const RAGGIO_O = 15;           //raggio oggetti mina e cristallo
+ const RAGGIO_P = 13;           //raggio del giocatore
+ const RAGGIO_C = 15;           //raggio cristalli
+ const RAGGIO_M = 10;           //raggio mine
+
+ let playerScore = 0;
+ let evento = 'neutro';
+ const CRYSTAL = 100;           //punteggio per un cristallo
+ const EXPLOSION = 50;          //punti in meno per un'esplosione
  
  let sketch = function(p) {
    /*
@@ -63,7 +69,9 @@ class GameLogic{
       this.crystals[i].checkEatCrystal(this.p.x, this.p.y, this.crystals, i); }
     //check esploso su mina
     for(var i = 0; i < this.mines.length; i++) {
-      this.mines[i].checkExplosion(this.p.x, this.p.y, this.mines, i); }
+      this.mines[i].checkExplosion(this.p.x, this.p.y, this.mines, this.mines[i], i); }
+
+    this.updateScore();
     
     // TODO: gestion punteggio ********
 
@@ -145,6 +153,17 @@ class GameLogic{
 
   } //end of createObjects()
 
+  updateScore(){
+    switch(evento){
+      case 'esplosione': playerScore = playerScore - EXPLOSION;
+      case 'cristallo':  playerScore = playerScore + CRYSTAL;
+      case 'none':       default: ;
+    }
+
+    evento = 'none';  //reset
+    document.getElementById('testoCounter').innerHTML = playerScore;
+  }
+
 } // end of GameLogic
 
 class GameLogicMulti extends GameLogic{
@@ -180,8 +199,8 @@ class GameLogicMulti extends GameLogic{
   //CREAZIONE DEGLI OGGETTI MINA E CRISTALLO
   createObjects(numObj, player) {  //passo un numero di oggetti totali che voglio e il player
 
-}
-}
+  }
+} //end of GameLogicMulti
 
 
 class SoundLogic {
@@ -245,7 +264,7 @@ class Player{
 
     constructor(x_start, y_start){
       this.v = p.createVector(p.width / 2, p.height / 2);
-      this.diameter = 2*RAGGIO;
+      this.diameter = 2*RAGGIO_P;
       this.x = x_start;
       this.y = y_start;
 
@@ -285,7 +304,7 @@ class Player{
 
     drawPlayer(){
       p.fill(p.color(48, 208, 0));
-      p.circle(this.x, this.y, 25);
+      p.circle(this.x, this.y, 2*RAGGIO_P);
       p.line(this.x, this.y, this.x+this.diameter/2*this.v.x, this.y+this.diameter/2*this.v.y);
     }
 
@@ -317,7 +336,7 @@ class Wall{
   }
 
   checkOverlap(playerX, playerY){
-    let radius = RAGGIO;  //raggio del giocatore, TODO creare const
+    let radius = RAGGIO_P;  //raggio del giocatore, TODO creare const
 
         //trovo il punto più vicino tra il muro quadrato e il centro del cerchio
         let Xn = Math.max(this.x, Math.min(playerX, this.x + LATO));
@@ -348,20 +367,27 @@ class Mine{
 
   drawMine(){
     p.fill(p.color(204,0,0));
-    p.circle(this.x, this.y, RAGGIO_O);
+    p.circle(this.x, this.y, RAGGIO_M);
   }
 
-  checkExplosion(playerX, playerY, mines, index){
+  checkExplosion(playerX, playerY, mines, mine,index){
     //first it checks the collision between the two circles
-    var dx = (this.x + RAGGIO_O) - (playerX + RAGGIO);
-    var dy = (this.y + RAGGIO_O) - (playerY + RAGGIO);
+    var dx = (this.x + RAGGIO_P) - (playerX + RAGGIO_M);
+    var dy = (this.y + RAGGIO_P) - (playerY + RAGGIO_M);
     var distance = Math.sqrt(dx * dx + dy * dy);
-    if (distance < RAGGIO_O + RAGGIO){
+    if (distance < RAGGIO_M + RAGGIO_P){
       console.log('sono esploso');
       mines.splice(index,1);
+      evento = 'esplosione';
+      //mine.changeMineColor();     TODO
     } else {
       return;
     }
+  }
+
+  changeMineColor(){
+    //TODO
+    
   }
 }
 
@@ -380,17 +406,18 @@ class Crystal{
 
   drawCrystal(){
     p.fill(p.color(153, 255, 255));
-    p.circle(this.x, this.y, RAGGIO_O);
+    p.circle(this.x, this.y, RAGGIO_C);
   }
 
   checkEatCrystal(playerX, playerY, crystals, index){
     //first it checks the collision between the two circles
-    var dx = (this.x + RAGGIO_O) - (playerX + RAGGIO);
-    var dy = (this.y + RAGGIO_O) - (playerY + RAGGIO);
+    var dx = (this.x + RAGGIO_P) - (playerX + RAGGIO_C);
+    var dy = (this.y + RAGGIO_P) - (playerY + RAGGIO_C);
     var distance = Math.sqrt(dx * dx + dy * dy);
-    if (distance < RAGGIO_O + RAGGIO){
+    if (distance < RAGGIO_C + RAGGIO_P){
       console.log('ho mangiato un cristallo');
       crystals.splice(index,1);
+      evento = 'cristallo';
     } else {
       return;
     }
