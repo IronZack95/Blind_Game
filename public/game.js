@@ -40,7 +40,7 @@ class GameLogic{
     this.walls = this.createWalls(perlin_map, this.p);
 
     //CREO elemento che può diventare cristallo o mina
-    this.objects = this.createObjects(NUM_MINES*2, this.p, this.walls);
+    this.objects = this.createObjects(NUM_MINES*2, this.p.x, this.p.y,  this.walls);
     this.mines = this.objects.mines;
     this.crystals = this.objects.crystals;
 
@@ -69,14 +69,12 @@ class GameLogic{
   }
 
   //CREAZIONE MURI RANDOM
-  createWalls(map, player){
-    let playerX = player.x;
-    var i = 0;
+  createWalls(map){
     let walls=[];
     console.log(map);
 
     for(var keys1 in map){
-      console.log(map[keys1]);
+      //console.log(map[keys1]);
       for(var keys2 in map[keys1]){
         let v = map[keys1][keys2];
         let row = p.floor(keys1*p.width/10);
@@ -97,44 +95,51 @@ class GameLogic{
     return walls;
   }
 
-  //CREAZIONE DEGLI OGGETTI MINA E CRISTALLO
-  createObjects(numObj, player, walls) {  //passo un numero di oggetti totali che voglio e il player
-    let mines = []; let crystals = [];
+  //CREAZIONE DEGLI OGGETTI MINA E CRISTALLO ***************
 
-    for (var i=0; i < numObj; i++ ){
-     let giocatore = player;
-     let x_rand, y_rand;
-    let temp;
-    //  x_rand = 30 + p.floor(p.random(20, p.width-20));  //valori arbitrari per minimi e massimi
-    //  y_rand = 30 + p.floor(p.random(40, p.height-50));
-
-     x_rand = 10 + p.floor(p.random(0,1) *(p.width-50)/50)*50;
-     y_rand = 10 + p.floor(p.random(0,1) *(p.height-50)/50)*50;
-
-    for (let j = 0; j < walls[j].length; j++) {
-       
-      if((x_rand > walls[j].x && x_rand < walls[j].x + 40) && (y_rand > walls[j].y && y_rand < walls[j].y + 40)){
-        temp = true;  
-        return temp; 
-        }
-      }
+  createObjects(numObj, playerX, playerY, walls) {
+    let mines = []; 
+    let crystals = []; 
+    let x_r, y_r;  
+    let temp = []; 
+    
+    for (var i = 0; i < numObj; i++){
+      //creo delle coordinate ipotetiche
+      x_r = 10 + p.floor(p.random(0,1) *(p.width-50)/50)*50;
+      y_r = 10 + p.floor(p.random(0,1) *(p.height-50)/50)*50;
+      const vero = (element) => element === true;
       
-      if(x_rand == giocatore.x && y_rand == giocatore.y || temp == true){
+      //finchè cadono su muri o giocatore ricalcoliamole
+      while (checkEveryWall(walls, x_r, y_r).some(vero) || checkPlayer(x_r, y_r, playerX, playerY)) {
+        console.log('oops');
+        x_r = 10 + p.floor(p.random(0,1) *(p.width-50)/50)*50;
+        y_r = 10 + p.floor(p.random(0,1) *(p.height-50)/50)*50;
+      } 
 
-          x_rand = 10 + p.floor(p.random(0,1) *(p.width-50)/50)*50;
-          y_rand = 10 + p.floor(p.random(0,1) *(p.height-50)/50)*50;
-
-        }
-        else {
-          if(i < numObj/2 ){
-            mines[i] = new Mine(x_rand, y_rand)
-          } else {
-            crystals[i-(NUM_MINES)] = new Crystal(x_rand, y_rand)}
+      //quando vanno bene piazziamole negli array
+      if(i < numObj/2 ){
+        mines[i] = new Mine(x_r, y_r)
+      } else {
+        crystals[i-(NUM_MINES)] = new Crystal(x_r, y_r)
       }
-   }
-   return {mines, crystals};
-  }
-}
+    } //end of for loop
+
+    return {mines, crystals};
+
+    function checkEveryWall(walls, x_r, y_r){
+      for (var i = 0; i < walls.length; i++){
+        temp[i] = walls[i].checkOverlap(x_r,y_r);
+      }
+      return temp;   //array di true and false
+    }
+
+    function checkPlayer(x_r, y_r, playerX, playerY){
+      return x_r == playerX && y_r == playerY;
+    }
+
+  } //end of createObjects()
+
+} // end of GameLogic
 
 class GameLogicMulti extends GameLogic{
 
@@ -315,6 +320,10 @@ class Wall{
         let Dx = Xn - playerX;
         let Dy = Yn - playerY;
         return (Dx*Dx + Dy*Dy) <= (radius*radius);
+  }
+
+  checkContain(x,y){
+    return ( this.x <= x && x <= (this.x+LATO) && this.y <= y && y <= (this.y+LATO));
   }
 
 }  //end of class Wall
