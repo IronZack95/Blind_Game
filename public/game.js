@@ -267,13 +267,29 @@ class Player{
 
       this.walking = false;  //di default è fermo
       this.dead = false;     //di default il player non è morto
+      
+      /*
+      this.v.x = 0;
+      this.v.y = 0;
+      */ 
     }
 
     update(){
 
       // update direction
-      this.v.x = p.cos(2*p.PI*(p.mouseX+p.width/2)/ p.width);
-      this.v.y = p.sin(2*p.PI*(p.mouseX+p.width/2)/ p.width);
+      
+        /*
+        this.v.x = p.cos(2 * p.PI * (p.winMouseX + p.width / 2) / p.width - p.PI / 2);
+        this.v.y = p.sin(2 * p.PI * (p.winMouseX + p.width / 2) / p.width - p.PI / 2);  
+        */
+
+
+        this.v.x = p.cos(2 * p.PI * (p.winMouseX / 2) / p.width + p.PI / 2);
+        this.v.y = p.sin(2 * p.PI * (p.winMouseX / 2) / p.width + p.PI / 2);  
+        
+        
+      //console.log(p.mouseX);
+  
       //this.v.x = ((mouseX-width/2)/width);
       //this.v.y = ((mouseY-height/2)/height);
       //console.log("x: "+this.v.x+" y: "+this.v.y);
