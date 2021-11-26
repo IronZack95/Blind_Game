@@ -1,25 +1,20 @@
 
- const WIDTH = 800;             //...del canvas
- const HEIGHT = 600;            //...del canvas
- const LATO = 40;               //lato dei quadrati che formano i muri random 
- const RAGGIO_P = 13;           //raggio del giocatore
- const RAGGIO_C = 15;           //raggio cristalli
- const RAGGIO_M = 10;           //raggio mine
+ const WIDTH = 800;         //...del canvas
+ const HEIGHT = 600;        //...del canvas
+ const LATO = 40;           //lato dei quadrati che formano i muri random 
+ const RAGGIO_P = 12;       //raggio del giocatore
+ const RAGGIO_C = 8;        //raggio cristalli
+ const RAGGIO_M = 5;        //raggio mine
 
  let playerScore = 0;
- let evento = 'neutro';
- const CRYSTAL = 100;           //punteggio per un cristallo
- const EXPLOSION = 50;          //punti in meno per un'esplosione
+ let evento = 'neutro';      //identificatore eventi gioco che modificano punteggio
+ const CRYSTAL = 100;        //punteggio per un cristallo
+ const EXPLOSION = 200;      //punti in meno per un'esplosione
+
+
  
  let sketch = function(p) {
-   /*
-   p.preload = function(){
-     mine_S = p.loadSound('sounds/mine.mp3');
-     crystal_S = p.loadSound('sounds/crystal.mp3')
-     //other sounds....
-     console.log('sounds loaded')
-   }
-   */
+   
 /**********************************************************/
   p.setup = function() {
     if(type == 'SinglePlayer'){g = new GameLogic();}
@@ -38,14 +33,16 @@ class GameLogic{
 
   constructor(){
     let ctx =  p.createCanvas(WIDTH, HEIGHT);
-    this.p = new Player(p.width/2,580);
 
     let perlin_map = new Perlin_Map(ctx);
     this.walls = this.createWalls(perlin_map, this.p);
 
-    this.objects = this.createObjects(NUM_MINES*2, this.p.x, this.p.y,  this.walls);
+    this.objects = this.createObjects(NUM_MINES*2, this.walls);
     this.mines = this.objects.mines;
     this.crystals = this.objects.crystals;
+
+    //speravo che a crearlo per ultimo "stesse sopra" e invece no
+    this.p = new Player(p.width/2,580);
 
     //console.log('creati questi random walls: ', this.randomWalls);
     console.log('creati questi oggetti: mine: ', this.mines, 'cristalli: ',this.crystals, 'walls: ',this.walls);
@@ -110,7 +107,7 @@ class GameLogic{
 
   //CREAZIONE DEGLI OGGETTI MINA E CRISTALLO ***************
 
-  createObjects(numObj, playerX, playerY, walls) {
+  createObjects(numObj, walls) {
     let mines = []; 
     let crystals = []; 
     let x_r, y_r;  
@@ -155,8 +152,8 @@ class GameLogic{
 
   updateScore(){
     switch(evento){
-      case 'esplosione': playerScore = playerScore - EXPLOSION;
-      case 'cristallo':  playerScore = playerScore + CRYSTAL;
+      case 'esplosione': playerScore -= EXPLOSION;
+      case 'cristallo':  playerScore += CRYSTAL;
       case 'none':       default: ;
     }
 
@@ -304,7 +301,7 @@ class Player{
 
     drawPlayer(){
       p.fill(p.color(48, 208, 0));
-      p.circle(this.x, this.y, 2*RAGGIO_P);
+      p.circle(this.x, this.y, this.diameter);
       p.line(this.x, this.y, this.x+this.diameter/2*this.v.x, this.y+this.diameter/2*this.v.y);
     }
 
@@ -356,9 +353,12 @@ class Wall{
 class Mine{
   constructor(x,y){
     //setInterval(function(){mine_S.play();},1000);
+    //this.bip = mine_sound;
     this.x = x;
     this.y = y;
-    this.exploded = false; //di default la mina non è stata esplosa
+    this.diameter = 2*RAGGIO_M;
+    this.exploded = false;          //di default la mina non è stata esplosa
+    this.color = p.color(204,0,0);  //di default è rossa (in realtà nera)
   }
 
   updateMine(){
@@ -366,18 +366,20 @@ class Mine{
   }
 
   drawMine(){
-    p.fill(p.color(204,0,0));
-    p.circle(this.x, this.y, RAGGIO_M);
+    p.fill(this.color);
+    p.circle(this.x, this.y, this.diameter);
   }
 
-  checkExplosion(playerX, playerY, mines, mine,index){
+  checkExplosion(playerX, playerY, mines, mine, index){
     //first it checks the collision between the two circles
     var dx = (this.x + RAGGIO_P) - (playerX + RAGGIO_M);
     var dy = (this.y + RAGGIO_P) - (playerY + RAGGIO_M);
     var distance = Math.sqrt(dx * dx + dy * dy);
     if (distance < RAGGIO_M + RAGGIO_P){
       console.log('sono esploso');
-      mines.splice(index,1);
+      mines[index].exploded = true;
+      mines[index].color = p.color(128,128,128);
+      //mines.splice(index,1);
       evento = 'esplosione';
       //mine.changeMineColor();     TODO
     } else {
@@ -396,8 +398,9 @@ class Crystal{
     //setInterval(function(){crystal_S.play();},1000);
     this.x = x;
     this.y = y;
-    //setto il file mp3 per il cristallo
+    this.diameter = 2*RAGGIO_C;
     this.found = false;    //di default il cristallo non è stato trovato
+    this.color = p.color(153, 255, 255);
   }
 
   updateCrystal(){
@@ -405,8 +408,8 @@ class Crystal{
   }
 
   drawCrystal(){
-    p.fill(p.color(153, 255, 255));
-    p.circle(this.x, this.y, RAGGIO_C);
+    p.fill(this.color);
+    p.circle(this.x, this.y, this.diameter);
   }
 
   checkEatCrystal(playerX, playerY, crystals, index){
@@ -416,7 +419,9 @@ class Crystal{
     var distance = Math.sqrt(dx * dx + dy * dy);
     if (distance < RAGGIO_C + RAGGIO_P){
       console.log('ho mangiato un cristallo');
-      crystals.splice(index,1);
+      crystals[index].found = true;
+      crystals[index].color = p.color(0);
+      //crystals.splice(index,1);
       evento = 'cristallo';
     } else {
       return;
