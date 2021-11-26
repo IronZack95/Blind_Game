@@ -3,7 +3,7 @@
 //in px, distanze alle quali inizio a sentire i vari oggetti
 const MINE_DISTANCE = 200;   
 const CRYSTAL_DISTANCE = 100;
-const NUM_MINES = 20;
+
 
 let mine_S, crystal_S; //sounds....
 

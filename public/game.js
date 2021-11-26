@@ -6,15 +6,14 @@
  const RAGGIO_C = 8;        //raggio cristalli
  const RAGGIO_M = 5;        //raggio mine
 
- let playerScore = 0;
- let evento = 'neutro';      //identificatore eventi gioco che modificano punteggio
- const CRYSTAL = 100;        //punteggio per un cristallo
- const EXPLOSION = 200;      //punti in meno per un'esplosione
+ const NUM_MINE = 15;
+ const NUM_CRISTALLI = 20;
 
+ const CRYSTAL = 100;            //punteggio per un cristallo
+ const EXPLOSION = 200;          //punti in meno per un'esplosione
 
- 
  let sketch = function(p) {
-   
+
 /**********************************************************/
   p.setup = function() {
     if(type == 'SinglePlayer'){g = new GameLogic();}
@@ -32,19 +31,20 @@
 class GameLogic{
 
   constructor(){
+   
+    this.playerScore = 0;
+
     let ctx =  p.createCanvas(WIDTH, HEIGHT);
 
     let perlin_map = new Perlin_Map(ctx);
     this.walls = this.createWalls(perlin_map, this.p);
 
-    this.objects = this.createObjects(NUM_MINES*2, this.walls);
+    this.objects = this.createObjects(NUM_MINE + NUM_CRISTALLI, this.walls);
     this.mines = this.objects.mines;
     this.crystals = this.objects.crystals;
 
-    //speravo che a crearlo per ultimo "stesse sopra" e invece no
     this.p = new Player(p.width/2,580);
 
-    //console.log('creati questi random walls: ', this.randomWalls);
     console.log('creati questi oggetti: mine: ', this.mines, 'cristalli: ',this.crystals, 'walls: ',this.walls);
 
     //this.s = new SoundLogic(this.p, this.mines, this.crystals);
@@ -52,55 +52,57 @@ class GameLogic{
 
   update(){
   
-    this.p.update();
-    //for(var i = 0; i < this.walls.length; i++) { this.walls[i].checkCollisions(this.p.x, this.p.y); }
-
     for(var i = 0; i < this.walls.length; i++) { this.walls[i].updateWall(); }
     for(var i = 0; i < this.mines.length; i++) { this.mines[i].updateMine(); }
     for(var i = 0; i < this.crystals.length; i++) { this.crystals[i].updateCrystal(); }
+    this.p.update();
+
     //check collisioni con muro
     for(var i = 0; i < this.walls.length; i++) { 
       this.walls[i].checkCollisions(this.p.x, this.p.y); }
-    //check mangiato cristallo
+
+    //check mangiato cristallo + modifica punteggio
     for(var i = 0; i < this.crystals.length; i++) {
-      this.crystals[i].checkEatCrystal(this.p.x, this.p.y, this.crystals, i); }
-    //check esploso su mina
+      if( this.crystals[i].checkEatCrystal(this.p.x, this.p.y, this.crystals, i )){
+        this.playerScore += CRYSTAL;
+      }; }
+
+    //check esploso su mina + modifica punteggio
     for(var i = 0; i < this.mines.length; i++) {
-      this.mines[i].checkExplosion(this.p.x, this.p.y, this.mines, this.mines[i], i); }
-
-    this.updateScore();
+      if( this.mines[i].checkExplosion(this.p.x, this.p.y, this.mines, i )) {
+        this.playerScore -= EXPLOSION;
+      }; }
     
-    // TODO: gestion punteggio ********
-
+      this.updateScore();
+    
     //update suoni
     //this.s.update(this.p, this.mines, this.crystals);
 
-    //console.log("x: "+mouseX+" y: "+mouseY);
   }
 
   //CREAZIONE MURI RANDOM
   createWalls(map){
     let walls=[];
-    console.log(map);
-
+    //console.log(map);
     for(var keys1 in map){
       //console.log(map[keys1]);
-      for(var keys2 in map[keys1]){
-        let v = map[keys1][keys2];
-        let row = p.floor(keys1*p.width/10);
-        let col = p.floor(keys2*p.width /10);
-        if(v == true && row<p.height && col <= p.width){
-          //console.log('row: '+row+' column: '+col+' value: ' +v);
-          let w = new Wall(col,row);
-          walls.push(w);
-        }
-      }
+         for(var keys2 in map[keys1]){
+           let v = map[keys1][keys2];
+           let row = p.floor(keys1*p.width/10);
+           let col = p.floor(keys2*p.width /10);
+           if(v == true && row<p.height && col <= p.width){
+             //console.log('row: '+row+' column: '+col+' value: ' +v);
+             let w = new Wall(col,row);
+             walls.push(w);
+           }
+         }
     }
-    //elimino alcune file di muri
-    walls = walls.filter(function(el){return el.y != 560;});
+    //elimino alcune file di muri (volendo si può fare nel for qua sopra)
+    walls = walls.filter(function(el){return el.y != (HEIGHT - LATO);});
     walls = walls.filter(function(el){return el.y != 0;});
     walls = walls.filter(function(el){return el.x != 0;});
-    walls = walls.filter(function(el){return el.x != 760;});
+    walls = walls.filter(function(el){return el.x != (WIDTH - LATO);});
+    
     //ritorno oggetto contenente tutti i muri istanziati
     return walls;
   }
@@ -111,27 +113,27 @@ class GameLogic{
     let mines = []; 
     let crystals = []; 
     let x_r, y_r;  
-    let temp = []; 
+    let temp = [];
     
     for (var i = 0; i < numObj; i++){
       //creo delle coordinate ipotetiche
       //min + Math.floor(Math.random() * max / step) * step;
-      x_r = 30 + p.floor(p.random(0,1) *(p.width-50)/ 30)*30;
-      y_r = 30 + p.floor(p.random(0,1) *(p.height-50)/ 30)*30;
+      x_r = LATO + Math.floor(Math.random() *(p.width-50)/ 20)*20;
+      y_r = LATO + Math.floor(Math.random() *(p.height-70)/ 20)*20;
       const vero = (element) => element === true;
       
       //finchè cadono su muri o giocatore ricalcoliamole
       while (checkEveryWall(walls, x_r, y_r).some(vero)) {
-        console.log('oops');
-        x_r = 30 + p.floor(p.random(0,1) *(p.width-50)/ 30)*30;
-        y_r = 30 + p.floor(p.random(0,1) *(p.height-50)/ 30)*30;
-      } 
-
+        //console.log('oops');
+        x_r = LATO + Math.floor(Math.random() *(p.width-50)/ 20)*20;
+        y_r = LATO + Math.floor(Math.random() *(p.height-70)/ 20)*20;
+      }
+      
       //quando vanno bene piazziamole negli array
-      if(i < numObj/2 ){
+      if(i < NUM_MINE ){
         mines[i] = new Mine(x_r, y_r)
       } else {
-        crystals[i-(NUM_MINES)] = new Crystal(x_r, y_r)
+        crystals[i-(NUM_MINE)] = new Crystal(x_r, y_r)
       }
     } //end of for loop
 
@@ -151,14 +153,7 @@ class GameLogic{
   } //end of createObjects()
 
   updateScore(){
-    switch(evento){
-      case 'esplosione': playerScore -= EXPLOSION;
-      case 'cristallo':  playerScore += CRYSTAL;
-      case 'none':       default: ;
-    }
-
-    evento = 'none';  //reset
-    document.getElementById('testoCounter').innerHTML = playerScore;
+   document.getElementById('testoCounter').innerHTML = this.playerScore;
   }
 
 } // end of GameLogic
@@ -268,20 +263,16 @@ class Player{
       this.walking = false;  //di default è fermo
       this.dead = false;     //di default il player non è morto
       
-      /*
-      this.v.x = 0;
-      this.v.y = 0;
-      */ 
-    }
+    }  
 
     update(){
 
       // update direction
       
-        /*
-        this.v.x = p.cos(2 * p.PI * (p.winMouseX + p.width / 2) / p.width - p.PI / 2);
-        this.v.y = p.sin(2 * p.PI * (p.winMouseX + p.width / 2) / p.width - p.PI / 2);  
-        */
+        
+        //this.v.x = p.cos(2 * p.PI * (p.winMouseX + p.width / 2) / p.width - p.PI / 2);
+        //this.v.y = p.sin(2 * p.PI * (p.winMouseX + p.width / 2) / p.width - p.PI / 2);  
+        
 
 
         this.v.x = p.cos(2 * p.PI * (p.winMouseX / 2) / p.width + p.PI / 2);
@@ -323,9 +314,6 @@ class Player{
 
 }
 
-class FIXED_Wall{
-    //TODO
-}
 
 class Wall{
   constructor(x,y){
@@ -349,7 +337,6 @@ class Wall{
   }
 
   checkOverlap(playerX, playerY){
-    let radius = RAGGIO_P;  //raggio del giocatore, TODO creare const
 
         //trovo il punto più vicino tra il muro quadrato e il centro del cerchio
         let Xn = Math.max(this.x, Math.min(playerX, this.x + LATO));
@@ -357,7 +344,7 @@ class Wall{
         //trovo distanza tra punto più vicino e centro del cerchio
         let Dx = Xn - playerX;
         let Dy = Yn - playerY;
-        return (Dx*Dx + Dy*Dy) <= (radius*radius);
+        return (Dx*Dx + Dy*Dy) <= (RAGGIO_P**2);
   }
 
   checkContain(x,y){  //al momento non serve a niente questa, magari la cancelliamo
@@ -366,7 +353,7 @@ class Wall{
 
 }  //end of class Wall
 
-class Mine{
+ class Mine{
   constructor(x,y){
     //setInterval(function(){mine_S.play();},1000);
     //this.bip = mine_sound;
@@ -386,27 +373,23 @@ class Mine{
     p.circle(this.x, this.y, this.diameter);
   }
 
-  checkExplosion(playerX, playerY, mines, mine, index){
+  checkExplosion(playerX, playerY, mines, index){
     //first it checks the collision between the two circles
     var dx = (this.x + RAGGIO_P) - (playerX + RAGGIO_M);
     var dy = (this.y + RAGGIO_P) - (playerY + RAGGIO_M);
     var distance = Math.sqrt(dx * dx + dy * dy);
-    if (distance < RAGGIO_M + RAGGIO_P){
+    if (distance < RAGGIO_M + RAGGIO_P && this.exploded === false){
+
       console.log('sono esploso');
-      mines[index].exploded = true;
+      mines[index].exploded = true;   //funzionale alla singola mina
       mines[index].color = p.color(128,128,128);
       //mines.splice(index,1);
-      evento = 'esplosione';
-      //mine.changeMineColor();     TODO
+      return true;
     } else {
-      return;
+      return false;
     }
   }
 
-  changeMineColor(){
-    //TODO
-    
-  }
 }
 
 class Crystal{
@@ -415,7 +398,7 @@ class Crystal{
     this.x = x;
     this.y = y;
     this.diameter = 2*RAGGIO_C;
-    this.found = false;    //di default il cristallo non è stato trovato
+    this.eaten = false;    //di default il cristallo non è stato trovato
     this.color = p.color(153, 255, 255);
   }
 
@@ -433,16 +416,17 @@ class Crystal{
     var dx = (this.x + RAGGIO_P) - (playerX + RAGGIO_C);
     var dy = (this.y + RAGGIO_P) - (playerY + RAGGIO_C);
     var distance = Math.sqrt(dx * dx + dy * dy);
-    if (distance < RAGGIO_C + RAGGIO_P){
+    if (distance < RAGGIO_C + RAGGIO_P && this.eaten === false){
+
       console.log('ho mangiato un cristallo');
-      crystals[index].found = true;
+      crystals[index].eaten = true;   //funzionale al singolo cristallo
       crystals[index].color = p.color(0);
-      //crystals.splice(index,1);
-      evento = 'cristallo';
+      return true;
+  
     } else {
-      return;
+      return false;
     }
   }
-}
+} 
 
 }
