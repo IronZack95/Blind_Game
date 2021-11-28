@@ -15,6 +15,10 @@
 
  let sketch = function(p) {
   
+  //for player movements:
+  let i=0;
+  let walk = false;
+  
   /* preload dei suoni *************************************/
   let mineSound1, mineSound2;
     p.preload = function(){
@@ -50,7 +54,7 @@ class GameLogic{
     this.objects = this.createObjects(NUM_MINE + NUM_CRISTALLI, this.walls);
     this.mines = this.objects.mines;
     this.crystals = this.objects.crystals;
-    this.p = new Player(p.width/2,580);
+    this.p = new Players(p.width/2,580);
 
     console.log('creati questi oggetti: mine: ', this.mines, 'cristalli: ',this.crystals, 'walls: ',this.walls);
     
@@ -60,7 +64,7 @@ class GameLogic{
   }
 
   update(){
-  
+    
     for(var i = 0; i < this.walls.length; i++) { this.walls[i].updateWall(); }
     for(var i = 0; i < this.mines.length; i++) { this.mines[i].updateMine(); }
     for(var i = 0; i < this.crystals.length; i++) { this.crystals[i].updateCrystal(); }
@@ -68,7 +72,7 @@ class GameLogic{
 
     //check collisioni con muro
     for(var i = 0; i < this.walls.length; i++) { 
-      this.walls[i].checkCollisions(this.p.x, this.p.y); }
+      this.walls[i].checkCollisionsPlayer(this.p.x, this.p.y); }
 
     //check mangiato cristallo + modifica punteggio
     for(var i = 0; i < this.crystals.length; i++) {
@@ -131,18 +135,16 @@ class GameLogic{
       //min + Math.floor(Math.random() * max / step) * step;
       x_r = LATO + Math.floor(Math.random() *(p.width - LATO)/ 50)* 50;
       y_r = LATO + Math.floor(Math.random() *(p.height - LATO*1.5)/ 50)* 50;
-      //const vero = (element) => element === true;
       
       //finchè cadono su muri o giocatore ricalcoliamole
-      while (checkEveryWall(walls, x_r, y_r).some(e => e===true) || 
-             approvati.some(e => (e.x==x_r) && (e.y==y_r))) {
+      while (checkEveryWall(walls, x_r, y_r).some(e => e === true) || 
+             approvati.some(e => (e.x == x_r) && (e.y == y_r))) {
         console.log('oops');
         x_r = LATO + Math.floor(Math.random() *(p.width - LATO)/ 50)* 50;
         y_r = LATO + Math.floor(Math.random() *(p.height - LATO*1.5)/ 50)* 50;
       }
 
-      approvati[i] = {x:x_r, y:y_r};
-      //console.log(approvati)
+      approvati[i] = {x: x_r, y: y_r};
       
       //quando vanno bene piazziamole negli array
       if(i < NUM_MINE ){
@@ -156,13 +158,9 @@ class GameLogic{
 
     function checkEveryWall(walls, x_r, y_r){
       for (var i = 0; i < walls.length; i++){
-        temp[i] = walls[i].checkOverlap(x_r,y_r);
+        temp[i] = walls[i].checkOverlapPlayer(x_r,y_r);
       }
       return temp;   //array di true and false
-    }
-
-    function checkPlayer(x_r, y_r, playerX, playerY){
-      return x_r == playerX && y_r == playerY;
     }
 
   } //end of createObjects()
@@ -258,7 +256,7 @@ class Player{
       this.y = y_start;
 
       this.walking = false;  //di default è fermo
-      this.dead = false;     //di default il player non è morto
+      this.dead = false;     //TODO funzione per ucciderlo
       
     }  
 
@@ -279,9 +277,7 @@ class Player{
       //console.log("x: "+this.v.x+" y: "+this.v.y);
 
       // update position
-      // (store first the last position)
-      this.old_x = this.x;  this.old_y = this.y;
-      
+
       if (p.keyIsDown(p.LEFT_ARROW) && this.x > 0 + this.diameter / 2){
         this.x -= 1;          
       }
@@ -324,12 +320,12 @@ class Wall{
   }
 
   //funzione che per ogni singolo muro controlla se il player ci è sbattuto addosso
-  checkCollisions(playerX, playerY) {
+  checkCollisionsPlayer(playerX, playerY) {
     //let playerX = giocatoreX; let playerY = giocatoreY; let player = giocatore;
-    if (this.checkOverlap(playerX, playerY)){console.log('OUCH!!')}else{return};
+    if (this.checkOverlapPlayer(playerX, playerY)){console.log('OUCH!!')}else{return};
   }
 
-  checkOverlap(playerX, playerY){
+  checkOverlapPlayer(playerX, playerY){
 
         //trovo il punto più vicino tra il muro quadrato e il centro del cerchio
         let Xn = Math.max(this.x, Math.min(playerX, this.x + LATO));
@@ -420,4 +416,101 @@ class Crystal{
   }
 } 
 
+class Players{
+  constructor(x,y){
+    this.x = x;
+    this.y = y;
+    this.diameter = 2*RAGGIO_P;
+    this.dir = 0;  //"dir" is used for eyes movements
+    this.box_radius = RAGGIO_P; //radius used to check for collisions
+    this.dead = false;  //TODO: funzione per ucciderlo
+  }
+
+  update(){
+    if(i > p.frameRate()){ i = 0; }
+    else{ i++; }
+
+    walk = false;
+  
+    let dir = ( 2 * p.PI * p.winMouseX / p.windowWidth);  //tra 0 e 1
+    if(dir <= 2 * p.PI && dir > 0){ this.dir = dir; }
+  
+    if (p.keyIsDown(p.LEFT_ARROW) && this.x > 0 + this.diameter / 2) {
+      this.x -= 1;
+      walk = true;
+    }
+
+    if (p.keyIsDown(p.RIGHT_ARROW) && this.x < WIDTH - this.diameter / 2) {
+      this.x += 1;
+      walk = true;
+    }
+  
+    if (p.keyIsDown(p.UP_ARROW) && this.y > 0 + this.diameter /2 ) {
+      this.y -= 1;
+      walk = true;
+    }
+
+    if (p.keyIsDown(p.DOWN_ARROW)  && this.y < HEIGHT - this.diameter / 2) {
+      this.y += 1;
+      walk = true;
+    }
+
+    this.draw();
+  }
+  
+  draw(){
+    //fill(255,255,255)
+    this.w = 16;  
+    this.radius = 10;  //raggio angoli rect
+    this.xBody = this.x-this.w/2;
+    this.yBody = this.y-this.w/2;
+    this.xHead = this.x;
+    this.yHead = this.y-this.w/2;
+
+    p.fill(0,77,255);
+    p.stroke(0,77,255);
+    p.rect(this.xBody, this.yBody, this.w, this.w-this.w/7,this.radius);
+    // testa
+    p.circle(this.xHead, this.yHead,this.w);
+    
+    // gambe partenza // walk cycle
+    if( (i >= 0 && i< p.frameRate()/4) || (i > 2*p.frameRate()/4 && i< 3*p.frameRate()/4) || (walk == false)){
+      //console.log('0')
+      p.rect(this.xBody, this.yBody+this.w/2, this.w/4, this.w/1.5,this.radius);
+      p.rect(this.xBody+this.w-this.w/4, this.yBody+this.w/2, this.w/4, this.w/1.5,this.radius);
+     } else if(i >= p.frameRate()/4 && i<= 2*p.frameRate()/4){
+      //console.log('-1')
+      p.rect(this.xBody, this.yBody+this.w/2, this.w/4, this.w/1.5-this.w/8,this.radius);
+      p.rect(this.xBody+this.w-this.w/4, this.yBody+this.w/2, this.w/4, this.w/1.5,this.radius);
+     } else if(i >= 3*p.frameRate()/4){
+      //console.log('1')
+      p.rect(this.xBody, this.yBody+this.w/2, this.w/4, this.w/1.5,this.radius);
+      p.rect(this.xBody+this.w-this.w/4, this.yBody+this.w/2, this.w/4, this.w/1.5-this.w/8,this.radius);
+    }
+    // walk cycle
+    
+    //fill(255,255,255);
+ 
+    //circle(this.xHead-this.w/6, this.yHead-this.w/5,this.w/3);
+    //circle(this.xHead+this.w/6, this.yHead-this.w/5,this.w/3);
+    //console.log(this.dir)
+    
+    // occhi
+    p.stroke(0);
+    let x_sx = p.cos(this.dir+p.PI/6);
+    let y_sx = p.sin(this.dir+p.PI/6);
+    let x_dx = p.cos(this.dir-p.PI/6);
+    let y_dx = p.sin(this.dir-p.PI/6);
+    if(y_sx <= 0){p.fill(155,155,155);}
+    else{p.fill(255,255,255);}
+    //console.log(x_sx, y_sx)
+    p.circle(this.xHead+x_sx*this.w/2, this.yHead+(1/2)*(y_sx*this.w/2),this.w/3);
+    if(y_dx <= 0){p.fill(155,155,155);}
+    else{p.fill(255,255,255);}
+    p.circle(this.xHead+x_dx*this.w/2, this.yHead+(1/2)*(y_dx*this.w/2),this.w/3);
+  }
+
+  
 }
+
+} //fine del mondo
