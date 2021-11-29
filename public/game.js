@@ -45,7 +45,7 @@
 /**********************************************************/
 
 class GameLogic{
-  constructor(width, height){
+  constructor(){
     this.playerScore = 0;  //punteggio default
     this.walls = [];
     this.mines = [];
@@ -60,11 +60,7 @@ class GameLogic{
     for(var i = 0; i < this.mines.length; i++) { this.mines[i].updateMine(); }
     for(var i = 0; i < this.crystals.length; i++) { this.crystals[i].updateCrystal(); }
     for(var i = 0; i < this.enemy.length; i++) { this.enemy[i].update(); }
-    this.p.update();  //per ultimo così viene disegnato sopra a tutto
-
-    //check collisioni con muro
-    for(var i = 0; i < this.walls.length; i++) {
-      this.walls[i].checkCollisionsPlayer(this.p.x, this.p.y); }
+    this.p.update(this.walls);  //per ultimo così viene disegnato sopra a tutto
 
     //check mangiato cristallo + modifica punteggio
     for(var i = 0; i < this.crystals.length; i++) {
@@ -295,7 +291,11 @@ class Wall{
   //funzione che per ogni singolo muro controlla se il player ci è sbattuto addosso
   checkCollisionsPlayer(playerX, playerY) {
     //let playerX = giocatoreX; let playerY = giocatoreY; let player = giocatore;
-    if (this.checkOverlapPlayer(playerX, playerY)){console.log('OUCH!!')}else{return};
+    if (this.checkOverlapPlayer(playerX, playerY)){
+      console.log('OUCH!!');
+      return true;
+    } else {
+      return false;};
   }
 
   checkOverlapPlayer(playerX, playerY){
@@ -315,7 +315,7 @@ class Wall{
 
 }  //end of class Wall
 
- class Mine{
+class Mine{
   constructor(x,y){
     //setInterval(function(){mine_S.play();},1000);
     //this.bip = mine_sound;
@@ -402,7 +402,7 @@ class Player{
     this.i = 0;
   }
 
-  update(){
+  update(walls){
     if(this.i > p.frameRate()){ this.i  = 0; }
     else{ this.i ++; }
 
@@ -411,26 +411,37 @@ class Player{
     let dir = ( 2 * p.PI * p.winMouseX / p.windowWidth);  //tra 0 e 1
     if(dir <= 2 * p.PI && dir > 0){ this.dir = dir; }
 
-    if (p.keyIsDown(p.LEFT_ARROW) && this.x > 0 + this.diameter / 2) {
-      this.x -= 1;
-      this.walk = true;
+    if (p.keyIsDown(p.LEFT_ARROW) && this.x > 0 + this.diameter / 2 ) {
+      let temp = this.x - 1;
+      if (walls.every(element => element.checkCollisionsPlayer(temp, this.y) === false)){
+        this.walk = true;
+        this.x = temp;
+      }
     }
 
     if (p.keyIsDown(p.RIGHT_ARROW) && this.x < WIDTH - this.diameter / 2) {
-      this.x += 1;
-      this.walk = true;
+      let temp = this.x + 1;
+      if (walls.every(element => element.checkCollisionsPlayer(temp, this.y) === false)){
+        this.walk = true;
+        this.x = temp;
+      }
     }
 
-    if (p.keyIsDown(p.UP_ARROW) && this.y > 0 + this.diameter /2 ) {
-      this.y -= 1;
-      this.walk = true;
+    if (p.keyIsDown(p.UP_ARROW) && this.y > 0 + this.diameter / 2 ) {
+      let temp = this.y - 1;
+      if (walls.every(element => element.checkCollisionsPlayer(this.x, temp) === false)){
+        this.walk = true;
+        this.y = temp;
+      }
     }
 
-    if (p.keyIsDown(p.DOWN_ARROW)  && this.y < HEIGHT - this.diameter / 2) {
-      this.y += 1;
-      this.walk = true;
+    if (p.keyIsDown(p.DOWN_ARROW)  && this.y < HEIGHT - this.diameter / 2 ) {
+      let temp = this.y + 1;
+      if (walls.every(element => element.checkCollisionsPlayer(this.x, temp) === false)){
+        this.walk = true;
+        this.y = temp;
+      }
     }
-
     this.draw();
   }
 
