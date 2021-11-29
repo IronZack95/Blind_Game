@@ -1,24 +1,19 @@
-const GRID_SIZE = 10;
-const RESOLUTION = 2;
-const COLOR_SCALE = 1000000;
-const NUM_MINES = 20;
-const WIDTH = 800;   //del canvas
-const HEIGHT = 600;  //del canvas
 
 
 class Perlin_Map{
 
-  constructor() {
-   let num_pixels = GRID_SIZE / RESOLUTION;    // 5
+  constructor(grid,res,threshold) {
+   const COLOR_SCALE = 1000000;
+   let num_pixels = grid / res;    // 5
    let perlin = new Perlin();
    //let ctx = p.drawingContext;
    let vector = [];
 
-   for (let y = 0; y < GRID_SIZE; y += num_pixels / GRID_SIZE){    //y fino a 10 a step di 0.5
+   for (let y = 0; y < grid; y += num_pixels / grid){    //y fino a 10 a step di 0.5
      vector[y]=[];
-     for (let x = 0; x < GRID_SIZE; x += num_pixels/ GRID_SIZE){  //x fino a 10 a step di 0.5
+     for (let x = 0; x < grid; x += num_pixels/ grid){  //x fino a 10 a step di 0.5
         let v = parseInt(perlin.get(x, y) * COLOR_SCALE);
-       if(v>100000){
+       if(v>threshold){
          vector[y][x]=true;
        }else{
           vector[y][x]=false;

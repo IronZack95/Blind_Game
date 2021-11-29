@@ -94,7 +94,7 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
   }
 }
 
-let type;
+
 
 class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
   // variabili private
@@ -104,7 +104,6 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
   #score = 0;
   #canvasWidth = 400;
   #canvasHeight = 400;
-
 
   constructor() {
     //// prova Prova prova
@@ -137,6 +136,7 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
 
 }
 
+let type;
 class Canvas{
   constructor(canvasContainer,t,schermo){
     // Creo Canvas
@@ -199,9 +199,11 @@ class MultiPlayerLobby extends Pagina{
 
     socket.on("startMultiplayer!", (state) => {
       //Mi aspetto di ritorno il game state appena generato da Server
+      // Allego al game state il mio soket ID
+      state['myid'] = socket.id;
       console.log("GAME STATE: ",state);
       document.getElementById("text").innerText = "Inizio Partita!"
-      setTimeout(function(){pagina = new MultiPlayer();},2000)
+      setTimeout(function(){pagina = new MultiPlayer(state);},2000)
     });
 
     quickGame.onclick = function(){
@@ -241,9 +243,9 @@ class MultiPlayerLobby extends Pagina{
   }
 }
 
-
+let gameState;
 class MultiPlayer extends Pagina{
-  constructor() {
+  constructor(state) {
     super();
 
       // Creo Titolo E Sottotitolo
@@ -257,6 +259,22 @@ class MultiPlayer extends Pagina{
       h.innerHTML = "Multi Player"
       super.getSchermo().appendChild(h);
 
+      //this.canvas = new Canvas();
+      gameState = state;
+      let canvasContainer = document.createElement('div');
+      let cnv = new Canvas(canvasContainer,'MultiPlayer',super.getSchermo())
+
+      // Creo counter
+      let c = document.createElement("div");
+      let n = document.createElement("h3");
+      c.id = "counter";
+      n.id = "testoCounter";
+      n.innerHTML = "0";
+      super.getSchermo().appendChild(c);
+      c.appendChild(n)
+      }
+
+
 /*
       // Creo Canvas
       let canvasContainer = document.createElement('div');
@@ -269,5 +287,3 @@ class MultiPlayer extends Pagina{
 
       */
   }
-
-}

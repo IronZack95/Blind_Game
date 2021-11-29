@@ -76,8 +76,8 @@ server.io.on("connection", (socket) => {
     console.log("Inizio Multiplayer: "+ wantedroom+ " "+ client)
     // GENERO CAMPO E GAME STATE
     game.rooms[index].createMatch();
-    console.log("Genero campo: ",game.rooms[index].getGameState().wallsPos);
-    server.io.in(game.rooms[index].getClient()[1]).in(game.rooms[index].getClient()[0]).emit("startMultiplayer!",game.rooms[index].getGameState().wallsPos);
+    console.log("Genero campo: ",game.rooms[index].getGameState());
+    server.io.in(game.rooms[index].getClient()[1]).in(game.rooms[index].getClient()[0]).emit("startMultiplayer!",game.rooms[index].getGameState());
   });
 
   // scambio messaggi privati
