@@ -1,14 +1,10 @@
-const GRID_SIZE = 10;
-const RESOLUTION = 2;
-const COLOR_SCALE = 1000000;
-const NUM_MINES = 20;
 
 
 class Perlin_Map{
 
   constructor(cnvs) {
-   let pixel_size_w = cnvs.width / RESOLUTION;    //400
-   let pixel_size_h = cnvs.height / RESOLUTION;    //300
+   //let pixel_size_w = cnvs.width / RESOLUTION;    //400
+   //let pixel_size_h = cnvs.height / RESOLUTION;    //300
    let num_pixels = GRID_SIZE / RESOLUTION;    // 5
    let perlin = new Perlin();
    //let ctx = p.drawingContext;
