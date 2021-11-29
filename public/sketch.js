@@ -1,7 +1,7 @@
 
 // Inizio del programma
-pagina = new Lobby();
-//multilobby = new MultiPlayerLobby();
+//pagina = new Lobby();
+pagina = new MultiPlayerLobby();
 //single = new SinglePlayer();
 // eventi
 

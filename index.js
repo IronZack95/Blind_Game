@@ -80,7 +80,28 @@ server.io.on("connection", (socket) => {
     server.io.in(game.rooms[index].getClient()[1]).in(game.rooms[index].getClient()[0]).emit("startMultiplayer!",game.rooms[index].getGameState());
   });
 
-  // scambio messaggi privati
+  // GAME  dati di posizione senza ACKNOWLEDGMENT
+  socket.on("sendPosition", (data) => {
+    console.log(data);
+    let msg = {sender: socket.id, x: data.x, y: data.y};
+    //inoltro il messaggio all'avversario
+    data.address.forEach((item, i) => {
+      server.io.in(item).volatile.emit("recivePosition",msg);
+    });
+  });
+
+    // GAME  dati di direzione senza ACKNOWLEDGMENT
+  socket.on("sendDirection", (data) => {
+    console.log(data);
+    let msg = {sender: socket.id, dir: data.dir};
+    //inoltro il messaggio all'avversario
+    data.address.forEach((item, i) => {
+      server.io.in(item).volatile.emit("reciveDirection",msg);
+    });
+
+  });
+
+  // scambio messaggi privati DA SISTEMARE
   socket.on("game.room message", (room, msg) => {
       if(game.room.client[0] == socket.id){
         socket.to(room.client[1]).emit("private message", socket.id, msg);
@@ -96,12 +117,6 @@ server.io.on("connection", (socket) => {
     console.log(data);
   });
 
-  // GAME  dati di posizione  ACKNOWLEDGMENT
-  socket.on("game", (data, callback) => {
-    console.log(data);
-    callback({
-      status: "ack: ok"
-    });
-  });
+
 
 });

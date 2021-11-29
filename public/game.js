@@ -87,7 +87,6 @@ class GameLogic{
 
 }
 
-
 class GameLogicSingle extends GameLogic{
 
   constructor(width, height){
@@ -192,14 +191,24 @@ class GameLogicMulti extends GameLogic{
 
     state.players.forEach((item, i) => {
       if(state.myid == item.id){this.p = new Player(item.position.x,item.position.y,item.color);}
-      else{this.enemy.push(new Enemy(item.position.x,item.position.y,item.color))}
+      else{this.enemy.push(new Enemy(item.position.x,item.position.y,item.color,item.id))}
     });
+
+    this.t = new Transmit(this.p,this.enemy);
+    this.r = new Recive(this.p,this.enemy);
 
     console.log('creati questi oggetti: mine: ', this.mines, 'cristalli: ',this.crystals, 'walls: ',this.walls);
 
     this.soundCollection = [mineSound1, mineSound2];
     console.log('loaded these sounds: ', this.soundCollection);
     //this.s = new SoundLogic(this.mines, this.soundCollection);
+  }
+
+  update(){
+
+    this.t.transmitPosition();
+    this.t.transmitDirection(); //da sistemare
+    super.update();
   }
 
   //CREAZIONE MURI DA MAPPA
@@ -233,7 +242,6 @@ class GameLogicMulti extends GameLogic{
   }
 
 } //end of GameLogicMulti
-
 
 class SoundLogic {
 
@@ -271,7 +279,6 @@ class SoundLogic {
     }
   }
 }  //end of SoundLogic
-
 
 class Wall{
   constructor(x,y){
@@ -408,7 +415,7 @@ class Player{
 
     this.walk = false;
 
-    let dir = ( 2 * p.PI * p.winMouseX / p.windowWidth);  //tra 0 e 1
+    let dir =  Number.parseFloat( 2 * p.PI * p.winMouseX / p.windowWidth).toFixed(2);  //tra 0 e 1
     if(dir <= 2 * p.PI && dir > 0){ this.dir = dir; }
 
     if (p.keyIsDown(p.LEFT_ARROW) && this.x > 0 + this.diameter / 2 ) {
@@ -484,10 +491,11 @@ class Player{
 
     // occhi
     p.stroke(0);
-    let x_sx = p.cos(this.dir+p.PI/6);
-    let y_sx = p.sin(this.dir+p.PI/6);
-    let x_dx = p.cos(this.dir-p.PI/6);
-    let y_dx = p.sin(this.dir-p.PI/6);
+    let dir = Number.parseFloat(this.dir);
+    let x_sx = p.cos(dir+p.PI/6);
+    let y_sx = p.sin(dir+p.PI/6);
+    let x_dx = p.cos(dir-p.PI/6);
+    let y_dx = p.sin(dir-p.PI/6);
     if(y_sx <= 0){p.fill(155,155,155);}
     else{p.fill(255,255,255);}
     //console.log(x_sx, y_sx)
@@ -497,16 +505,41 @@ class Player{
     p.circle(this.xHead+x_dx*this.w/2, this.yHead+(1/2)*(y_dx*this.w/2),this.w/3);
   }
 
+  getPosition(){
+    return {x: this.x, y:this.y};
+  }
+
+  getDirection(){
+    let dir = Number.parseFloat(this.dir).toFixed(2);
+    //console.log(dir);
+    return dir;
+  }
+
 
 }
 
-
 class Enemy extends Player{
-  constructor(x,y,color){
+  constructor(x,y,color,id){
     super(x,y,color)
+    this.id = id;
   }
   update(){
+    if(this.i > p.frameRate()){ this.i  = 0; }
+    else{ this.i ++; }
     this.draw();
+  }
+  updatePosition(x,y){
+    this.x = x;
+    this.y = y;
+  }
+  updateDirection(dir){
+    this.dir = dir;
+  }
+  getID(){
+    return this.id;
+  }
+  toggleWalk(){
+    this.walk = !this.walk;
   }
 
 }

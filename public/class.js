@@ -149,7 +149,7 @@ class Canvas{
   }
 }
 
-
+let socket;
 class MultiPlayerLobby extends Pagina{
   constructor() {
     super();
@@ -183,7 +183,7 @@ class MultiPlayerLobby extends Pagina{
     centerPanel.insertAdjacentHTML('beforeEnd', pulsante3);
 
     // SOCKET IO
-    const socket = io();
+    socket = io();
 
     socket.on("connect", () => {
       console.log("Il mio socket ID è: "+socket.id);
@@ -220,26 +220,6 @@ class MultiPlayerLobby extends Pagina{
         });
     }
 
-/*
-    function transmit(){
-      var body = {"id": socket.id};
-      var a = snake.getBody()
-      for(var i in a){
-       body[i] = {"x": a[i]["x"],"y":a[i]["y"]}
-      }
-      //console.log(body);
-      socket.volatile.emit("data", body);
-    }
-
-    //
-    function readyFunc(bool){
-      var data = {"id": socket.id, "ready": bool}
-      socket.emit("game",data, (response) => {
-          console.log(response.status); // ok
-      });
-      console.log(data)
-    }
-*/
   }
 }
 
@@ -273,17 +253,73 @@ class MultiPlayer extends Pagina{
       super.getSchermo().appendChild(c);
       c.appendChild(n)
       }
-
-
-/*
-      // Creo Canvas
-      let canvasContainer = document.createElement('div');
-      type = 'multi';
-      new p5(sketch, canvasContainer);
-      super.getSchermo().appendChild(canvasContainer);
-      canvasContainer.id = "canvas";
-      document.getElementById(canvasContainer.id).children[0].style.visibility= "visible"
-      //cnv = new Canvas(this.#canvasWidth,this.#canvasHeight, this.#resolution);
-
-      */
   }
+
+
+class Transmit{
+  constructor(player,enemyArrey){
+    this.message = {};
+    this.address_id = [];
+    enemyArrey.forEach((item, i) => {
+      this.address_id.push(item.getID());
+    });
+    this.p = player;
+    let pos = this.p.getPosition();
+    this.x = pos.x;
+    this.y = pos.y;
+    let dir = this.p.getDirection();
+    this.dir = dir;
+    this.event = null;
+  }
+  transmitPosition(){
+    let pos = this.p.getPosition();
+
+    if(pos.x != this.x || pos.y != this.y){
+      let msg = {address: this.address_id, x: this.x, y: this.y};
+      socket.volatile.emit("sendPosition", msg);
+      this.x = pos.x;
+      this.y = pos.y;
+    }
+  }
+  transmitDirection(){
+    let dir = this.p.getDirection();
+
+    if(dir != this.dir){
+      let msg = {address: this.address_id, dir: this.dir};
+      socket.volatile.emit("sendDirection", msg);
+      this.dir = dir;
+    }
+  }
+
+}
+
+class Recive{
+  constructor(player,enemyArrey){
+    this.p = player;
+    this.enemyArrey = enemyArrey;
+
+    socket.on("recivePosition", (msg) => {
+      console.log(msg);
+      this.enemyArrey.forEach((item, i) => {
+        if(msg.sender == item.getID()){item.updatePosition(msg.x,msg.y)}
+      });
+
+    });
+
+    socket.on("reciveDirection", (msg) => {
+      console.log(msg);
+      this.enemyArrey.forEach((item, i) => {
+        if(msg.sender == item.getID()){item.updateDirection(msg.dir)}
+      });
+
+    });
+
+  }
+  recivePosition(){
+
+  }
+  reciveDirection(){
+
+  }
+
+}
