@@ -21,11 +21,12 @@
  let sketch = function(p) {
 
   /* preload dei suoni *************************************/
-  let mine_sound_array = [];
+  let mine_sound_array = []; let crystal_sound;
 
     p.preload = function(){
       p.soundFormats('mp3', 'ogg');
       for(var i=0; i < NUM_MINE; i++){mine_sound_array[i] = p.loadSound('sounds/mine')};
+      crystal_sound = p.loadSound('sounds/crystal1');
       console.log('Loaded these sounds: ', mine_sound_array);
     };
 
@@ -66,6 +67,7 @@ class GameLogic{
     for(var i = 0; i < this.crystals.length; i++) {
       if( this.crystals[i].checkEatCrystal(this.p.x, this.p.y, this.crystals, i )){
         this.playerScore += CRYSTAL;
+        this.s.crystalSound();
       }; }
 
     //check esploso su mina + modifica punteggio
@@ -244,6 +246,7 @@ class GameLogicMulti extends GameLogic{
 class SoundLogic {
 
   constructor() {
+    //fin dall'inizio le mine son tutte in play
     for(var i=0; i<mine_sound_array.length; i++){
       let suono = mine_sound_array[i];
       suono.setVolume(0);
@@ -276,8 +279,12 @@ class SoundLogic {
         suono.setVolume(0);
       }
      }
-    
   } 
+
+  crystalSound() {
+    crystal_sound.setVolume(0.5); 
+    crystal_sound.play();
+  }
 } //end of SoundLogic
 
 class Wall{
