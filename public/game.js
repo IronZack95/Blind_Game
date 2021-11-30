@@ -63,11 +63,17 @@ class GameLogic{
     this.enemy.forEach(function(enemy){enemy.update(); })
     this.p.update(this.walls);  //per ultimo così viene disegnato sopra a tutto
 
-    //check mangiato cristallo + modifica punteggio
+    //check mangiato cristallo + modifica punteggio (SINGLE PLAYER)
     for(var i = 0; i < this.crystals.length; i++) {
       if( this.crystals[i].checkEatCrystal(this.p.x, this.p.y, this.crystals, i )){
         this.playerScore += CRYSTAL;
         this.s.crystalSound();
+      }; }
+
+    //check mangiato cristallo + modifica punteggio (MULTI PLAYER)
+    for(var i = 0; i < this.crystals.length; i++) {
+      if( this.crystals[i].checkEatCrystal(this.p.x, this.p.y, this.crystals, i )){
+        this.playerScore += CRYSTAL;
       }; }
 
     //check esploso su mina + modifica punteggio
@@ -198,10 +204,8 @@ class GameLogicMulti extends GameLogic{
     this.r = new Recive(this.p,this.enemy);
 
     console.log('creati questi oggetti: mine: ', this.mines, 'cristalli: ',this.crystals, 'walls: ',this.walls);
+    //this.s = new SoundLogic();
 
-    this.soundCollection = [mineSound1, mineSound2];
-    console.log('loaded these sounds: ', this.soundCollection);
-    //this.s = new SoundLogic(this.mines, this.soundCollection);
   }
 
   update(){
