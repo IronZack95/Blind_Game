@@ -145,7 +145,7 @@ class GameState{
       //finchè cadono su muri o giocatore ricalcoliamole
       while (checkEveryWall(this.walls, x_r, y_r).some(e => e === true) ||
              approvati.some(e => (e.x == x_r) && (e.y == y_r))) {
-        console.log('oops');
+        //console.log('oops');
         x_r = LATO + Math.floor(Math.random() *(WIDTH - LATO)/ 50)* 50;
         y_r = LATO + Math.floor(Math.random() *(HEIGHT - LATO*1.5)/ 50)* 50;
       }

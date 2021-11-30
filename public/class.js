@@ -299,7 +299,7 @@ class Recive{
     this.enemyArrey = enemyArrey;
 
     socket.on("recivePosition", (msg) => {
-      console.log(msg);
+      //console.log(msg);
       this.enemyArrey.forEach((item, i) => {
         if(msg.sender == item.getID()){item.updatePosition(msg.x,msg.y)}
       });
@@ -307,7 +307,7 @@ class Recive{
     });
 
     socket.on("reciveDirection", (msg) => {
-      console.log(msg);
+      //console.log(msg);
       this.enemyArrey.forEach((item, i) => {
         if(msg.sender == item.getID()){item.updateDirection(msg.dir)}
       });

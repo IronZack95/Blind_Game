@@ -82,7 +82,7 @@ server.io.on("connection", (socket) => {
 
   // GAME  dati di posizione senza ACKNOWLEDGMENT
   socket.on("sendPosition", (data) => {
-    console.log(data);
+    //console.log(data);
     let msg = {sender: socket.id, x: data.x, y: data.y};
     //inoltro il messaggio all'avversario
     data.address.forEach((item, i) => {
@@ -92,7 +92,7 @@ server.io.on("connection", (socket) => {
 
     // GAME  dati di direzione senza ACKNOWLEDGMENT
   socket.on("sendDirection", (data) => {
-    console.log(data);
+    //console.log(data);
     let msg = {sender: socket.id, dir: data.dir};
     //inoltro il messaggio all'avversario
     data.address.forEach((item, i) => {
