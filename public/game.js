@@ -1,5 +1,5 @@
 
- const WIDTH = 1200;         //...del canvas
+ const WIDTH = 1200;        //...del canvas
  const HEIGHT = 600;        //...del canvas
  const LATO = 40;           //lato dei quadrati che formano i muri random
  const RAGGIO_P = 12;       //raggio del giocatore
@@ -11,9 +11,9 @@
  const RESOLUTION = 2; //2 ogni box contiente RESOLUTION X RESOLUTION muri dentro la griglia
  const THRESHOLD = 100000;
 
- const NUM_MINE = 15;
+ const NUM_MINE = 20;
  const NUM_CRISTALLI = 20;
- const MINE_DISTANCE = 80; //distanza entro cui inizio a sentire mina
+ const MINE_DISTANCE = 80;   //distanza entro cui inizio a sentire mina
 
  const CRYSTAL = 100;        //punti per un cristallo
  const EXPLOSION = 200;      //punti in meno per un'esplosione
@@ -26,8 +26,8 @@
     p.preload = function(){
       p.soundFormats('mp3', 'ogg');
       for(var i=0; i < NUM_MINE; i++){mine_sound_array[i] = p.loadSound('sounds/mine')};
-      crystal_sound = p.loadSound('sounds/crystal1');
-      console.log('Loaded these sounds: ', mine_sound_array);
+      crystal_sound = p.loadSound('sounds/crystal');
+      console.log('Loaded these sounds: ', mine_sound_array, crystal_sound);
     };
 
 /**********************************************************/
@@ -46,14 +46,14 @@
 
 class GameLogic{
   constructor(){
-    this.playerScore = 0;  //punteggio default
+    this.playerScore = 0;  
     this.walls = [];
     this.mines = [];
     this.crystals = [];
-    this.p = null;
+    this.p = null; 
     this.enemy = [];
     this.ctx =  p.createCanvas(WIDTH, HEIGHT);
-    this.s = null;
+    this.s = null;  //sound logic, si inizializza nella classe child
   }
   update(){
     
@@ -70,12 +70,6 @@ class GameLogic{
         this.s.crystalSound();
       }; }
 
-    //check mangiato cristallo + modifica punteggio (MULTI PLAYER)
-    for(var i = 0; i < this.crystals.length; i++) {
-      if( this.crystals[i].checkEatCrystal(this.p.x, this.p.y, this.crystals, i )){
-        this.playerScore += CRYSTAL;
-      }; }
-
     //check esploso su mina + modifica punteggio
     for(var i = 0; i < this.mines.length; i++) {
       if( this.mines[i].checkExplosion(this.p.x, this.p.y, this.mines, i )) {
@@ -86,14 +80,14 @@ class GameLogic{
 
     //update suoni
     this.s.update(this.p, this.mines);
-
   }
 
   updateScore(){
    document.getElementById('testoCounter').innerHTML = this.playerScore;
   }
+} //fine GameLogic() superclass
 
-}
+
 
 class GameLogicSingle extends GameLogic{
 
@@ -152,24 +146,22 @@ class GameLogicSingle extends GameLogic{
     for (var i = 0; i < numObj; i++){
       //creo delle coordinate ipotetiche
       //min + Math.floor(Math.random() * max / step) * step;
-      x_r = LATO + Math.floor(Math.random() *(p.width - LATO)/ 50)* 50;
-      y_r = LATO + Math.floor(Math.random() *(p.height - LATO*1.5)/ 50)* 50;
+      x_r = LATO + Math.floor(Math.random() *(p.width - LATO) / 50)* 50;
+      y_r = LATO + Math.floor(Math.random() *(p.height - LATO * 1.5)/ 50)* 50;
 
       //finchè cadono su muri o giocatore ricalcoliamole
       while (checkEveryWall(walls, x_r, y_r).some(e => e === true) ||
              approvati.some(e => (e.x == x_r) && (e.y == y_r))) {
         console.log('oops');
-        x_r = LATO + Math.floor(Math.random() *(p.width - LATO)/ 50)* 50;
-        y_r = LATO + Math.floor(Math.random() *(p.height - LATO*1.5)/ 50)* 50;
+        x_r = LATO + Math.floor(Math.random() *(p.width - LATO) / 50)* 50;
+        y_r = LATO + Math.floor(Math.random() *(p.height - LATO * 1.5)/ 50)* 50;
       }
-
       approvati[i] = {x: x_r, y: y_r};
-
       //quando vanno bene piazziamole negli array
       if(i < NUM_MINE ){
         mines[i] = new Mine(x_r, y_r)
       } else {
-        crystals[i-(NUM_MINE)] = new Crystal(x_r, y_r)
+        crystals[ i- (NUM_MINE) ] = new Crystal(x_r, y_r)
       }
     } //end of for loop
 
@@ -183,7 +175,6 @@ class GameLogicSingle extends GameLogic{
     }
 
   } //end of createObjects()
-
 } // end of GameLogic
 
 class GameLogicMulti extends GameLogic{
@@ -204,7 +195,7 @@ class GameLogicMulti extends GameLogic{
     this.r = new Recive(this.p,this.enemy);
 
     console.log('creati questi oggetti: mine: ', this.mines, 'cristalli: ',this.crystals, 'walls: ',this.walls);
-    //this.s = new SoundLogic();
+    this.s = new SoundLogic();  
 
   }
 
@@ -250,14 +241,13 @@ class GameLogicMulti extends GameLogic{
 class SoundLogic {
 
   constructor() {
-    //fin dall'inizio le mine son tutte in play
     for(var i=0; i<mine_sound_array.length; i++){
       let suono = mine_sound_array[i];
       suono.setVolume(0);
       suono.pan(0);
-      suono.loop();
+      suono.loop(); //fin dall'inizio le mine son tutte in loop
     }
-    console.log(mine_sound_array)
+    console.log(mine_sound_array);   //check che siano in play
   };
 
   update(player, mines){
@@ -329,11 +319,9 @@ class Wall{
 
 class Mine{
   constructor(x,y){
-    //setInterval(function(){mine_S.play();},1000);
-    //this.bip = mine_sound;
     this.x = x;
     this.y = y;
-    this.exploded = false;          //di default la mina non è stata esplosa
+    this.exploded = false;       
     this.color = p.color(204,0,0);  //di default è rossa (in realtà nera)
     //per mettere le mine nere:
     //this.color = p.color(0);
@@ -358,7 +346,6 @@ class Mine{
       console.log('sono esploso');
       mines[index].exploded = true;   //funzionale alla singola mina
       mines[index].color = p.color(128,128,128);
-      //mines.splice(index,1);
       return true;
     } else {
       return false;
@@ -369,10 +356,9 @@ class Mine{
 
 class Crystal{
   constructor(x,y){
-    //setInterval(function(){crystal_S.play();},1000);
     this.x = x;
     this.y = y;
-    this.eaten = false;    //di default il cristallo non è stato trovato
+    this.eaten = false;    
     this.color = p.color(153, 255, 255);
   }
 
@@ -408,9 +394,9 @@ class Player{
     this.x = x;
     this.y = y;
     this.diameter = 2*RAGGIO_P;
-    this.dir = 0;  //"dir" is used for eyes movements
+    this.dir = 0;               //"dir" is used for eyes movements
     this.box_radius = RAGGIO_P; //radius used to check for collisions
-    this.dead = false;  //TODO: funzione per ucciderlo
+    this.dead = false;          //TODO: funzione per ucciderlo
     this.walk = false;
     this.color = color;
     this.i = 0;
