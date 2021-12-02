@@ -27,7 +27,8 @@
       p.soundFormats('mp3', 'ogg');
       for(var i=0; i < NUM_MINE; i++){mine_sound_array[i] = p.loadSound('sounds/mine')};
       crystal_sound = p.loadSound('sounds/crystal');
-      console.log('Loaded these sounds: ', mine_sound_array, crystal_sound);
+      walk_sound = p.loadSound('sounds/walk');
+      console.log('Loaded these sounds: ', mine_sound_array, crystal_sound, walk_sound);
     };
 
 /**********************************************************/
@@ -241,17 +242,21 @@ class GameLogicMulti extends GameLogic{
 class SoundLogic {
 
   constructor() {
+    //MINE
     for(var i=0; i<mine_sound_array.length; i++){
       let suono = mine_sound_array[i];
       suono.setVolume(0);
       suono.pan(0);
       suono.loop(); //fin dall'inizio le mine son tutte in loop
     }
-    console.log(mine_sound_array);   //check che siano in play
+    //SUONO CAMMINATA
+    walk_sound.setVolume(0); 
+    walk_sound.loop();
+    
   };
 
   update(player, mines){
-    //per ogni mina...
+    // SUONI DELLE MINE
     for (var i=0; i<mines.length; i++){
       //...calcolo distanza dal player
       let dist = p.dist(player.x, player.y, mines[i].x, mines[i].y);
@@ -273,6 +278,13 @@ class SoundLogic {
         suono.setVolume(0);
       }
      }
+     //SUONO DELLA CAMMINATA
+     if(player.walk === true){
+       walk_sound.setVolume(0.7);
+     } else {
+       walk_sound.setVolume(0);
+     }
+
   } 
 
   crystalSound() {
