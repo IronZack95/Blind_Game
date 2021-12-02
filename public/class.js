@@ -94,8 +94,6 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
   }
 }
 
-
-
 class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
   // variabili private
   #snake;
@@ -133,7 +131,6 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     super.getSchermo().appendChild(c);
     c.appendChild(n)
     }
-
 }
 
 let type;

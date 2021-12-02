@@ -11,8 +11,8 @@
  const RESOLUTION = 2; //2 ogni box contiente RESOLUTION X RESOLUTION muri dentro la griglia
  const THRESHOLD = 100000;
 
- const NUM_MINE = 20;
- const NUM_CRISTALLI = 20;
+ const NUM_MINE = 30;
+ const NUM_CRISTALLI = 35;
  const MINE_DISTANCE = 80;   //distanza entro cui inizio a sentire mina
 
  const CRYSTAL = 100;        //punti per un cristallo
@@ -349,9 +349,9 @@ class Mine{
     this.x = x;
     this.y = y;
     this.exploded = false;
-    this.color = p.color(204,0,0);  //di default è rossa (in realtà nera)
+    //this.color = p.color(204,0,0);  //di default è rossa (in realtà nera)
     //per mettere le mine nere:
-    //this.color = p.color(0);
+    this.color = p.color(0);
   }
 
   getExplosion(){
@@ -564,8 +564,6 @@ class Player{
     //console.log(dir);
     return dir;
   }
-
-
 }
 
 class Enemy extends Player{
@@ -601,7 +599,5 @@ class Enemy extends Player{
   toggleWalk(){
     this.walk = !this.walk;
   }
-
 }
-
-} //fine del mondo
+} // FINE

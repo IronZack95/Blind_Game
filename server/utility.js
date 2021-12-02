@@ -1,5 +1,3 @@
-
-
 class Perlin_Map{
 
   constructor(grid,res,threshold) {

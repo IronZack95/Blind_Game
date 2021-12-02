@@ -1,6 +1,6 @@
 const MAX_PLAYERS = 2;
-const MAX_MINES = 20;
-const MAX_CRYSTALS = 20;
+const MAX_MINES = 30;
+const MAX_CRYSTALS = 35;
 
 const WIDTH = 1200;         //...del canvas
 const HEIGHT = 600;        //...del canvas
@@ -127,7 +127,6 @@ class GameState{
       this.walls[i] = new Wall(walls[i].x,walls[i].y);
     }
 
-
     // CREATE OBJECTS
     let mines = [];
     let crystals = [];
@@ -168,11 +167,8 @@ class GameState{
     }
     // ho creato tutto posso ritornare l'oggetto Game State
     return this;
-
   }
-
 }
-
 
 class Object{
  constructor(x,y,s,color){
@@ -194,7 +190,6 @@ class Object{
  getColor(){
    return this.color;
  }
-
 }
 
 class Player extends Object{
@@ -217,7 +212,6 @@ class Wall extends Object{
     let Dy = Yn - playerY;
     return (Dx*Dx + Dy*Dy) <= (RAGGIO_P**2);
   }
-
 }  //end of class Wall
 
 class Crystal extends Object{

@@ -1,5 +1,3 @@
-
-
 class Perlin_Map{
 
   constructor(grid,res,threshold) {
@@ -35,13 +33,11 @@ class Perlin{
   rand_vect(){
 
      let theta = Math.random() * 2 * Math.PI;
-
      return {x: Math.cos(theta), y: Math.sin(theta)};
 
   }
 
   dot_prod_grid(x, y, vx, vy){
-
          let g_vect;
          let d_vect = {x: x - vx, y: y - vy};
 
@@ -68,7 +64,6 @@ class Perlin{
 
      if (this.memory.hasOwnProperty([x,y]))
          return this.memory[[x,y]];
-
      let xf = Math.floor(x);
      let yf = Math.floor(y);
 

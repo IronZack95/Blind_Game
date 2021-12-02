@@ -1,5 +1,4 @@
 /* STILI BODY */
-
 html, body {
   margin: 0;
   height:100%;
@@ -8,7 +7,6 @@ html, body {
   font-family: papyrus;
   font-weight: bold;
 }
-
 
 /*
 body {
@@ -76,7 +74,6 @@ transform: translate(0%, 25%);
   transform: translate(0%, 40%);
   }
 
-
 /* IMAGES */
 img.snakeGreen{
   position: fixed;
@@ -129,8 +126,7 @@ img.snakeRed{
   transform: translate(-50%, -50%);
 }
 
-      /* cose per counter */
-
+/* cose per counter */
 #counter {
   padding: 2px;
   position: relative;
@@ -145,7 +141,6 @@ img.snakeRed{
   height: 20px;
   width: 100px;
   background-color: #262626;
-
 }
 
 #testoCounter {
@@ -176,7 +171,7 @@ img.snakeRed{
   margin-top: 5%;
 }
 
-                /* STILI CLASS */
+/* STILI CLASS */
 .top{
   top: 0px;
 }
@@ -188,7 +183,6 @@ img.snakeRed{
 }
 
 /* modifiche a centerpanel*/
-
 .center {
   max-width: 400px;
   width: 80%;
