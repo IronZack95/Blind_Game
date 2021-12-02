@@ -101,6 +101,31 @@ server.io.on("connection", (socket) => {
 
   });
 
+  // GAME  dati di cristalli con trasmissione TCP standard
+socket.on("sendEaten", (data) => {
+  data['sender']= socket.id;
+  let msg = JSON.parse(JSON.stringify(data));
+  delete msg['address'];
+  //inoltro il messaggio all'avversario
+  data.address.forEach((item, i) => {
+    server.io.in(item).emit("getEaten",msg);
+  });
+  console.log(msg);
+});
+
+// GAME  dati di cristalli con trasmissione TCP standard
+socket.on("sendExplosion", (data) => {
+data['sender']= socket.id;
+let msg = JSON.parse(JSON.stringify(data));
+delete msg['address'];
+//inoltro il messaggio all'avversario
+data.address.forEach((item, i) => {
+  server.io.in(item).emit("getExplosion",msg);
+});
+console.log(msg);
+});
+
+
   // scambio messaggi privati DA SISTEMARE
   socket.on("game.room message", (room, msg) => {
       if(game.room.client[0] == socket.id){

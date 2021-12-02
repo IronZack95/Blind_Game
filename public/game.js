@@ -47,36 +47,45 @@
 
 class GameLogic{
   constructor(){
-    this.playerScore = 0;  
+    this.playerScore = 0;
     this.walls = [];
     this.mines = [];
+    this.crystalEvent = {status: false, index: null};
+    this.mineEvent = {status: false, index: null};   //flag che comunicano che è successo un evento
     this.crystals = [];
-    this.p = null; 
+    this.p = null;
     this.enemy = [];
     this.ctx =  p.createCanvas(WIDTH, HEIGHT);
     this.s = null;  //sound logic, si inizializza nella classe child
   }
   update(){
-    
+
     this.walls.forEach(function(wall){wall.updateWall(); })
     this.mines.forEach(function(mine){mine.updateMine(); })
     this.crystals.forEach(function(crystal){crystal.updateCrystal(); })
     this.enemy.forEach(function(enemy){enemy.update(); })
     this.p.update(this.walls);  //per ultimo così viene disegnato sopra a tutto
 
+    this.crystalEvent.status = false;  //flag che dice se è successo un evento
     //check mangiato cristallo + modifica punteggio (SINGLE PLAYER)
     for(var i = 0; i < this.crystals.length; i++) {
-      if( this.crystals[i].checkEatCrystal(this.p.x, this.p.y, this.crystals, i )){
+      if( this.crystals[i].checkEatCrystal(this.p.x, this.p.y)){
         this.playerScore += CRYSTAL;
+        this.crystalEvent.status = true;
+        this.crystalEvent.index = i;
         this.s.crystalSound();
       }; }
 
+    this.mineEvent.status = false;    //flag che dice se è successo un evento
     //check esploso su mina + modifica punteggio
     for(var i = 0; i < this.mines.length; i++) {
-      if( this.mines[i].checkExplosion(this.p.x, this.p.y, this.mines, i )) {
+      if( this.mines[i].checkExplosion(this.p.x, this.p.y)) {
         this.playerScore -= EXPLOSION;
-      }; }
+        this.mineEvent.status = true;
+        this.mineEvent.index = i;
 
+      }; }
+      //console.log(this.crystalEvent)
     this.updateScore();
 
     //update suoni
@@ -87,8 +96,6 @@ class GameLogic{
    document.getElementById('testoCounter').innerHTML = this.playerScore;
   }
 } //fine GameLogic() superclass
-
-
 
 class GameLogicSingle extends GameLogic{
 
@@ -192,19 +199,27 @@ class GameLogicMulti extends GameLogic{
       else{this.enemy.push(new Enemy(item.position.x,item.position.y,item.color,item.id))}
     });
 
-    this.t = new Transmit(this.p,this.enemy);
-    this.r = new Recive(this.p,this.enemy);
+    //creo gli oggetti trasmittente e ricevente
+    this.t = new Transmit(this.p,this.enemy,this.crystals,this.mines);
+    this.r = new Recive(this.p,this.enemy,this.crystals,this.mines);
 
     console.log('creati questi oggetti: mine: ', this.mines, 'cristalli: ',this.crystals, 'walls: ',this.walls);
-    this.s = new SoundLogic();  
+    this.s = new SoundLogic();
 
   }
 
   update(){
-
     this.t.transmitPosition();
-    this.t.transmitDirection(); //da sistemare
+    this.t.transmitDirection();
     super.update();
+    if(this.crystalEvent.status == true){
+      this.t.transmitEaten(this.crystalEvent.index);
+      this.crystalEvent.status = false;
+    }
+    if(this.mineEvent.status == true){
+      this.t.transmitExplosion(this.mineEvent.index);
+      this.mineEvent.status = false;
+    }
   }
 
   //CREAZIONE MURI DA MAPPA
@@ -250,9 +265,9 @@ class SoundLogic {
       suono.loop(); //fin dall'inizio le mine son tutte in loop
     }
     //SUONO CAMMINATA
-    walk_sound.setVolume(0); 
+    walk_sound.setVolume(0);
     walk_sound.loop();
-    
+
   };
 
   update(player, mines){
@@ -260,7 +275,7 @@ class SoundLogic {
     for (var i=0; i<mines.length; i++){
       //...calcolo distanza dal player
       let dist = p.dist(player.x, player.y, mines[i].x, mines[i].y);
-     
+
       if( dist <= MINE_DISTANCE && mines[i].exploded === false) {
         //se sono abbastanza vicino calcolo il volume e il panning
         let temp = Math.sqrt(dist / MINE_DISTANCE);  //calcolo distanza normalizzata etc
@@ -272,7 +287,7 @@ class SoundLogic {
         let panning = p.map(p.mouseX, 0, p.width, -1.0, 1.0);
         suono.pan(panning);
 
-        console.log('suona la mina '+[i]+ ' at volume '+temp1);
+        //console.log('suona la mina '+[i]+ ' at volume '+temp1);
       } else {
         let suono = mine_sound_array[i];
         suono.setVolume(0);
@@ -285,10 +300,10 @@ class SoundLogic {
        walk_sound.setVolume(0);
      }
 
-  } 
+  }
 
   crystalSound() {
-    crystal_sound.setVolume(0.5); 
+    crystal_sound.setVolume(0.5);
     crystal_sound.play();
   }
 } //end of SoundLogic
@@ -333,10 +348,20 @@ class Mine{
   constructor(x,y){
     this.x = x;
     this.y = y;
-    this.exploded = false;       
+    this.exploded = false;
     this.color = p.color(204,0,0);  //di default è rossa (in realtà nera)
     //per mettere le mine nere:
     //this.color = p.color(0);
+  }
+
+  getExplosion(){
+    return this.exploded;
+  }
+  getPosition(){
+    return {x:this.x,y:this.y};
+  }
+  setExplosion(status){
+    this.exploded = status;
   }
 
   updateMine(){
@@ -348,30 +373,45 @@ class Mine{
     p.circle(this.x, this.y, 2*RAGGIO_M);
   }
 
-  checkExplosion(playerX, playerY, mines, index){
-    //first it checks the collision between the two circles
-    var dx = (this.x + RAGGIO_P) - (playerX + RAGGIO_M);
-    var dy = (this.y + RAGGIO_P) - (playerY + RAGGIO_M);
-    var distance = Math.sqrt(dx * dx + dy * dy);
-    
-    if (distance < RAGGIO_M + RAGGIO_P && this.exploded === false){
-      console.log('sono esploso');
-      mines[index].exploded = true;   //funzionale alla singola mina
-      mines[index].color = p.color(128,128,128);
-      return true;
-    } else {
-      return false;
+  checkExplosion(playerX, playerY){
+    if(this.exploded == true){   // verifico che non sia già stato mangiato
+            this.color = p.color(128,128,128);
+    }else{
+      //first it checks the collision between the two circles
+      var dx = (this.x + RAGGIO_P) - (playerX + RAGGIO_M);
+      var dy = (this.y + RAGGIO_P) - (playerY + RAGGIO_M);
+      var distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < RAGGIO_M + RAGGIO_P && this.exploded == false){
+        console.log('sono esploso');
+        this.exploded = true;   //funzionale alla singola mina
+        this.color = p.color(128,128,128);
+        return true;
+      } else {
+        return false;
+      }
     }
   }
-
 }
 
 class Crystal{
   constructor(x,y){
     this.x = x;
     this.y = y;
-    this.eaten = false;    
+    this.eaten = false;
     this.color = p.color(153, 255, 255);
+  }
+
+  getEaten(){
+    return this.eaten;
+  }
+
+  setEaten(status){
+    this.eaten = status;
+  }
+
+  getPosition(){
+    return {x:this.x,y:this.y};
   }
 
   updateCrystal(){
@@ -383,20 +423,24 @@ class Crystal{
     p.circle(this.x, this.y, 2*RAGGIO_C);
   }
 
-  checkEatCrystal(playerX, playerY, crystals, index){
-    //first it checks the collision between the two circles
-    var dx = (this.x + RAGGIO_P) - (playerX + RAGGIO_C);
-    var dy = (this.y + RAGGIO_P) - (playerY + RAGGIO_C);
-    var distance = Math.sqrt(dx * dx + dy * dy);
-    if (distance < RAGGIO_C + RAGGIO_P && this.eaten === false){
+  checkEatCrystal(playerX, playerY){
+    if(this.eaten == true){   // verifico che non sia già stato mangiato
+      this.color = p.color(0);
+    }else{
+      //first it checks the collision between the two circles
+      var dx = (this.x + RAGGIO_P) - (playerX + RAGGIO_C);
+      var dy = (this.y + RAGGIO_P) - (playerY + RAGGIO_C);
+      var distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < RAGGIO_C + RAGGIO_P && this.eaten == false){
 
-      console.log('ho mangiato un cristallo');
-      crystals[index].eaten = true;   //funzionale al singolo cristallo
-      crystals[index].color = p.color(0);
-      return true;
+        console.log('ho mangiato un cristallo');
+        this.eaten = true;   //funzionale al singolo cristallo
+        this.color = p.color(0);
+        return true;
 
-    } else {
-      return false;
+      } else {
+        return false;
+      }
     }
   }
 }
@@ -415,9 +459,10 @@ class Player{
   }
 
   update(walls){
-    if(this.i > p.frameRate()){ this.i  = 0; }
-    else{ this.i ++; }
-
+    if(this.walk == true){
+      if(this.i > p.frameRate()){ this.i  = 0; }
+      else{ this.i ++; }
+    }else{this.i = 0;}
     this.walk = false;
 
     let dir =  Number.parseFloat( 2 * p.PI * p.winMouseX / p.windowWidth).toFixed(2);  //tra 0 e 1
@@ -527,15 +572,25 @@ class Enemy extends Player{
   constructor(x,y,color,id){
     super(x,y,color)
     this.id = id;
+    this.nextX = x;
+    this.nextY = y;
   }
   update(){
-    if(this.i > p.frameRate()){ this.i  = 0; }
-    else{ this.i ++; }
+    if(this.nextX != this.x || this.nextY != this.y){
+      if(this.i > p.frameRate()){ this.i  = 0; }
+      else{ this.i ++; }
+      this.walk = true;
+      this.x = this.nextX;
+      this.y = this.nextY;
+    }else{
+      this.walk = false;
+      this.i = 0;
+    }
     this.draw();
   }
   updatePosition(x,y){
-    this.x = x;
-    this.y = y;
+    this.nextX = x;
+    this.nextY = y;
   }
   updateDirection(dir){
     this.dir = dir;

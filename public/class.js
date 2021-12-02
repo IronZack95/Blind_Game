@@ -257,12 +257,14 @@ class MultiPlayer extends Pagina{
 
 
 class Transmit{
-  constructor(player,enemyArrey){
+  constructor(player,enemyArrey,crystalsArrey,minesArrey){
     this.message = {};
     this.address_id = [];
     enemyArrey.forEach((item, i) => {
       this.address_id.push(item.getID());
     });
+    this.c = crystalsArrey;
+    this.m = minesArrey;
     this.p = player;
     let pos = this.p.getPosition();
     this.x = pos.x;
@@ -290,13 +292,31 @@ class Transmit{
       this.dir = dir;
     }
   }
+  transmitEaten(index){
+    if(this.c[index].getEaten()){
+      let msg = this.c[index].getPosition();
+      msg['address'] = this.address_id;
+      msg['status'] = this.c[index].getEaten();
+      socket.emit("sendEaten", msg);
+    }
+  }
+  transmitExplosion(index){
+    if(this.m[index].getExplosion()){
+      let msg = this.m[index].getPosition();
+      msg['address'] = this.address_id;
+      msg['status'] = this.m[index].getExplosion();
+      socket.emit("sendExplosion", msg);
+    }
+  }
 
 }
 
 class Recive{
-  constructor(player,enemyArrey){
+  constructor(player,enemyArrey,crystalsArrey,minesArrey){
     this.p = player;
     this.enemyArrey = enemyArrey;
+    this.c = crystalsArrey;
+    this.m = minesArrey;
 
     socket.on("recivePosition", (msg) => {
       //console.log(msg);
@@ -314,11 +334,21 @@ class Recive{
 
     });
 
-  }
-  recivePosition(){
+    socket.on("getEaten", (msg) => {
+      //console.log(msg);
+      this.c.forEach((item, i) => {
+        if(msg.x == item.getPosition().x && msg.y == item.getPosition().y){item.setEaten(msg.status);}
+      });
 
-  }
-  reciveDirection(){
+    });
+
+    socket.on("getExplosion", (msg) => {
+      //console.log(msg);
+      this.m.forEach((item, i) => {
+        if(msg.x == item.getPosition().x && msg.y == item.getPosition().y){item.setExplosion(msg.status);}
+      });
+
+    });
 
   }
 
