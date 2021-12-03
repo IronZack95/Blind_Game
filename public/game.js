@@ -1,4 +1,3 @@
-
  const WIDTH = 1200;        //...del canvas
  const HEIGHT = 600;        //...del canvas
  const LATO = 40;           //lato dei quadrati che formano i muri random
@@ -113,13 +112,34 @@ class GameLogicSingle extends GameLogic{
 
     this.s = new SoundLogic();
 
-    //attributo per fine gioco
-    this.gameFinished = false;
+    this.gameOver = new GameOver(); 
+    this.gameOverText = new GameOverText();
   }
 
   update(){
     super.update();
-    this.endGame();   //check if game is finished
+
+    if(this.crystals.some(e => e.eaten === false)){
+      return;
+    } else if(this.crystals.every(e => e.eaten === true)) {
+      
+      p.clear();
+      
+      //stoppa i suoni del player e delle mine
+      for(let i=0; i<NUM_MINE; i++){
+        let suono = mine_sound_array[i];
+        suono.stop();
+      }
+      walk_sound.stop();
+
+      //fermo il player
+      this.p.walk = false;
+      
+      this.gameOver.update();
+      this.gameOverText.update();
+
+      setTimeout(function(){ window.location.reload(); }, 3000);
+    };
   }
 
   //CREAZIONE MURI RANDOM
@@ -190,25 +210,7 @@ class GameLogicSingle extends GameLogic{
 
   } //end of createObjects()
 
-  //fine gioco per single Player
-  endGame(){
-    //la condizione è aver trovato tutti i cristalli
-    if(this.crystals.every(e => e.eaten === true) && this.gameFinished === false){
-      
-      //stoppa i suoni del player (stoppare le mine crea problemi)
-      walk_sound.stop();
-      
-      //fermo il player
-      this.p.walk = false;
-
-      //setto che il gioco è finito
-      this.gameFinished = true;
-
-      alert("congratulations! You found all " +NUM_CRISTALLI+ " crystals!");
-      //reload su main Lobby
-      window.location.reload();
-     }
-  } 
+  
 } // end of GameLogic
 
 class GameLogicMulti extends GameLogic{
@@ -626,4 +628,33 @@ class Enemy extends Player{
     this.walk = !this.walk;
   }
 }
+
+class GameOver {
+  constructor(){
+    this.x = WIDTH/2;
+    this.y = HEIGHT/2;
+  }
+
+  update() {
+    p.fill(p.color(0,0,0));
+    p.rectMode(p.CENTER);
+    p.rect(this.x, this.y, WIDTH/2, HEIGHT/2);
+  }
+}
+
+class GameOverText {
+  constructor(){
+    this.x = WIDTH/2;
+    this.y = HEIGHT/2;
+  }
+
+  update() {
+    p.fill(p.color(255,0,0));
+    p.textSize(50);
+    p.textAlign(p.CENTER);
+    p.text('GAME OVER', this.x, this.y);
+  }
+}
+
+
 } // FINE
