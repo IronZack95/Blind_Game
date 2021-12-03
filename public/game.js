@@ -112,6 +112,14 @@ class GameLogicSingle extends GameLogic{
     console.log('creati questi oggetti: mine: ', this.mines, 'cristalli: ',this.crystals, 'walls: ',this.walls);
 
     this.s = new SoundLogic();
+
+    //attributo per fine gioco
+    this.gameFinished = false;
+  }
+
+  update(){
+    super.update();
+    this.endGame();   //check if game is finished
   }
 
   //CREAZIONE MURI RANDOM
@@ -141,8 +149,6 @@ class GameLogicSingle extends GameLogic{
     //ritorno oggetto contenente tutti i muri istanziati
     return walls;
   }
-
-  //CREAZIONE DEGLI OGGETTI MINA E CRISTALLO ***************
 
   createObjects(numObj, walls) {
     let mines = [];
@@ -183,6 +189,26 @@ class GameLogicSingle extends GameLogic{
     }
 
   } //end of createObjects()
+
+  //fine gioco per single Player
+  endGame(){
+    //la condizione è aver trovato tutti i cristalli
+    if(this.crystals.every(e => e.eaten === true) && this.gameFinished === false){
+      
+      //stoppa i suoni del player (stoppare le mine crea problemi)
+      walk_sound.stop();
+      
+      //fermo il player
+      this.p.walk = false;
+
+      //setto che il gioco è finito
+      this.gameFinished = true;
+
+      alert("congratulations! You found all " +NUM_CRISTALLI+ " crystals!");
+      //reload su main Lobby
+      window.location.reload();
+     }
+  } 
 } // end of GameLogic
 
 class GameLogicMulti extends GameLogic{
