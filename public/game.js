@@ -11,7 +11,7 @@
  const THRESHOLD = 100000;
 
  const NUM_MINE = 30;
- const NUM_CRISTALLI = 35;
+ const NUM_CRISTALLI = 1;//35
  const MINE_DISTANCE = 80;   //distanza entro cui inizio a sentire mina
 
  const CRYSTAL = 100;        //punti per un cristallo
@@ -55,7 +55,9 @@ class GameLogic{
     this.p = null;
     this.enemy = [];
     this.ctx =  p.createCanvas(WIDTH, HEIGHT);
-    this.s = null;  //sound logic, si inizializza nella classe child
+    //this.s = null;  //sound logic, si inizializza nella classe child
+    this.s = new SoundLogic();
+    this.gameOver = new GameOver();
   }
   update(){
 
@@ -89,10 +91,35 @@ class GameLogic{
 
     //update suoni
     this.s.update(this.p, this.mines);
+
+    this.checkEndGame();
   }
 
   updateScore(){
    document.getElementById('testoCounter').innerHTML = this.playerScore;
+  }
+
+  checkEndGame(){
+    if(this.crystals.some(e => e.eaten === false)){
+      return;
+    } else if(this.crystals.every(e => e.eaten === true)) {
+
+      p.clear();
+
+      //stoppa i suoni del player e delle mine
+      for(let i=0; i<NUM_MINE; i++){
+        let suono = mine_sound_array[i];
+        suono.stop();
+      }
+      walk_sound.stop();
+
+      //fermo il player
+      this.p.stopWalk();
+
+      this.gameOver.update();
+
+      setTimeout(function(){ window.location.reload(); }, 3000);
+    };
   }
 } //fine GameLogic() superclass
 
@@ -109,37 +136,10 @@ class GameLogicSingle extends GameLogic{
     this.crystals = objects.crystals;
     this.p = new Player(p.width/2,580,'#0077ff');
     console.log('creati questi oggetti: mine: ', this.mines, 'cristalli: ',this.crystals, 'walls: ',this.walls);
-
-    this.s = new SoundLogic();
-
-    this.gameOver = new GameOver(); 
-    this.gameOverText = new GameOverText();
   }
 
   update(){
     super.update();
-
-    if(this.crystals.some(e => e.eaten === false)){
-      return;
-    } else if(this.crystals.every(e => e.eaten === true)) {
-      
-      p.clear();
-      
-      //stoppa i suoni del player e delle mine
-      for(let i=0; i<NUM_MINE; i++){
-        let suono = mine_sound_array[i];
-        suono.stop();
-      }
-      walk_sound.stop();
-
-      //fermo il player
-      this.p.walk = false;
-      
-      this.gameOver.update();
-      this.gameOverText.update();
-
-      setTimeout(function(){ window.location.reload(); }, 3000);
-    };
   }
 
   //CREAZIONE MURI RANDOM
@@ -209,8 +209,6 @@ class GameLogicSingle extends GameLogic{
     }
 
   } //end of createObjects()
-
-  
 } // end of GameLogic
 
 class GameLogicMulti extends GameLogic{
@@ -232,7 +230,6 @@ class GameLogicMulti extends GameLogic{
     this.r = new Recive(this.p,this.enemy,this.crystals,this.mines);
 
     console.log('creati questi oggetti: mine: ', this.mines, 'cristalli: ',this.crystals, 'walls: ',this.walls);
-    this.s = new SoundLogic();
 
   }
 
@@ -487,11 +484,12 @@ class Player{
   }
 
   update(walls){
-    if(this.walk == true){
-      if(this.i > p.frameRate()){ this.i  = 0; }
+    //if(this.walk == true){
+      if(this.i > p.frameRate()){ this.i = 0; }
       else{ this.i ++; }
-    }else{this.i = 0;}
+    //}else{this.i = 0;}
     this.walk = false;
+    //console.log(p.deltaTime)
 
     let dir =  Number.parseFloat( 2 * p.PI * p.winMouseX / p.windowWidth).toFixed(2);  //tra 0 e 1
     if(dir <= 2 * p.PI && dir > 0){ this.dir = dir; }
@@ -550,11 +548,11 @@ class Player{
       //console.log('0')
       p.rect(this.xBody, this.yBody+this.w/2, this.w/4, this.w/1.5,this.radius);
       p.rect(this.xBody+this.w-this.w/4, this.yBody+this.w/2, this.w/4, this.w/1.5,this.radius);
-     } else if(this.i  >= p.frameRate()/4 && this.i <= 2*p.frameRate()/4){
+    } else if(this.i  >= p.frameRate()/4 && this.i <= 2*p.frameRate()/4 && this.walk == true){
       //console.log('-1')
       p.rect(this.xBody, this.yBody+this.w/2, this.w/4, this.w/1.5-this.w/8,this.radius);
       p.rect(this.xBody+this.w-this.w/4, this.yBody+this.w/2, this.w/4, this.w/1.5,this.radius);
-    } else if(this.i >= 3*p.frameRate()/4){
+    } else if(this.i >= 3*p.frameRate()/4 && this.walk == true){
       //console.log('1')
       p.rect(this.xBody, this.yBody+this.w/2, this.w/4, this.w/1.5,this.radius);
       p.rect(this.xBody+this.w-this.w/4, this.yBody+this.w/2, this.w/4, this.w/1.5-this.w/8,this.radius);
@@ -591,6 +589,10 @@ class Player{
     let dir = Number.parseFloat(this.dir).toFixed(2);
     //console.log(dir);
     return dir;
+  }
+
+  stopWalk(){
+    this.walk = false;
   }
 }
 
@@ -639,22 +641,11 @@ class GameOver {
     p.fill(p.color(0,0,0));
     p.rectMode(p.CENTER);
     p.rect(this.x, this.y, WIDTH/2, HEIGHT/2);
-  }
-}
-
-class GameOverText {
-  constructor(){
-    this.x = WIDTH/2;
-    this.y = HEIGHT/2;
-  }
-
-  update() {
     p.fill(p.color(255,0,0));
     p.textSize(50);
     p.textAlign(p.CENTER);
     p.text('GAME OVER', this.x, this.y);
   }
 }
-
 
 } // FINE
