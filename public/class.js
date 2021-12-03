@@ -34,6 +34,7 @@ class Pagina{
   }
 }
 
+let playerName;
 class Lobby extends Pagina{    // costruisco la pagina della lobby
 
   constructor() {
@@ -77,14 +78,23 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     bottone = '<button id = "multiplayer" class = "button">MultiPlayer</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
 
+    let input = '<input type="text" id="PlayerName" value="Your name">';
+    centerPanel.insertAdjacentHTML('afterEnd', input);
+
     let self = this;
     singleplayer.onclick = function(){
       let txt = self.getText()
       txt.innerText = "Play!!";
+      inputFieldCaputre();
       setTimeout(function(){ pagina = new SinglePlayer();},1000)
     }
     multiplayer.onclick = function(){
+      inputFieldCaputre();
       setTimeout(function(){ pagina = new MultiPlayerLobby();},1000)
+    }
+
+    function inputFieldCaputre() {
+      playerName = document.getElementById("PlayerName").value;
     }
 
   }
@@ -130,6 +140,12 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     n.innerHTML = "0";
     super.getSchermo().appendChild(c);
     c.appendChild(n)
+
+    //creo player getName   // DA SISTEMARE
+    let name = document.createElement("div");
+    name.id= "PlayerName";
+    name.innerHTML = playerName;
+    super.getSchermo().appendChild(name);
     }
 }
 
@@ -172,13 +188,13 @@ class MultiPlayerLobby extends Pagina{
 
     let pulsante1 = '<button id = "quickGame" class = "button">Quick Game</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', pulsante1);
-
+    /*
     let pulsante2 = '<button id = "createGame" class = "button">Create Game</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', pulsante2);
 
     let pulsante3 = '<button id = "joinGame" class = "button">Join Game</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', pulsante3);
-
+    */
     // SOCKET IO
     socket = io();
 
@@ -204,7 +220,7 @@ class MultiPlayerLobby extends Pagina{
     });
 
     quickGame.onclick = function(){
-        socket.emit("startGame",(response) => {
+        socket.emit("Lobby",(response) => {
             console.log("Il server dice: "+response.status+ " la mia stanza è: "+response.room); // ok
             this.room = response.room;
             if(response.status == "start"){

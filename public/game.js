@@ -47,6 +47,7 @@
 class GameLogic{
   constructor(){
     this.playerScore = 0;
+    this.lastPlayerScore = this.playerScore;
     this.walls = [];
     this.mines = [];
     this.crystalEvent = {status: false, index: null};
@@ -96,7 +97,10 @@ class GameLogic{
   }
 
   updateScore(){
-   document.getElementById('testoCounter').innerHTML = this.playerScore;
+    if(this.playerScore != this.lastPlayerScore){
+      document.getElementById('testoCounter').innerHTML = this.playerScore;
+      this.lastPlayerScore = this.playerScore;
+    }
   }
 
   checkEndGame(){

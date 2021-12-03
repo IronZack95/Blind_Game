@@ -28,7 +28,7 @@ server.io.on("connection", (socket) => {
   });
 
   // GAME  start game  ACKNOWLEDGMENT
-  socket.on("startGame", (callback) => {
+  socket.on("Lobby", (callback) => {
     let response;
     let stanza;
     let lastIndex = parseInt(game.rooms.length-1);
@@ -51,14 +51,6 @@ server.io.on("connection", (socket) => {
       response = "start";
       stanza = game.rooms[lastIndex].getName();
     }
-
-    /*
-    else if(game.room.client.length >= game.MAX_PLAYERS){
-      console.log("full");
-      response = "full"
-      stanza = "---"
-    }
-    */
     // stampo l'ultimo game state aggiunto
     console.log(game.rooms[game.rooms.length-1])
     callback({
@@ -102,28 +94,28 @@ server.io.on("connection", (socket) => {
   });
 
   // GAME  dati di cristalli con trasmissione TCP standard
-socket.on("sendEaten", (data) => {
-  data['sender']= socket.id;
-  let msg = JSON.parse(JSON.stringify(data));
-  delete msg['address'];
-  //inoltro il messaggio all'avversario
-  data.address.forEach((item, i) => {
-    server.io.in(item).emit("getEaten",msg);
+  socket.on("sendEaten", (data) => {
+    data['sender']= socket.id;
+    let msg = JSON.parse(JSON.stringify(data));
+    delete msg['address'];
+    //inoltro il messaggio all'avversario
+    data.address.forEach((item, i) => {
+      server.io.in(item).emit("getEaten",msg);
+    });
+    console.log(msg);
   });
-  console.log(msg);
-});
 
-// GAME  dati di cristalli con trasmissione TCP standard
-socket.on("sendExplosion", (data) => {
-data['sender']= socket.id;
-let msg = JSON.parse(JSON.stringify(data));
-delete msg['address'];
-//inoltro il messaggio all'avversario
-data.address.forEach((item, i) => {
-  server.io.in(item).emit("getExplosion",msg);
-});
-console.log(msg);
-});
+  // GAME  dati di mine con trasmissione TCP standard
+  socket.on("sendExplosion", (data) => {
+    data['sender']= socket.id;
+    let msg = JSON.parse(JSON.stringify(data));
+    delete msg['address'];
+    //inoltro il messaggio all'avversario
+    data.address.forEach((item, i) => {
+      server.io.in(item).emit("getExplosion",msg);
+    });
+    console.log(msg);
+  });
 
 
   // scambio messaggi privati DA SISTEMARE

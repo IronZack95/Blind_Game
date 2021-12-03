@@ -12,6 +12,9 @@ const GRID_SIZE = Math.floor(WIDTH/LATO); //10 griglia
 const RESOLUTION = 2; //2 ogni box contiente RESOLUTION X RESOLUTION muri dentro la griglia
 const THRESHOLD = 100000;
 
+const COLOR1 = '#0022ff';
+const COLOR2 = '#ff2200';
+
 const utility = require('./utility')
 // arrey di game state
 var rooms = [];
@@ -90,13 +93,13 @@ class GameState{
     p1.id = this.getClient()[0];
     p1.position.x = this.canvas.width/2;
     p1.position.y = this.canvas.height -20;
-    p1.color = '#ff2200';
+    p1.color = COLOR1;
     this.players.push(p1);
     let p2 = JSON.parse(JSON.stringify(player));
     p2.id = this.getClient()[1];
     p2.position.x = this.canvas.width/2;
     p2.position.y = 20;
-    p2.color = '#0022ff';
+    p2.color = COLOR2;
     this.players.push(p2);
 
 
