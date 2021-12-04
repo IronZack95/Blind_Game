@@ -117,6 +117,12 @@ server.io.on("connection", (socket) => {
     console.log(msg);
   });
 
+  // GESTIONE END GAME SinglePlayer
+  socket.on("EndGame", (data) => {
+    console.log(data);
+    // TODO push dati in un file
+  });
+
 
   // scambio messaggi privati DA SISTEMARE
   socket.on("game.room message", (room, msg) => {

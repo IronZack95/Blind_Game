@@ -36,6 +36,8 @@
     else if(type == 'MultiPlayer'){g = new GameLogicMulti(gameState);}
   }
 
+
+
   p.draw = function() {
     p.clear();
     p.background(0);
@@ -58,7 +60,8 @@ class GameLogic{
     this.ctx =  p.createCanvas(WIDTH, HEIGHT);
     this.s = new SoundLogic();
     this.gameOver = new GameOver();
-    this.startTime = Date.now();  //per timer
+    this.startGameTime = Date.now();
+    this.timer = 0;
     this.i = 0; //per timer
   }
 
@@ -93,10 +96,11 @@ class GameLogic{
 
     //update suoni
     this.s.update(this.p, this.mines);
-    
+
     this.updateScore();
     this.updateTimer();
-    this.checkEndGame();
+    if(this.checkEndGame()){p.noLoop();}
+
   }
 
   updateScore(){
@@ -109,11 +113,11 @@ class GameLogic{
   updateTimer(){
     this.i++;
     let now = Date.now();
-    let temp = ((now - this.startTime)/ 1000).toFixed(1);
-    if(this.i%10 == 0 && !this.checkEndGame()){
+    let temp = ((now - this.startGameTime)/ 1000).toFixed(1);
+    if(this.i%10 == 0){
       document.getElementById('testoTimer').innerHTML = temp;
     } else {
-      return temp;
+      this.timer = temp;
     }
   }
 
@@ -122,7 +126,7 @@ class GameLogic{
       return false;
     } else if(this.crystals.every(e => e.eaten === true)) {
 
-      p.clear();
+      //p.clear();
 
       //stoppa i suoni del player e delle mine
       for(let i=0; i<NUM_MINE; i++){
@@ -134,9 +138,14 @@ class GameLogic{
       //fermo il player
       this.p.stopWalk();
 
-      this.gameOver.update(this.updateTimer());
+      this.gameOver.update();
 
-      setTimeout(function(){ window.location.reload(); }, 3000);
+      let score = this.playerScore;
+      let timer = this.timer;
+
+      setTimeout(function(){ pagina = new EndGame(playerName, score, timer); p.remove()}, 3000);
+      //setTimeout(function(){ pagina = new MultiPlayerLobby();},1000)
+      console.log("gioco finito")
       return true;
     };
   }
@@ -658,9 +667,11 @@ class GameOver {
   }
 
   update() {
+    /*
     p.fill(p.color(0,0,0));
     p.rectMode(p.CENTER);
     p.rect(this.x, this.y, WIDTH/2, HEIGHT/2);
+    */
     p.fill(p.color(255,0,0));
     p.textSize(50);
     p.textAlign(p.CENTER);

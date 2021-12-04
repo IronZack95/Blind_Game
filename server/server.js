@@ -7,7 +7,6 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, { /* options */ });
 
-
 app.use(express.static('public'));
 app.use(express.json({limit : '2mb'}));
 

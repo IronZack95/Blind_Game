@@ -104,6 +104,7 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
   }
 }
 
+
 class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
   // variabili private
   #snake;
@@ -172,6 +173,7 @@ class Canvas{
 }
 
 let socket;
+
 class MultiPlayerLobby extends Pagina{
   constructor() {
     super();
@@ -243,6 +245,45 @@ class MultiPlayerLobby extends Pagina{
     }
 
   }
+}
+
+class EndGame extends Pagina{    // costruisco la pagina della lobby
+
+  constructor(name, score, time){
+    super();    // chiamo il costruttore della superclasse
+    this.name = name;
+    this.score = score;
+    this.time = time;
+
+    // creo titolo
+    let h1 = document.createElement("h1");
+    h1.id= "title";
+    h1.innerHTML = "GAME OVER"
+    super.getSchermo().appendChild(h1);
+
+    // Center  Panel
+    let centerPanel = document.createElement("div");
+    //centerPanel.className = "center panel";
+    centerPanel.classList.add("center")
+    super.getSchermo().appendChild(centerPanel);
+    let text = '<div id = "text">CONGRATS!!</div>'
+    centerPanel.insertAdjacentHTML('afterBegin', text);
+
+    // SOCKET
+    socket = io();
+
+    socket.on("connect", () => {
+      console.log("Il mio socket ID è: "+socket.id);
+      let msg = {name: this.name, score:this.score, time: this.time};
+      console.log(msg)
+      socket.emit("EndGame",msg);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Mi sono disconnesso: "+socket.id);
+    });
+  }
+
 }
 
 let gameState;
