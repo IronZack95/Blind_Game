@@ -139,14 +139,23 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     n.id = "testoCounter";
     n.innerHTML = "0";
     super.getSchermo().appendChild(c);
-    c.appendChild(n)
+    c.appendChild(n);
+
+    // Creo timer
+    let f = document.createElement("div");
+    let g = document.createElement("h3");
+    f.id = "timer";
+    g.id = "testoTimer";
+    g.innerHTML = "0";
+    super.getSchermo().appendChild(f);
+    f.appendChild(g);
 
     //creo player getName   // DA SISTEMARE
     let name = document.createElement("div");
     name.id= "PlayerName";
     name.innerHTML = playerName;
     super.getSchermo().appendChild(name);
-    }
+  }
 }
 
 let type;
@@ -265,6 +274,16 @@ class MultiPlayer extends Pagina{
       n.innerHTML = "0";
       super.getSchermo().appendChild(c);
       c.appendChild(n)
+
+      // Creo timer
+      let f = document.createElement("div");
+      let g = document.createElement("h3");
+      f.id = "timer";
+      g.id = "testoTimer";
+      g.innerHTML = "0";
+      super.getSchermo().appendChild(f);
+      f.appendChild(g)
+
       }
   }
 

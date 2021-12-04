@@ -56,10 +56,12 @@ class GameLogic{
     this.p = null;
     this.enemy = [];
     this.ctx =  p.createCanvas(WIDTH, HEIGHT);
-    //this.s = null;  //sound logic, si inizializza nella classe child
     this.s = new SoundLogic();
     this.gameOver = new GameOver();
+    this.startTime = Date.now();  //per timer
+    this.i = 0; //per timer
   }
+
   update(){
 
     this.walls.forEach(function(wall){wall.updateWall(); })
@@ -88,11 +90,12 @@ class GameLogic{
 
       }; }
       //console.log(this.crystalEvent)
-    this.updateScore();
 
     //update suoni
     this.s.update(this.p, this.mines);
-
+    
+    this.updateScore();
+    this.updateTimer();
     this.checkEndGame();
   }
 
@@ -103,9 +106,20 @@ class GameLogic{
     }
   }
 
+  updateTimer(){
+    this.i++;
+    let now = Date.now();
+    let temp = ((now - this.startTime)/ 1000).toFixed(1);
+    if(this.i%10 == 0 && !this.checkEndGame()){
+      document.getElementById('testoTimer').innerHTML = temp;
+    } else {
+      return temp;
+    }
+  }
+
   checkEndGame(){
     if(this.crystals.some(e => e.eaten === false)){
-      return;
+      return false;
     } else if(this.crystals.every(e => e.eaten === true)) {
 
       p.clear();
@@ -120,9 +134,10 @@ class GameLogic{
       //fermo il player
       this.p.stopWalk();
 
-      this.gameOver.update();
+      this.gameOver.update(this.updateTimer());
 
       setTimeout(function(){ window.location.reload(); }, 3000);
+      return true;
     };
   }
 } //fine GameLogic() superclass
@@ -355,7 +370,7 @@ class Wall{
   checkCollisionsPlayer(playerX, playerY) {
     //let playerX = giocatoreX; let playerY = giocatoreY; let player = giocatore;
     if (this.checkOverlapPlayer(playerX, playerY)){
-      console.log('OUCH!!');
+      //console.log('OUCH!!');
       return true;
     } else {
       return false;};
@@ -636,9 +651,10 @@ class Enemy extends Player{
 }
 
 class GameOver {
-  constructor(){
+  constructor(timeValue){
     this.x = WIDTH/2;
     this.y = HEIGHT/2;
+    this.time = timeValue;
   }
 
   update() {
@@ -649,6 +665,8 @@ class GameOver {
     p.textSize(50);
     p.textAlign(p.CENTER);
     p.text('GAME OVER', this.x, this.y);
+    // TODO, non so perchè non fa vedere un secondo testo T-T
+    //p.text('time: ', this.timeValue);
   }
 }
 

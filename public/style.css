@@ -127,7 +127,7 @@ img.snakeRed{
 }
 
 /* cose per counter */
-#counter {
+#counter, #timer {
   padding: 2px;
   position: relative;
   /*left: 50%;
@@ -143,7 +143,7 @@ img.snakeRed{
   background-color: #262626;
 }
 
-#testoCounter {
+#testoCounter, #testoTimer {
   font-family: Arial, Helvetica, sans-serif;
   text-align: right;
   color: white;
