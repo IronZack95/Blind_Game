@@ -2,7 +2,7 @@
  const HEIGHT = 600;        //...del canvas
  const LATO = 40;           //lato dei quadrati che formano i muri random
  const RAGGIO_P = 12;       //raggio del giocatore
- const RAGGIO_C = 8;        //raggio cristalli
+ const RAGGIO_C = 10;        //raggio cristalli
  const RAGGIO_M = 5;        //raggio mine
 
  // per Perlin
@@ -11,7 +11,7 @@
  const THRESHOLD = 100000;
 
  const NUM_MINE = 30;
- const NUM_CRISTALLI = 1;//35
+ const NUM_CRISTALLI = 10;//35
  const MINE_DISTANCE = 80;   //distanza entro cui inizio a sentire mina
 
  const CRYSTAL = 100;        //punti per un cristallo
@@ -19,15 +19,19 @@
 
  let sketch = function(p) {
 
-  /* preload dei suoni *************************************/
-  let mine_sound_array = []; let crystal_sound;
-
+  /* preload dei suoni e delle immagini *********************/
+  let mine_sound_array = []; let crystal_sound, crystal_img, skull_img;
+  
     p.preload = function(){
+      //suoni
       p.soundFormats('mp3', 'ogg');
       for(var i=0; i < NUM_MINE; i++){mine_sound_array[i] = p.loadSound('sounds/mine')};
       crystal_sound = p.loadSound('sounds/crystal');
       walk_sound = p.loadSound('sounds/walk');
       console.log('Loaded these sounds: ', mine_sound_array, crystal_sound, walk_sound);
+      //immagini
+      crystal_img = p.loadImage('images/crystal.png');
+      skull_img = p.loadImage('images/skull.png');
     };
 
 /**********************************************************/
@@ -400,9 +404,9 @@ class Mine{
     this.x = x;
     this.y = y;
     this.exploded = false;
-    //this.color = p.color(204,0,0);  //di default è rossa (in realtà nera)
+    this.color = p.color(204,0,0);  //di default è rossa (in realtà nera)
     //per mettere le mine nere:
-    this.color = p.color(0);
+    //this.color = p.color(0);
   }
 
   getExplosion(){
@@ -416,7 +420,10 @@ class Mine{
   }
 
   updateMine(){
-    this.drawMine();
+    if(!this.exploded){this.drawMine();} else {
+      p.image(skull_img, this.x-12, this.y-12, 25, 23)
+    }
+    
   }
 
   drawMine(){
@@ -450,7 +457,8 @@ class Crystal{
     this.x = x;
     this.y = y;
     this.eaten = false;
-    this.color = p.color(153, 255, 255);
+    this.dimensions = 2*RAGGIO_C;
+    //this.color = p.color(153, 255, 255);
   }
 
   getEaten(){
@@ -466,17 +474,18 @@ class Crystal{
   }
 
   updateCrystal(){
-    this.drawCrystal();
+    if(this.eaten == false){this.drawCrystal();} 
   }
 
   drawCrystal(){
-    p.fill(this.color);
-    p.circle(this.x, this.y, 2*RAGGIO_C);
+    p.image(crystal_img, this.x-RAGGIO_M, this.y-RAGGIO_M, 25, 23)
+    //p.fill(this.color);
+    //p.circle(this.x, this.y, 2*RAGGIO_C);
   }
 
   checkEatCrystal(playerX, playerY){
     if(this.eaten == true){   // verifico che non sia già stato mangiato
-      this.color = p.color(0);
+     return;
     }else{
       //first it checks the collision between the two circles
       var dx = (this.x + RAGGIO_P) - (playerX + RAGGIO_C);
@@ -486,7 +495,6 @@ class Crystal{
 
         console.log('ho mangiato un cristallo');
         this.eaten = true;   //funzionale al singolo cristallo
-        this.color = p.color(0);
         return true;
 
       } else {
