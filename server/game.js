@@ -15,6 +15,8 @@ const THRESHOLD = 100000;
 const COLOR1 = '#0022ff';
 const COLOR2 = '#ff2200';
 
+const DATAPATH = '../data.json';
+
 const utility = require('./utility')
 // arrey di game state
 var rooms = [];
@@ -229,4 +231,4 @@ class Mine extends Object{
   }
 }
 
-module.exports = {MAX_PLAYERS,rooms,players,GameState};
+module.exports = {DATAPATH,MAX_PLAYERS,rooms,players,GameState};

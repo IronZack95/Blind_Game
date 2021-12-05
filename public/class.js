@@ -266,22 +266,26 @@ class EndGame extends Pagina{    // costruisco la pagina della lobby
     //centerPanel.className = "center";
     centerPanel.classList.add("center")
     super.getSchermo().appendChild(centerPanel);
+
+    // Bottom  Panel
+    let bottomPanel = document.createElement("div");
+    bottomPanel.classList.add("bottom")
+    super.getSchermo().appendChild(bottomPanel);
+
     let text = '<div id = "text">CONGRATS!!</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
 
     //punteggi fine partita
     let a = document.createElement("h3");
     let b = document.createElement("h3");
-   
-    
-    a.id = "finalscore"; 
+
+    a.id = "finalscore";
     b.id = "finalscore";
     a.innerHTML = 'Final score:  ' + score;
     b.innerHTML = 'Time :   ' + time;
-  
+
     centerPanel.appendChild(a);
     centerPanel.appendChild(b);
-    
 
     // SOCKET
     socket = io();
@@ -290,7 +294,22 @@ class EndGame extends Pagina{    // costruisco la pagina della lobby
       console.log("Il mio socket ID è: "+socket.id);
       let msg = {name: this.name, score:this.score, time: this.time};
       console.log(msg)
-      socket.emit("EndGame",msg);
+      socket.emit("EndGame",msg, (response) => {
+        console.log(response.status);
+        let classifica = '';
+        var i = 1;
+        for( let key in response.status){
+          classifica = classifica + i + '° '+response.status[key].name + ' SCORE: ' + response.status[key].score + ' TIME: ' + response.status[key].time+ '<br>';
+          //classifica = JSON.stringify(response.status[key]) + classifica;
+          i++;
+        }
+        console.log(classifica);
+        let a = document.createElement("div");
+        a.id = "CloudScore";
+        //a.className = "center";
+        a.innerHTML = classifica;
+        bottomPanel.appendChild(a);
+      });
     });
 
     socket.on("disconnect", () => {

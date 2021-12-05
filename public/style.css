@@ -35,9 +35,9 @@ body {
   font-family: papytus;
   font-weight: bolder;
   }
-  
+
   button:hover {background-color: #1cd79f}
-  
+
   button:active {
   background-color: #7bff00;
   box-shadow: 0 2px #666;
@@ -90,9 +90,9 @@ body {
   font-family: papytus;
   font-weight: bolder;
   }
-  
+
   button:hover {background-color: #1cd79f}
-  
+
   button:active {
   background-color: #7bff00;
   box-shadow: 0 2px #666;
@@ -191,6 +191,29 @@ img.snakeRed{
   position: relative;
 }
 
+#CloudScore {
+  max-width: 400px;
+  width: 80%;
+  height: 15%;
+  border-radius: 18px;
+  text-align: center;
+  color: white;
+  /*background-color: #002c35;
+  border: 2px solid #000000;*/
+  font-size: 18px;
+  min-width: 200px;
+  position: absolute;
+  /*top: 50%;*/
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  /* left: 21%; */
+  /* top: 50%;
+  align-items: center;
+  justify-content: center;
+  margin: 0;*/
+}
+
          /* cose per multiplayer */
 
 #message {
@@ -224,28 +247,6 @@ img.snakeRed{
   max-width: 400px;
   width: 80%;
   height: 15%;
-  border-radius: 18px;
-  text-align: center;
-  background-color: #002c35;
-  border: 2px solid #000000;
-  font-size: 18px;
-  min-width: 200px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  /* left: 21%; */
-  /* top: 50%;
-  align-items: center;
-  justify-content: center;
-  margin: 0;*/
-}
-
-.center_endgame {
-  max-width: 400px;
-  width: 80%;
-  height: 60%;
   border-radius: 18px;
   text-align: center;
   background-color: #002c35;

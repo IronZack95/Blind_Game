@@ -1,6 +1,7 @@
 // modulo che contiene tutte le connessioni
 const server = require('./server/server')
 const game = require('./server/game')
+const fs = require('fs')
 //const game = require('./server/game')
 
 
@@ -118,9 +119,36 @@ server.io.on("connection", (socket) => {
   });
 
   // GESTIONE END GAME SinglePlayer
-  socket.on("EndGame", (data) => {
-    console.log(data);
+  socket.on("EndGame", (data,callback) => {
+    //console.log(data);
     // TODO push dati in un file
+    var fileContents;
+    try {
+      fileContents = fs.readFileSync(game.DATAPATH);
+      fileContents = JSON.parse(fileContents);
+      fileContents.push(data);
+      // ordino i campi secondo il tempo impiegato
+      fileContents.sort(function(a, b){return a.time-b.time});
+
+      console.log('Update file', fileContents);
+    } catch (err) {
+      if (err.code === 'ENOENT') {  // controllo se il file esiste
+        fileContents = [];
+        fileContents.push(data);
+        //console.log('File not found! create file', fileContents);
+      } else {
+        throw err;
+      }
+    }
+    // write file
+    fs.writeFile(game.DATAPATH, JSON.stringify(fileContents),function(err, result) {
+      if(err) console.log('error', err);}
+    );
+    // mando indietro la risposta
+    callback({
+      status: fileContents
+    });
+
   });
 
 
