@@ -31,12 +31,11 @@
     };
 
 /**********************************************************/
+
   p.setup = function() {
     if(type == 'SinglePlayer'){g = new GameLogicSingle(WIDTH,HEIGHT);}
     else if(type == 'MultiPlayer'){g = new GameLogicMulti(gameState);}
   }
-
-
 
   p.draw = function() {
     p.clear();
@@ -60,8 +59,8 @@ class GameLogic{
     this.ctx =  p.createCanvas(WIDTH, HEIGHT);
     this.s = new SoundLogic();
     this.gameOver = new GameOver();
-    this.startGameTime = Date.now();
-    this.timer = 0;
+    this.startGameTime = Date.now(); //per timer
+    this.timer = 0; //per timer
     this.i = 0; //per timer
   }
 
@@ -114,9 +113,9 @@ class GameLogic{
     this.i++;
     let now = Date.now();
     let temp = ((now - this.startGameTime)/ 1000).toFixed(1);
+    
     if(this.i%10 == 0){
       document.getElementById('testoTimer').innerHTML = temp;
-    } else {
       this.timer = temp;
     }
   }
@@ -125,8 +124,6 @@ class GameLogic{
     if(this.crystals.some(e => e.eaten === false)){
       return false;
     } else if(this.crystals.every(e => e.eaten === true)) {
-
-      //p.clear();
 
       //stoppa i suoni del player e delle mine
       for(let i=0; i<NUM_MINE; i++){
@@ -138,13 +135,14 @@ class GameLogic{
       //fermo il player
       this.p.stopWalk();
 
+      //chiamo il testo GAME OVER
       this.gameOver.update();
-
+      //valori da passare a schermata EndGame
       let score = this.playerScore;
       let timer = this.timer;
 
       setTimeout(function(){ pagina = new EndGame(playerName, score, timer); p.remove()}, 3000);
-      //setTimeout(function(){ pagina = new MultiPlayerLobby();},1000)
+      
       console.log("gioco finito")
       return true;
     };

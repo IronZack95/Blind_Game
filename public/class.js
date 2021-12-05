@@ -263,11 +263,25 @@ class EndGame extends Pagina{    // costruisco la pagina della lobby
 
     // Center  Panel
     let centerPanel = document.createElement("div");
-    //centerPanel.className = "center panel";
+    //centerPanel.className = "center";
     centerPanel.classList.add("center")
     super.getSchermo().appendChild(centerPanel);
     let text = '<div id = "text">CONGRATS!!</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
+
+    //punteggi fine partita
+    let a = document.createElement("h3");
+    let b = document.createElement("h3");
+   
+    
+    a.id = "finalscore"; 
+    b.id = "finalscore";
+    a.innerHTML = 'Final score:  ' + score;
+    b.innerHTML = 'Time :   ' + time;
+  
+    centerPanel.appendChild(a);
+    centerPanel.appendChild(b);
+    
 
     // SOCKET
     socket = io();
