@@ -196,16 +196,16 @@ img.snakeRed{
   width: 80%;
   height: 15%;
   border-radius: 18px;
-  text-align: center;
+  text-align: left;
   color: white;
   /*background-color: #002c35;
   border: 2px solid #000000;*/
   font-size: 18px;
   min-width: 200px;
   position: absolute;
-  /*top: 50%;*/
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 130px;
+  /*left: 20%;*/
+  transform: translate(5%, -50%);
 
   /* left: 21%; */
   /* top: 50%;

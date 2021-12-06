@@ -1,6 +1,6 @@
 const MAX_PLAYERS = 2;
-const MAX_MINES = 30;
-const MAX_CRYSTALS = 35;
+const MAX_MINES = 30; //30
+const MAX_CRYSTALS = 1 //35;
 
 const WIDTH = 1200;         //...del canvas
 const HEIGHT = 600;        //...del canvas
@@ -43,6 +43,7 @@ class GameState{
       this.walls = [];
       this.mines =  [];
       this.crystals = [];
+      this.startTime = null;
     return this;
   }
   getClient(){
@@ -77,7 +78,8 @@ class GameState{
       players: this.players,
       walls: walls,
       mines: mines,
-      crystals:crystals
+      crystals:crystals,
+      startTime: this.startTime
     }
 
     return gameState;
@@ -163,6 +165,9 @@ class GameState{
         this.crystals[i-(MAX_MINES)] = new Crystal(x_r, y_r)
       }
     } //end of for loop
+
+    // Inizializzo tempo
+    this.startTime = Date.now();
 
     function checkEveryWall(walls, x_r, y_r){
       for (var i = 0; i < walls.length; i++){

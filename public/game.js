@@ -11,7 +11,7 @@
  const THRESHOLD = 100000;
 
  const NUM_MINE = 30;
- const NUM_CRISTALLI = 10;//35
+ const NUM_CRISTALLI =  1;//35
  const MINE_DISTANCE = 80;   //distanza entro cui inizio a sentire mina
 
  const CRYSTAL = 100;        //punti per un cristallo
@@ -21,8 +21,8 @@
 
   /* preload dei suoni e delle immagini *********************/
   let mine_sound_array = []; let crystal_sound, crystal_img, skull_img;
-  
-    p.preload = function(){
+
+  p.preload = function(){
       //suoni
       p.soundFormats('mp3', 'ogg');
       for(var i=0; i < NUM_MINE; i++){mine_sound_array[i] = p.loadSound('sounds/mine')};
@@ -102,7 +102,7 @@ class GameLogic{
 
     this.updateScore();
     this.updateTimer();
-    if(this.checkEndGame()){p.noLoop();}
+    this.checkEndGame();
 
   }
 
@@ -117,16 +117,16 @@ class GameLogic{
     this.i++;
     let now = Date.now();
     let temp = ((now - this.startGameTime)/ 1000).toFixed(1);
-    
+
     if(this.i%10 == 0){
       document.getElementById('testoTimer').innerHTML = temp;
       this.timer = temp;
     }
   }
 
-  checkEndGame(){
+  checkEndGame(endGameFunction){
     if(this.crystals.some(e => e.eaten === false)){
-      return false;
+      return;
     } else if(this.crystals.every(e => e.eaten === true)) {
 
       //stoppa i suoni del player e delle mine
@@ -141,14 +141,10 @@ class GameLogic{
 
       //chiamo il testo GAME OVER
       this.gameOver.update();
-      //valori da passare a schermata EndGame
-      let score = this.playerScore;
-      let timer = this.timer;
-
-      setTimeout(function(){ pagina = new EndGame(playerName, score, timer); p.remove()}, 3000);
-      
+      // fermo il loop dell'update
+      p.noLoop();
+      setTimeout(endGameFunction, 3000);
       console.log("gioco finito")
-      return true;
     };
   }
 } //fine GameLogic() superclass
@@ -239,6 +235,13 @@ class GameLogicSingle extends GameLogic{
     }
 
   } //end of createObjects()
+
+  checkEndGame(){
+    let score = this.playerScore;
+    let timer = this.timer;
+    function endGame(){ pagina = new EndGameSingle(playerName, score, timer); p.remove();};
+    super.checkEndGame(endGame);
+  }
 } // end of GameLogic
 
 class GameLogicMulti extends GameLogic{
@@ -249,6 +252,7 @@ class GameLogicMulti extends GameLogic{
     this.walls = this.createWalls(state.walls);
     this.mines = this.createMines(state.mines);
     this.crystals = this.createCrystals(state.crystals);
+    this.startGameTime = state.startTime;
 
     state.players.forEach((item, i) => {
       if(state.myid == item.id){this.p = new Player(item.position.x,item.position.y,item.color);}
@@ -305,6 +309,13 @@ class GameLogicMulti extends GameLogic{
       crystals.push(w);
     });
     return crystals;
+  }
+
+  checkEndGame(){
+    let score = this.playerScore;
+    let timer = this.timer;
+    function endGame(){ pagina = new EndGameMulti(playerName, score, timer); p.remove();};
+    super.checkEndGame(endGame);
   }
 
 } //end of GameLogicMulti
@@ -423,7 +434,7 @@ class Mine{
     if(!this.exploded){this.drawMine();} else {
       p.image(skull_img, this.x-12, this.y-12, 25, 23)
     }
-    
+
   }
 
   drawMine(){
@@ -474,7 +485,7 @@ class Crystal{
   }
 
   updateCrystal(){
-    if(this.eaten == false){this.drawCrystal();} 
+    if(this.eaten == false){this.drawCrystal();}
   }
 
   drawCrystal(){

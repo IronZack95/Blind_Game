@@ -1,4 +1,3 @@
-
 class Schermo {
   // variabili private
   #schermo
@@ -260,6 +259,14 @@ class EndGame extends Pagina{    // costruisco la pagina della lobby
     h1.id= "title";
     h1.innerHTML = "GAME OVER"
     super.getSchermo().appendChild(h1);
+  }
+
+}
+
+class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
+
+  constructor(name, score, time){
+    super(name, score, time);    // chiamo il costruttore della superclasse
 
     // Center  Panel
     let centerPanel = document.createElement("div");
@@ -277,15 +284,8 @@ class EndGame extends Pagina{    // costruisco la pagina della lobby
 
     //punteggi fine partita
     let a = document.createElement("h3");
-    let b = document.createElement("h3");
 
     a.id = "finalscore";
-    b.id = "finalscore";
-    a.innerHTML = 'Final score:  ' + score;
-    b.innerHTML = 'Time :   ' + time;
-
-    centerPanel.appendChild(a);
-    centerPanel.appendChild(b);
 
     // SOCKET
     socket = io();
@@ -293,18 +293,82 @@ class EndGame extends Pagina{    // costruisco la pagina della lobby
     socket.on("connect", () => {
       console.log("Il mio socket ID è: "+socket.id);
       let msg = {name: this.name, score:this.score, time: this.time};
-      console.log(msg)
+      //console.log(msg)
       socket.emit("EndGame",msg, (response) => {
-        console.log(response.status);
+        //console.log(response.status);
         let classifica = '';
         var i = 1;
+        var position;
         for( let key in response.status){
+          if(response.status[key].name == this.name && response.status[key].score == this.score && response.status[key].time == this.time){position = i;}
           classifica = classifica + i + '° '+response.status[key].name + ' SCORE: ' + response.status[key].score + ' TIME: ' + response.status[key].time+ '<br>';
           //classifica = JSON.stringify(response.status[key]) + classifica;
           i++;
         }
-        console.log(classifica);
-        let a = document.createElement("div");
+        //console.log(classifica);
+        a.innerHTML = 'Final score:  ' + this.score + '<br>'+'Time :   ' + this.time + '<br>' + 'POSITION: ' + position +'°';
+        centerPanel.appendChild(a);
+        a = document.createElement("div");
+        a.id = "CloudScore";
+        //a.className = "center";
+        a.innerHTML = classifica;
+        bottomPanel.appendChild(a);
+      });
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Mi sono disconnesso: "+socket.id);
+    });
+  }
+
+}
+
+class EndGameMulti extends EndGame{    // costruisco la pagina della lobby
+
+  constructor(name, score, time){
+    super(name, score, time);    // chiamo il costruttore della superclasse
+
+    // Center  Panel
+    let centerPanel = document.createElement("div");
+    //centerPanel.className = "center";
+    centerPanel.classList.add("center")
+    super.getSchermo().appendChild(centerPanel);
+
+    // Bottom  Panel
+    let bottomPanel = document.createElement("div");
+    bottomPanel.classList.add("bottom")
+    super.getSchermo().appendChild(bottomPanel);
+
+    let text = '<div id = "text">CONGRATS!! MULTI</div>'
+    centerPanel.insertAdjacentHTML('afterBegin', text);
+
+    //punteggi fine partita
+    let a = document.createElement("h3");
+
+    a.id = "finalscore";
+
+    // SOCKET
+    socket = io();
+
+    socket.on("connect", () => {
+      console.log("Il mio socket ID è: "+socket.id);
+      let msg = {name: this.name, score:this.score, time: this.time};
+      //console.log(msg)
+      socket.emit("EndGame",msg, (response) => {
+        //console.log(response.status);
+        let classifica = '';
+        var i = 1;
+        var position;
+        for( let key in response.status){
+          if(response.status[key].name == this.name && response.status[key].score == this.score && response.status[key].time == this.time){position = i;}
+          classifica = classifica + i + '° '+response.status[key].name + ' SCORE: ' + response.status[key].score + ' TIME: ' + response.status[key].time+ '<br>';
+          //classifica = JSON.stringify(response.status[key]) + classifica;
+          i++;
+        }
+        //console.log(classifica);
+        a.innerHTML = 'Final score:  ' + this.score + '<br>'+'Time :   ' + this.time + '<br>' + 'POSITION: ' + position +'°';
+        centerPanel.appendChild(a);
+        a = document.createElement("div");
         a.id = "CloudScore";
         //a.className = "center";
         a.innerHTML = classifica;
@@ -360,7 +424,6 @@ class MultiPlayer extends Pagina{
 
       }
   }
-
 
 class Transmit{
   constructor(player,enemyArrey,crystalsArrey,minesArrey){
