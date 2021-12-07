@@ -1,6 +1,6 @@
 const MAX_PLAYERS = 2;
 const MAX_MINES = 30; //30
-const MAX_CRYSTALS = 1 //35;
+const MAX_CRYSTALS = 2; //35;
 
 const WIDTH = 1200;         //...del canvas
 const HEIGHT = 600;        //...del canvas
@@ -39,11 +39,14 @@ class GameState{
                     max_mines: MAX_MINES,
                     max_crystals: MAX_CRYSTALS
                   }; //width, height, lato muro
+      this.playersNames = [];
       this.players = [];
+      this.score = [];
       this.walls = [];
       this.mines =  [];
       this.crystals = [];
       this.startTime = null;
+      this.timer = null;  //timer dell'ultimo evento o fine partita
     return this;
   }
   getClient(){
@@ -55,6 +58,10 @@ class GameState{
   getName(){
     return this.name;
   }
+  getScore(){
+    return this.score;
+  }
+
   getGameState(){
     // DA RIFARE
     let walls = [];
@@ -72,7 +79,7 @@ class GameState{
     //console.log(this.walls,walls)
 
     let gameState = {
-      name: this.name,
+      room: this.name,
       client: this.client,
       canvas: this.canvas,
       players: this.players,
@@ -85,9 +92,64 @@ class GameState{
     return gameState;
 
   }
-  pushClient(clientID){
+
+  pushClient(clientID,name){
     this.client.push(clientID);
+    this.playersNames.push(name);
     return this.getClient();
+  }
+
+  setMine(x,y,status){
+    this.mines.forEach((item, i) => {
+      if(item.getPosition().x == x && item.getPosition().y == y){
+        item.setStatus(status);
+        //console.log('stato mina',x,y,item.getStatus())
+      }
+    });
+  }
+
+  setCrystal(x,y,status){
+    this.crystals.forEach((item, i) => {
+      if(item.getPosition().x == x && item.getPosition().y == y){
+        item.setStatus(status);
+        //console.log('stato cristallo',x,y,item.getStatus())
+      }
+    });
+  }
+
+  setScore(id,score){
+    this.client.forEach((item, i) => {
+      if(item == id){this.score[i] = score;}
+    });
+  }
+
+  setTimer(){
+    this.timer = ((Date.now() - this.startTime)/ 1000).toFixed(1);;
+  }
+
+  getTimer(){
+    return this.timer;
+  }
+
+  getPlayerNames(){
+    return this.playersNames;
+  }
+
+  checkEndGame(){
+    let ii = 0;
+    this.crystals.forEach((item, i) => {
+      if(item.getStatus() == true){
+        ii++;
+      }else{
+        return false;
+      }
+    });
+    if(ii == MAX_CRYSTALS){
+      //console.log("partita finita",ii)
+      return true;
+    }else{
+      //console.log("partita continua",ii)
+    }
   }
 
   createMatch(){
@@ -106,6 +168,10 @@ class GameState{
     p2.color = COLOR2;
     this.players.push(p2);
 
+    // Setto lo SCORE
+    this.players.forEach((item, i) => {
+      this.score.push(0);
+    });
 
     // CREATE WALLS
     let map = new utility.Perlin_Map(GRID_SIZE,RESOLUTION,THRESHOLD);
@@ -195,6 +261,10 @@ class Object{
 
  getStatus(){
    return this.status;
+ }
+
+ setStatus(status){
+   this.status = status;
  }
 
  getColor(){

@@ -58,6 +58,7 @@ class GameLogic{
     this.crystalEvent = {status: false, index: null};
     this.mineEvent = {status: false, index: null};   //flag che comunicano che è successo un evento
     this.crystals = [];
+    this.room = null;
     this.p = null;
     this.enemy = [];
     this.ctx =  p.createCanvas(WIDTH, HEIGHT);
@@ -102,7 +103,7 @@ class GameLogic{
 
     this.updateScore();
     this.updateTimer();
-    this.checkEndGame();
+
 
   }
 
@@ -166,6 +167,7 @@ class GameLogicSingle extends GameLogic{
 
   update(){
     super.update();
+    this.checkEndGame();
   }
 
   //CREAZIONE MURI RANDOM
@@ -234,7 +236,7 @@ class GameLogicSingle extends GameLogic{
       return temp;   //array di true and false
     }
 
-  } //end of createObjects()
+} //end of createObjects()
 
   checkEndGame(){
     let score = this.playerScore;
@@ -248,7 +250,7 @@ class GameLogicMulti extends GameLogic{
 
   constructor(state){
     super(state.canvas.width, state.canvas.height);
-
+    this.room = state.room;
     this.walls = this.createWalls(state.walls);
     this.mines = this.createMines(state.mines);
     this.crystals = this.createCrystals(state.crystals);
@@ -268,15 +270,18 @@ class GameLogicMulti extends GameLogic{
   }
 
   update(){
+    let result = this.r.endGame();
+    if(result != null){this.checkEndGame(result)}
     this.t.transmitPosition();
     this.t.transmitDirection();
     super.update();
+    let score = this.playerScore;
     if(this.crystalEvent.status == true){
-      this.t.transmitEaten(this.crystalEvent.index);
+      this.t.transmitEaten(this.crystalEvent.index,this.room,score);
       this.crystalEvent.status = false;
     }
     if(this.mineEvent.status == true){
-      this.t.transmitExplosion(this.mineEvent.index);
+      this.t.transmitExplosion(this.mineEvent.index,this.room,score);
       this.mineEvent.status = false;
     }
   }
@@ -311,10 +316,11 @@ class GameLogicMulti extends GameLogic{
     return crystals;
   }
 
-  checkEndGame(){
-    let score = this.playerScore;
-    let timer = this.timer;
-    function endGame(){ pagina = new EndGameMulti(playerName, score, timer); p.remove();};
+  checkEndGame(msg){
+    let name = msg.name;
+    let score = msg.score;
+    let timer = msg.timer;
+    function endGame(){pagina = new EndGameMulti(name, score, timer); p.remove()};
     super.checkEndGame(endGame);
   }
 
@@ -344,19 +350,22 @@ class SoundLogic {
       let dist = p.dist(player.x, player.y, mines[i].x, mines[i].y);
 
       if( dist <= MINE_DISTANCE && mines[i].exploded === false) {
-        
+
+        //se sono abbastanza vicino calcolo il volume e il panning
         let temp = Math.sqrt(dist / MINE_DISTANCE);  //calcolo distanza normalizzata etc
         let temp1 = 0.7 * (1-temp);   //70% di 1, ossia il massimo
-       
+
+        //setto il volume
         let suono = mine_sound_array[i];
-        
-        //creo vettore che va dalla testa del player alla mina
+        //suono.setVolume(temp1);
+
+        //setto il panning
         let v1 = p.createVector( mines[i].x-player.x+0.5,  mines[i].y-player.y-player.w/2+13.5);
 
         //calcolo l'angolo tra sguardo player e vettore verso mina (deg)
         let angle = p.degrees((player.v).angleBetween(v1) ) ;
-        
-        if (angle >= 0 && angle < 100){ //da centro a destra fino a +100°
+        //console.log(angle)
+        if (angle >= 0 && angle < 100){
           let panning = p.map(angle, 0,100, 0, 1);
           suono.pan(panning)
           suono.setVolume(temp1);
@@ -367,8 +376,11 @@ class SoundLogic {
         } else {  //dietro (volume basso)
           suono.setVolume(temp1*0.5);
         }
-        
-        } else { //se sono lontano non la sento
+        //let panning = p.map(p.mouseX, 0, p.width, -1.0, 1.0);
+
+
+        //console.log('suona la mina '+[i]+ ' at volume '+temp1);
+      } else {
         let suono = mine_sound_array[i];
         suono.setVolume(0);
       }
@@ -552,10 +564,8 @@ class Player{
     this.walk = false;
     //console.log(p.deltaTime)
 
-    //creo un vettore che va da centro testa a mouse
-    this.v = p.createVector(p.mouseX-this.x+0.5, p.mouseY-this.y-this.w/2+13.5); 
-    //ne calcolo l'angolo (rad)
-    this.dir = this.v.heading();  
+    this.v = p.createVector(p.mouseX-this.x+0.5, p.mouseY-this.y-this.w/2+13.5); //vettore da centro testa a mouse
+    this.dir = this.v.heading();
 
     //let dir =  Number.parseFloat( 2 * p.PI * p.winMouseX / p.windowWidth).toFixed(2);  //tra 0 e 1
     //if(dir <= 2 * p.PI && dir > 0){ this.dir = dir; }

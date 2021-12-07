@@ -103,7 +103,6 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
   }
 }
 
-
 class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
   // variabili private
   #snake;
@@ -230,7 +229,8 @@ class MultiPlayerLobby extends Pagina{
     });
 
     quickGame.onclick = function(){
-        socket.emit("Lobby",(response) => {
+        let msg = {name: playerName};
+        socket.emit("Lobby", msg ,(response) => {
             console.log("Il server dice: "+response.status+ " la mia stanza è: "+response.room); // ok
             this.room = response.room;
             if(response.status == "start"){
@@ -344,41 +344,19 @@ class EndGameMulti extends EndGame{    // costruisco la pagina della lobby
 
     //punteggi fine partita
     let a = document.createElement("h3");
-
+    a.className = "finalscore";
     a.id = "finalscore";
-
-    // SOCKET
-    socket = io();
-
-    socket.on("connect", () => {
-      console.log("Il mio socket ID è: "+socket.id);
-      let msg = {name: this.name, score:this.score, time: this.time};
-      //console.log(msg)
-      socket.emit("EndGame",msg, (response) => {
-        //console.log(response.status);
-        let classifica = '';
-        var i = 1;
-        var position;
-        for( let key in response.status){
-          if(response.status[key].name == this.name && response.status[key].score == this.score && response.status[key].time == this.time){position = i;}
-          classifica = classifica + i + '° '+response.status[key].name + ' SCORE: ' + response.status[key].score + ' TIME: ' + response.status[key].time+ '<br>';
-          //classifica = JSON.stringify(response.status[key]) + classifica;
-          i++;
-        }
-        //console.log(classifica);
-        a.innerHTML = 'Final score:  ' + this.score + '<br>'+'Time :   ' + this.time + '<br>' + 'POSITION: ' + position +'°';
-        centerPanel.appendChild(a);
-        a = document.createElement("div");
-        a.id = "CloudScore";
-        //a.className = "center";
-        a.innerHTML = classifica;
-        bottomPanel.appendChild(a);
-      });
+    let txt = '';
+    name.forEach((item, i) => {
+      txt = txt + item + ' SCORE: ' + score[i];
+      if(i == 0){
+        txt = txt+ '<br> VS. <br>'
+      }
     });
 
-    socket.on("disconnect", () => {
-      console.log("Mi sono disconnesso: "+socket.id);
-    });
+    a.innerHTML = txt;
+    centerPanel.appendChild(a);
+
   }
 
 }
@@ -461,18 +439,23 @@ class Transmit{
       this.dir = dir;
     }
   }
-  transmitEaten(index){
+  transmitEaten(index,room,score){
     if(this.c[index].getEaten()){
       let msg = this.c[index].getPosition();
       msg['address'] = this.address_id;
+      msg['score'] = score;
+      msg['room'] = room;
       msg['status'] = this.c[index].getEaten();
+      console.log("CRISTALLO mando un messaggio",msg);
       socket.emit("sendEaten", msg);
     }
   }
-  transmitExplosion(index){
+  transmitExplosion(index,room,score){
     if(this.m[index].getExplosion()){
       let msg = this.m[index].getPosition();
       msg['address'] = this.address_id;
+      msg['score'] = score;
+      msg['room'] = room;
       msg['status'] = this.m[index].getExplosion();
       socket.emit("sendExplosion", msg);
     }
@@ -486,6 +469,8 @@ class Recive{
     this.enemyArrey = enemyArrey;
     this.c = crystalsArrey;
     this.m = minesArrey;
+    this.endgame = false;
+    this.msg = null;
 
     socket.on("recivePosition", (msg) => {
       //console.log(msg);
@@ -519,6 +504,21 @@ class Recive{
 
     });
 
+    socket.on("EndGameMulti", (msg) => {
+      console.log(msg);
+      this.msg = msg;
+      this.endgame = true;
+    });
+
   }
+
+  endGame(){
+    if(this.endgame){
+      return msg;
+    }else{
+      return null;
+    }
+  }
+
 
 }

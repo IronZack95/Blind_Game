@@ -29,7 +29,7 @@ server.io.on("connection", (socket) => {
   });
 
   // GAME  start game  ACKNOWLEDGMENT
-  socket.on("Lobby", (callback) => {
+  socket.on("Lobby", (msg,callback) => {
     let response;
     let stanza;
     let lastIndex = parseInt(game.rooms.length-1);
@@ -38,14 +38,14 @@ server.io.on("connection", (socket) => {
       lastIndex = parseInt(game.rooms.length-1);
       //assegno un nome casuale alla stanza
       game.rooms[lastIndex].setName("Stanza"+Math.floor(Math.random()*10000));
-      game.rooms[lastIndex].pushClient(socket.id);
+      game.rooms[lastIndex].pushClient(socket.id,msg.name);
       // iscrivo il primo client alla stanza
       //socket.join(game.room.game.room)
       console.log("giocatore pronto!");
       response = "wait";
       stanza = game.rooms[lastIndex].getName();
     }else if(game.rooms[lastIndex].getClient().length == 1){
-      game.rooms[lastIndex].pushClient(socket.id)
+      game.rooms[lastIndex].pushClient(socket.id,msg.name)
       // iscrivo il secondo client alla stanza
       //socket.join(game.room.game.room);
       console.log("giocatori pronti!");
@@ -99,11 +99,28 @@ server.io.on("connection", (socket) => {
     data['sender']= socket.id;
     let msg = JSON.parse(JSON.stringify(data));
     delete msg['address'];
-    //inoltro il messaggio all'avversario
-    data.address.forEach((item, i) => {
-      server.io.in(item).emit("getEaten",msg);
+    delete msg['room'];
+    // setto il nuovo valore
+    game.rooms.forEach((room, i) => {
+      if(room.getName() == data.room){
+        room.setCrystal(data.x,data.y,data.status);
+        room.setScore(socket.id,data.score);
+        room.setTimer();
+        if(room.checkEndGame()){
+          // verifico il check end game
+          let endMsg = {timer: room.getTimer(), player: room.getClient(), name: room.getPlayerNames() ,score: room.getScore()};
+          room.getClient().forEach((item, ii) => {
+            server.io.in(item).emit("EndGameMulti",endMsg);
+          });
+        }else{
+          //inoltro il messaggio all'avversario
+          data.address.forEach((item, i) => {
+            server.io.in(item).emit("getEaten",msg);
+          });
+        }
+      }
     });
-    console.log(msg);
+    console.log(data);
   });
 
   // GAME  dati di mine con trasmissione TCP standard
@@ -111,11 +128,20 @@ server.io.on("connection", (socket) => {
     data['sender']= socket.id;
     let msg = JSON.parse(JSON.stringify(data));
     delete msg['address'];
-    //inoltro il messaggio all'avversario
-    data.address.forEach((item, i) => {
-      server.io.in(item).emit("getExplosion",msg);
+    delete msg['room'];
+    // setto il nuovo valore
+    game.rooms.forEach((room, i) => {
+      if(room.getName() == data.room){
+        room.setMine(data.x,data.y,data.status);
+        room.setScore(socket.id,data.score);
+        room.setTimer();
+        //inoltro il messaggio all'avversario
+        data.address.forEach((item, i) => {
+          server.io.in(item).emit("getExplosion",msg);
+        });
+      }
     });
-    console.log(msg);
+    console.log(data);
   });
 
   // GESTIONE END GAME SinglePlayer
