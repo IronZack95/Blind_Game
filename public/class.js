@@ -293,7 +293,7 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
     socket.on("connect", () => {
       console.log("Il mio socket ID è: "+socket.id);
       let msg = {name: this.name, score:this.score, time: this.time};
-      //console.log(msg)
+      console.log(msg)
       socket.emit("EndGame",msg, (response) => {
         //console.log(response.status);
         let classifica = '';
@@ -514,7 +514,7 @@ class Recive{
 
   endGame(){
     if(this.endgame){
-      return msg;
+      return this.msg;
     }else{
       return null;
     }

@@ -101,7 +101,7 @@ server.io.on("connection", (socket) => {
     delete msg['address'];
     delete msg['room'];
     // setto il nuovo valore
-    game.rooms.forEach((room, i) => {
+    game.rooms.forEach((room, roomIndex) => {
       if(room.getName() == data.room){
         room.setCrystal(data.x,data.y,data.status);
         room.setScore(socket.id,data.score);
@@ -112,6 +112,10 @@ server.io.on("connection", (socket) => {
           room.getClient().forEach((item, ii) => {
             server.io.in(item).emit("EndGameMulti",endMsg);
           });
+          // elimino la stanza se il gioco è finito
+          let deleteElement = game.rooms.splice(roomIndex, 1);
+          // faccio vedere quante stanze rimangono
+          if(deleteElement.length =! 0){console.log("Cancellata",room.getName(),"rimangono",game.rooms.length,"stanze");}
         }else{
           //inoltro il messaggio all'avversario
           data.address.forEach((item, i) => {
@@ -120,7 +124,7 @@ server.io.on("connection", (socket) => {
         }
       }
     });
-    console.log(data);
+    //console.log(data);
   });
 
   // GAME  dati di mine con trasmissione TCP standard
@@ -141,13 +145,12 @@ server.io.on("connection", (socket) => {
         });
       }
     });
-    console.log(data);
+    //console.log(data);
   });
 
   // GESTIONE END GAME SinglePlayer
   socket.on("EndGame", (data,callback) => {
     //console.log(data);
-    // TODO push dati in un file
     var fileContents;
     try {
       fileContents = fs.readFileSync(game.DATAPATH);
@@ -161,8 +164,11 @@ server.io.on("connection", (socket) => {
       if (err.code === 'ENOENT') {  // controllo se il file esiste
         fileContents = [];
         fileContents.push(data);
-        //console.log('File not found! create file', fileContents);
+        console.log('File not found! create file', fileContents);
       } else {
+        fileContents = [];
+        fileContents.push(data);
+        console.log('Altro errore ', fileContents);
         throw err;
       }
     }
@@ -177,6 +183,7 @@ server.io.on("connection", (socket) => {
 
   });
 
+  //  ************** OPTIONAL ********************
 
   // scambio messaggi privati DA SISTEMARE
   socket.on("game.room message", (room, msg) => {
@@ -186,9 +193,6 @@ server.io.on("connection", (socket) => {
         socket.to(room.client[0]).emit("private message", socket.id, msg);
       }
   });
-
-  //  ************** OPTIONAL ********************
-
   // KEYS key pressed
   socket.on("keys", (data) => {
     console.log(data);

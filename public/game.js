@@ -103,8 +103,6 @@ class GameLogic{
 
     this.updateScore();
     this.updateTimer();
-
-
   }
 
   updateScore(){
@@ -125,12 +123,7 @@ class GameLogic{
     }
   }
 
-  checkEndGame(endGameFunction){
-    if(this.crystals.some(e => e.eaten === false)){
-      return;
-    } else if(this.crystals.every(e => e.eaten === true)) {
-
-      //stoppa i suoni del player e delle mine
+  EndGameProcedure(){    //stoppa i suoni del player e delle mine
       for(let i=0; i<NUM_MINE; i++){
         let suono = mine_sound_array[i];
         suono.stop();
@@ -143,11 +136,8 @@ class GameLogic{
       //chiamo il testo GAME OVER
       this.gameOver.update();
       // fermo il loop dell'update
-      p.noLoop();
-      setTimeout(endGameFunction, 3000);
-      console.log("gioco finito")
-    };
-  }
+      p.noLoop();}
+    // subordino il resto alle classi figlie
 } //fine GameLogic() superclass
 
 class GameLogicSingle extends GameLogic{
@@ -167,6 +157,7 @@ class GameLogicSingle extends GameLogic{
 
   update(){
     super.update();
+    // verifico il fine partita;
     this.checkEndGame();
   }
 
@@ -198,7 +189,7 @@ class GameLogicSingle extends GameLogic{
     return walls;
   }
 
-  createObjects(numObj, walls) {
+  createObjects(numObj, walls){
     let mines = [];
     let crystals = [];
     let x_r, y_r;
@@ -239,10 +230,14 @@ class GameLogicSingle extends GameLogic{
 } //end of createObjects()
 
   checkEndGame(){
-    let score = this.playerScore;
-    let timer = this.timer;
-    function endGame(){ pagina = new EndGameSingle(playerName, score, timer); p.remove();};
-    super.checkEndGame(endGame);
+    if(this.crystals.some(e => e.eaten === false)){
+      return;
+    } else if(this.crystals.every(e => e.eaten === true)) {
+      super.EndGameProcedure();
+      let score = this.playerScore;
+      let timer = this.timer;
+      setTimeout(function(){pagina = new EndGameSingle(playerName, score, timer); p.remove();}, 3000);
+    };
   }
 } // end of GameLogic
 
@@ -270,11 +265,13 @@ class GameLogicMulti extends GameLogic{
   }
 
   update(){
-    let result = this.r.endGame();
-    if(result != null){this.checkEndGame(result)}
     this.t.transmitPosition();
     this.t.transmitDirection();
     super.update();
+    // verifico il fine partita
+    let result = this.r.endGame();
+    if(result != null){ this.checkEndGame(result)}
+
     let score = this.playerScore;
     if(this.crystalEvent.status == true){
       this.t.transmitEaten(this.crystalEvent.index,this.room,score);
@@ -317,11 +314,11 @@ class GameLogicMulti extends GameLogic{
   }
 
   checkEndGame(msg){
+    super.EndGameProcedure();
     let name = msg.name;
     let score = msg.score;
     let timer = msg.timer;
-    function endGame(){pagina = new EndGameMulti(name, score, timer); p.remove()};
-    super.checkEndGame(endGame);
+    setTimeout(function(){pagina = new EndGameMulti(name, score, timer); p.remove();}, 3000);
   }
 
 } //end of GameLogicMulti
@@ -377,7 +374,6 @@ class SoundLogic {
           suono.setVolume(temp1*0.5);
         }
         //let panning = p.map(p.mouseX, 0, p.width, -1.0, 1.0);
-
 
         //console.log('suona la mina '+[i]+ ' at volume '+temp1);
       } else {
