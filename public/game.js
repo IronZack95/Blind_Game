@@ -338,40 +338,37 @@ class SoundLogic {
 
   update(player, mines){
     // SUONI DELLE MINE
+
     for (var i=0; i<mines.length; i++){
       //...calcolo distanza dal player
       let dist = p.dist(player.x, player.y, mines[i].x, mines[i].y);
 
       if( dist <= MINE_DISTANCE && mines[i].exploded === false) {
         
-        //se sono abbastanza vicino calcolo il volume e il panning
         let temp = Math.sqrt(dist / MINE_DISTANCE);  //calcolo distanza normalizzata etc
         let temp1 = 0.7 * (1-temp);   //70% di 1, ossia il massimo
-        
-        //setto il volume
+       
         let suono = mine_sound_array[i];
-        //suono.setVolume(temp1);
         
-        //setto il panning
+        //creo vettore che va dalla testa del player alla mina
         let v1 = p.createVector( mines[i].x-player.x+0.5,  mines[i].y-player.y-player.w/2+13.5);
+
+        //calcolo l'angolo tra sguardo player e vettore verso mina (deg)
         let angle = p.degrees((player.v).angleBetween(v1) ) ;
-        console.log(angle)
-        if (angle >= 0 && angle < 100){
+        
+        if (angle >= 0 && angle < 100){ //da centro a destra fino a +100°
           let panning = p.map(angle, 0,100, 0, 1);
           suono.pan(panning)
           suono.setVolume(temp1);
-        } else if (angle < 0 && angle > -100) {
+        } else if (angle < 0 && angle > -100) {  //da centro a sinistra fino a -100°
           let panning = p.map(angle, 0,-100, 0, -1)
           suono.pan(panning)
           suono.setVolume(temp1);
-        } else {
+        } else {  //dietro (volume basso)
           suono.setVolume(temp1*0.5);
         }
-        //let panning = p.map(p.mouseX, 0, p.width, -1.0, 1.0);
         
-
-        //console.log('suona la mina '+[i]+ ' at volume '+temp1);
-      } else {
+        } else { //se sono lontano non la sento
         let suono = mine_sound_array[i];
         suono.setVolume(0);
       }
@@ -555,7 +552,9 @@ class Player{
     this.walk = false;
     //console.log(p.deltaTime)
 
-    this.v = p.createVector(p.mouseX-this.x+0.5, p.mouseY-this.y-this.w/2+13.5); //vettore da centro testa a mouse
+    //creo un vettore che va da centro testa a mouse
+    this.v = p.createVector(p.mouseX-this.x+0.5, p.mouseY-this.y-this.w/2+13.5); 
+    //ne calcolo l'angolo (rad)
     this.dir = this.v.heading();  
 
     //let dir =  Number.parseFloat( 2 * p.PI * p.winMouseX / p.windowWidth).toFixed(2);  //tra 0 e 1
@@ -634,10 +633,11 @@ class Player{
 
     // occhi
     p.stroke(0);
-    let x_sx = p.cos(this.dir + p.PI/6);
-    let y_sx = p.sin(this.dir + p.PI/6);
-    let x_dx = p.cos(this.dir - p.PI/6);
-    let y_dx = p.sin(this.dir - p.PI/6);
+    let dir = Number.parseFloat(this.dir);
+    let x_sx = p.cos(dir + p.PI/6);
+    let y_sx = p.sin(dir + p.PI/6);
+    let x_dx = p.cos(dir - p.PI/6);
+    let y_dx = p.sin(dir - p.PI/6);
 
     /* let dir = Number.parseFloat(this.dir);
     let x_sx = p.cos(dir+p.PI/6);
