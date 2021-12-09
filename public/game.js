@@ -107,7 +107,7 @@ class GameLogic{
 
   updateScore(){
     if(this.playerScore != this.lastPlayerScore){
-      document.getElementById('testoCounter').innerHTML = this.playerScore;
+      document.getElementById('counter').innerHTML = this.playerScore;
       this.lastPlayerScore = this.playerScore;
     }
   }
@@ -118,7 +118,7 @@ class GameLogic{
     let temp = ((now - this.startGameTime)/ 1000).toFixed(1);
 
     if(this.i%10 == 0){
-      document.getElementById('testoTimer').innerHTML = temp;
+      document.getElementById('timer').innerHTML = temp;
       this.timer = temp;
     }
   }

@@ -22,7 +22,7 @@ body {
 .button {
   position: relative;
   margin: 8px;
-  top: 10%;
+  top: 7%;
   /* outline: none;
   text-decoration: none; */
   padding: 10px 20px;
@@ -138,6 +138,15 @@ img.snakeRed{
   font-weight: bolder;
 }
 
+#PlayerName {
+  position: relative;
+  left: 50%;
+  top: 41%;  
+  transform: translate(-50%);
+  box-sizing: border-box;
+  text-align: center;  
+}
+
 #finalscore {
   margin: 0;
   text-align: center;
@@ -162,19 +171,54 @@ img.snakeRed{
   transform: translate(-50%, -50%);
 }
 
+#bottomPanel {
+  position: absolute;
+  padding: 4px;
+  background-color: white;
+  left: 50%;
+  bottom: 1%;
+  transform: translate(-50%);
+  width: 80%;
+  height: 8%;
+}
+
+.gameTxt {
+  color: white;
+}
+
+#PlayerNameInGame {
+  position: absolute;
+  top: 50%;
+  transform: translate(10%, -50%);
+  background-color: #262626;
+  
+}
 
 /* cose per counter */
-#counter, #timer {
+#counter {
   padding: 2px;
+  margin: 2px;
   position: relative;
-  /*left: 50%;
-  bottom: 10%;
-  margin-left: -50px;
-  z-index: -1;*/
   left: 50%;
   top: 50%;
-  transform: translate(-50%, 700%);
-
+  transform: translate(-50%, -50%);
+  /*bottom: 10%;
+  margin-left: -50px;
+  z-index: -1;
+  
+  top: 50%;
+  */
+  height: 20px;
+  width: 100px;
+  background-color: #262626;
+}
+#timer {
+  padding: 2px;
+  margin: 2px;
+  position: absolute;
+  right: 10%;
+  top: 50%;
+  transform: translate(0%, -50%);
   height: 20px;
   width: 100px;
   background-color: #262626;
@@ -246,7 +290,7 @@ img.snakeRed{
 .center {
   max-width: 400px;
   width: 80%;
-  height: 15%;
+  height: 20%;
   border-radius: 18px;
   text-align: center;
   background-color: #002c35;

@@ -77,8 +77,9 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     bottone = '<button id = "multiplayer" class = "button">MultiPlayer</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
 
-    let input = '<input type="text" id="PlayerName" value="Your name">';
+    let input = '<input type="text" id="PlayerName" placeholder="Your name" class="txts">';
     centerPanel.insertAdjacentHTML('afterEnd', input);
+    
 
     let self = this;
     singleplayer.onclick = function(){
@@ -131,29 +132,47 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     let canvasContainer = document.createElement('div');
     let cnv = new Canvas(canvasContainer,'SinglePlayer',super.getSchermo())
 
+    // Creo pannello contenente nome, counter + timer e punteggio    
+    let bottomPanel = document.createElement("div");
+    bottomPanel.id = "bottomPanel";
+    super.getSchermo().appendChild(bottomPanel);
+    
     // Creo counter
     let c = document.createElement("div");
-    let n = document.createElement("h3");
     c.id = "counter";
-    n.id = "testoCounter";
-    n.innerHTML = "0";
+    c.className = "gameTxt"
+    c.innerHTML = "0";
+    bottomPanel.appendChild(c);
+    /*
+    let n = document.createElement("h3");    
+    n.id = "testoCounter";    
     super.getSchermo().appendChild(c);
     c.appendChild(n);
+    bottomPanel.appendChild(c);
+    */
 
     // Creo timer
     let f = document.createElement("div");
-    let g = document.createElement("h3");
     f.id = "timer";
+    f.className = "gameTxt";
+    f.innerHTML = "0";
+    bottomPanel.appendChild(f);   
+    
+    /*
+    let g = document.createElement("h3");
     g.id = "testoTimer";
     g.innerHTML = "0";
     super.getSchermo().appendChild(f);
     f.appendChild(g);
+    */
+    
 
     //creo player getName   // DA SISTEMARE
     let name = document.createElement("div");
-    name.id= "PlayerName";
+    name.id= "PlayerNameInGame";
+    name.className = "gameTxt";
     name.innerHTML = playerName;
-    super.getSchermo().appendChild(name);
+    bottomPanel.appendChild(name);
   }
 }
 
