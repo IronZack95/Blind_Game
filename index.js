@@ -159,7 +159,7 @@ server.io.on("connection", (socket) => {
       // ordino i campi secondo il tempo impiegato
       fileContents.sort(function(a, b){return a.time-b.time});
 
-      console.log('Update file', fileContents);
+      //console.log('Update file', fileContents);
     } catch (err) {
       if (err.code === 'ENOENT') {  // controllo se il file esiste
         fileContents = [];
