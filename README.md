@@ -1,36 +1,37 @@
-# ACTAM - S N A K E
+# B L I N D - game
  **Advanced Coding Tools**  _and Metodologies_ \- **Final Project**
 
- ### Authors \- **"Good teacher's kids"**
+ ### Authors \- **"Good kids of the teacher"**
 - [Zaccaria Eliseo Carrettoni](https://github.com/IronZack95)
 - [Wendy Wang](https://github.com/WendyWang29)
 - [Alessandro Zullo](https://github.com/Alessandro199762)
 - [Lorenzo Lellini](https://github.com/LorenzoLellini)
 
-![alt text](https://64.media.tumblr.com/32d1a40c92e7cf29f9cc49ade44f4cfd/tumblr_nztl9ihFB51rxyvj1o1_1280.jpg)
+![alt text](https://imag.malavida.com/mvimgbig/download-fs/among-us-28791-5.jpg)
 
 ## After clone this repo (only first time):
-1. _aprire il terminale_
-2. _accedere alla cartella del progetto da terminale_
-3. _digitare:_ **$ npm install**
-4. _attendere il completamento dell'operazione_
+1. _open the terminal_
+2. _go to the project path_
+3. _run:_ **$ npm install**
+4. _waiting operation to finish_
 
 ## How to run this code:
-1. _aprire il terminale_
-2. _accedere alla cartella del progetto da terminale_
-3. _digitare:_ **$ npx run dev**  (PER SVILUPPO)
-4. _digitare:_ **$ npx run start**  (PER RELEASE)
-5. _seguire le istruzioni da terminale per accedere al browser_
-6. _per spegnere il server digitare_ CTRL+C : **$ ^C**
+1. _open the terminal_
+2. _go to the project path_
+3. _run:_ **$ npx run dev**  (FOR DEVELOPMENTS)
+4. _run:_ **$ npx run start**  (FOR RELEASE)
+5. _follow the instrutions on the console for access the browser interface_
+6. _for stop node js run_ CTRL+C : **$ ^C**
 
 ## Environment for Node.js:
 package.json
+package-lock.json
 
 ## OVERLEAF LaTeX REPORT LINK:
 [OverLeaf Report Link]()
 
 ### *info:*
-_Target:_  Multiplayer Audio Driven Client-Server Game
+_Target:_  Multiplayer Game with Audio based Gameplay
 
 ### WORKFLOW:
 
