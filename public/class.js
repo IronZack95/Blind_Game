@@ -77,9 +77,9 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     bottone = '<button id = "multiplayer" class = "button">MultiPlayer</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
 
-    let input = '<input type="text" id="PlayerName" placeholder="Your name" class="txts">';
+    let input = '<input type="text" id="PlayerName" placeholder="Insert your name">';
     centerPanel.insertAdjacentHTML('afterEnd', input);
-    
+
 
     let self = this;
     singleplayer.onclick = function(){
@@ -94,7 +94,15 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     }
 
     function inputFieldCaputre() {
-      playerName = document.getElementById("PlayerName").value;
+      let text = document.getElementById("PlayerName").value;
+      if(text.length == 0){
+        let promise = randomName();
+        promise.then(function(result) {
+          playerName = result;
+        });
+      }else{
+        playerName = text;
+      }
     }
 
   }
@@ -132,11 +140,11 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     let canvasContainer = document.createElement('div');
     let cnv = new Canvas(canvasContainer,'SinglePlayer',super.getSchermo())
 
-    // Creo pannello contenente nome, counter + timer e punteggio    
+    // Creo pannello contenente nome, counter + timer e punteggio
     let bottomPanel = document.createElement("div");
     bottomPanel.id = "bottomPanel";
     super.getSchermo().appendChild(bottomPanel);
-    
+
     // Creo counter
     let c = document.createElement("div");
     c.id = "counter";
@@ -144,8 +152,8 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     c.innerHTML = "0";
     bottomPanel.appendChild(c);
     /*
-    let n = document.createElement("h3");    
-    n.id = "testoCounter";    
+    let n = document.createElement("h3");
+    n.id = "testoCounter";
     super.getSchermo().appendChild(c);
     c.appendChild(n);
     bottomPanel.appendChild(c);
@@ -156,8 +164,8 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     f.id = "timer";
     f.className = "gameTxt";
     f.innerHTML = "0";
-    bottomPanel.appendChild(f);   
-    
+    bottomPanel.appendChild(f);
+
     /*
     let g = document.createElement("h3");
     g.id = "testoTimer";
@@ -165,7 +173,7 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     super.getSchermo().appendChild(f);
     f.appendChild(g);
     */
-    
+
 
     //creo player getName   // DA SISTEMARE
     let name = document.createElement("div");

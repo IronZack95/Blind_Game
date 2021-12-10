@@ -1,3 +1,31 @@
+/*
+async function randomName(){
+     let name = await fetch("https://random-names-api.herokuapp.com/random").then(response => {
+        if (response.ok) {
+           return response.json();
+        }
+     }).then(res => { return res.body.name;} ).catch(error => console.log("Si è verificato un errore!"))
+     console.log(JSON.stringify(name))
+     return name;
+}
+*/
+
+
+async function randomName(){
+    let name = await fetch("https://random-names-api.herokuapp.com/random")
+    .then(response => response.json())
+    .then(function(response){
+        //alert(JSON.stringify(response.body));
+        var name = response.body.name;
+        return name;
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+    return name;
+}
+
+
 class Perlin_Map{
 
   constructor(grid,res,threshold) {
