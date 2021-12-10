@@ -15,7 +15,7 @@ const THRESHOLD = 100000;
 const COLOR1 = '#0022ff';
 const COLOR2 = '#ff2200';
 
-const DATAPATH = '../data.json';
+const DATAPATH = './data/data.json';
 
 const utility = require('./utility')
 // arrey di game state

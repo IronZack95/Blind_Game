@@ -287,7 +287,6 @@ class EndGame extends Pagina{    // costruisco la pagina della lobby
     h1.innerHTML = "GAME OVER"
     super.getSchermo().appendChild(h1);
   }
-
 }
 
 class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
