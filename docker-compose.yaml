@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  blindgame:
+    image: zack/blind
+    container_name: blindgame
+    restart: unless-stopped
+    volumes:
+      - ./data/:/usr/src/app/data
+networks:
+  default:
+    external:
+      name: proxy
