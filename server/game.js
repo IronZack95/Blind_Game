@@ -1,6 +1,6 @@
 const MAX_PLAYERS = 2;
-const MAX_MINES = 30; //30
-const MAX_CRYSTALS = 1; //35;
+const MAX_MINES = 1; //30
+const MAX_CRYSTALS = 30; //35;
 
 const WIDTH = 1200;         //...del canvas
 const HEIGHT = 600;        //...del canvas

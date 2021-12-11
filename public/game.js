@@ -10,8 +10,8 @@
  const RESOLUTION = 2; //2 ogni box contiente RESOLUTION X RESOLUTION muri dentro la griglia
  const THRESHOLD = 100000;
 
- const NUM_MINE = 30;
- const NUM_CRISTALLI =  1;//35
+ const NUM_MINE = 1;
+ const NUM_CRISTALLI = 30;//35
  const MINE_DISTANCE = 80;   //distanza entro cui inizio a sentire mina
 
  const CRYSTAL = 100;        //punti per un cristallo
@@ -20,7 +20,10 @@
  let sketch = function(p) {
 
   /* preload dei suoni e delle immagini *********************/
-  let mine_sound_array = []; let crystal_sound, crystal_img, skull_img;
+  let mine_sound_array = []; 
+  let walls_imgs = [];
+  let background_imgs = [];
+  let crystal_sound, crystal_img, skull_img;
 
   p.preload = function(){
       //suoni
@@ -32,6 +35,13 @@
       //immagini
       crystal_img = p.loadImage('images/crystal.png');
       skull_img = p.loadImage('images/skull.png');
+      for(var i = 0; i<6; i++){let e = p.loadImage('images/walls/1.png'); walls_imgs.push(e)};
+      walls_imgs.push(p.loadImage('images/walls/2.png'));
+      walls_imgs.push(p.loadImage('images/walls/3.png'));
+      walls_imgs.push(p.loadImage('images/walls/4.png'));
+      /* background_imgs.push(p.loadImage('images/background/b1.png'));
+      background_imgs.push(p.loadImage('images/background/b2.png'));
+      background_imgs.push(p.loadImage('images/background/b3.png')); */
     };
 
 /**********************************************************/
@@ -43,7 +53,7 @@
 
   p.draw = function() {
     p.clear();
-    p.background(0);
+    p.background(p.color(25,28,30));
     g.update();
   }
 
@@ -67,10 +77,11 @@ class GameLogic{
     this.startGameTime = Date.now(); //per timer
     this.timer = 0; //per timer
     this.i = 0; //per timer
+    this.gamebackground = new GameBackground(WIDTH, HEIGHT);
   }
 
   update(){
-
+    this.gamebackground.update(WIDTH, HEIGHT);
     this.walls.forEach(function(wall){wall.updateWall(); })
     this.mines.forEach(function(mine){mine.updateMine(); })
     this.crystals.forEach(function(crystal){crystal.updateCrystal(); })
@@ -152,6 +163,7 @@ class GameLogicSingle extends GameLogic{
     this.mines = objects.mines;
     this.crystals = objects.crystals;
     this.p = new Player(p.width/2,580,'#0077ff');
+    
     console.log('creati questi oggetti: mine: ', this.mines, 'cristalli: ',this.crystals, 'walls: ',this.walls);
   }
 
@@ -199,14 +211,14 @@ class GameLogicSingle extends GameLogic{
     for (var i = 0; i < numObj; i++){
       //creo delle coordinate ipotetiche
       //min + Math.floor(Math.random() * max / step) * step;
-      x_r = LATO + Math.floor(Math.random() *(p.width - LATO) / 50)* 50;
+      x_r = LATO + Math.floor(Math.random() *(p.width - LATO*1.5) / 50)* 50;
       y_r = LATO + Math.floor(Math.random() *(p.height - LATO * 1.5)/ 50)* 50;
 
       //finchè cadono su muri o giocatore ricalcoliamole
       while (checkEveryWall(walls, x_r, y_r).some(e => e === true) ||
              approvati.some(e => (e.x == x_r) && (e.y == y_r))) {
         console.log('oops');
-        x_r = LATO + Math.floor(Math.random() *(p.width - LATO) / 50)* 50;
+        x_r = LATO + Math.floor(Math.random() *(p.width - LATO*1.5) / 50)* 50;
         y_r = LATO + Math.floor(Math.random() *(p.height - LATO * 1.5)/ 50)* 50;
       }
       approvati[i] = {x: x_r, y: y_r};
@@ -401,6 +413,12 @@ class Wall{
   constructor(x,y){
       this.x = x;
       this.y = y;
+      this.img = getRandomImg();
+
+      function getRandomImg(){
+        let img = walls_imgs[Math.floor(Math.random()*walls_imgs.length)];
+        return img;
+      }
   }
 
   updateWall(){
@@ -408,8 +426,7 @@ class Wall{
   }
 
   drawWall(){
-      p.fill(p.color(0,100,10));
-      p.rect(this.x, this.y, LATO);
+    p.image(this.img, this.x, this.y, LATO, LATO);
   }
 
   checkCollisionsPlayer(playerX, playerY) {
@@ -512,9 +529,7 @@ class Crystal{
   }
 
   drawCrystal(){
-    p.image(crystal_img, this.x-RAGGIO_M, this.y-RAGGIO_M, 25, 23)
-    //p.fill(this.color);
-    //p.circle(this.x, this.y, 2*RAGGIO_C);
+    p.image(crystal_img, this.x-RAGGIO_M, this.y-RAGGIO_M, 25, 23);
   }
 
   checkEatCrystal(playerX, playerY){
@@ -718,19 +733,72 @@ class GameOver {
   }
 
   update() {
-    /*
-    p.fill(p.color(0,0,0));
-    p.rectMode(p.CENTER);
-    p.rect(this.x, this.y, WIDTH/2, HEIGHT/2);
-    */
+ 
     p.fill(p.color(255,0,0));
     p.textSize(50);
     p.textAlign(p.CENTER);
     p.text('GAME OVER', this.x, this.y);
-    // TODO, non so perchè non fa vedere un secondo testo T-T
-    //p.text('time: ', this.timeValue);
   }
  }
+
+ class GameBackground {
+   constructor(width, height){
+   
+     let gcd = computeGCD(width, height);
+     this.latoQuadrato = gcd / 6 //px
+     this.righe = height / this.latoQuadrato;
+     this.colonne = width / this.latoQuadrato;
+     this.matrix = new Array(this.righe);
+     this.border = 5;  //px
+
+     console.log('colonne: ', this.colonne, 'righe: ', this.righe, 'px: ', this.latoQuadrato)
+
+     for(var i = 0; i < this.righe; i++){
+       this.matrix[i] = new Array(this.colonne);
+     }
+
+     //riempio le colonne 
+     for(var i = 0; i < this.colonne; i++){
+       for(var j = 0; j < this .righe; j++){
+        this.matrix[j][i] = getRandomImg();
+       }
+     }
+
+     function computeGCD(a,b){  //massimo comune divisore
+      if (a == 0){return b};
+      while (b != 0) {
+        if (a > b){a = a - b;} else {b = b - a; return a;}
+      }
+    }
+
+      function getRandomImg(){
+        let img = background_imgs[Math.floor(Math.random()*background_imgs.length)];
+        return img;
+      }
+
+   }
+
+   update(width, height){
+     //disegno le colonne 
+     //TODO : mi disegna solo metà, devo sistemare
+     /* for(var i = 0; i < this.colonne; i++){
+       for(var j = 0; j < this.righe; j++){
+        p.image(this.matrix[j][i], j*this.latoQuadrato, [i]*this.latoQuadrato, this.latoQuadrato, this.latoQuadrato);
+       }
+    } */
+
+    p.fill(p.color(159,129,105));
+    p.rect(0, 0, this.border, height );
+    p.rect(0, 0, width, this.border );
+    p.rect(width-this.border, 0, this.border, height );
+    p.rect(0, height-this.border, width, this.border );
+
+     
+   }
+   
+ } //fine classe background
+
+
 } 
 // FINE
 
