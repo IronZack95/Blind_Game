@@ -733,3 +733,130 @@ class GameOver {
  }
 } 
 // FINE
+
+
+/*
+//SoundLogic per quando abbiamo i nuovi file audio (lunedì)
+// TODO : da aggiungere costanti MINE_D1, MINE_D2, MINE_D3
+class SoundLogic {
+  constructor() {
+    this.volume = 0;
+    this.angle = 0;
+
+    //MINE
+    for (var i=0; i<NUM_MINE; i++){ //distanza 1
+      let suono = mine_d1[i];
+      suono.setVolume(0);
+      suono.pan(0);
+      suono.loop(); 
+    }
+    for (var i=0; i<NUM_MINE; i++){ //distanza 2
+      let suono = mine_d2[i];
+      suono.setVolume(0);
+      suono.pan(0);
+      suono.loop(); 
+    }
+    for (var i=0; i<NUM_MINE; i++){ //distanza 3
+      let suono = mine_d3[i];
+      suono.setVolume(0);
+      suono.pan(0);
+      suono.loop(); 
+    }
+    //SUONO CAMMINATA
+    walk_sound.setVolume(0);
+    walk_sound.loop();
+  }
+
+  update(player, mines){
+    // SUONI DELLE MINE
+
+    for (var i=0; i<NUM_MINE; i++){
+      //...calcolo distanza dal player
+      let dist = p.dist(player.x, player.y, mines[i].x, mines[i].y);
+
+      if( dist <= MINE_DISTANCE && mines[i].exploded === false) {
+
+        //se sono abbastanza vicino calcolo il volume e il panning
+        let temp = Math.sqrt(dist / MINE_DISTANCE);  //distanza normalizzata etc
+        this.volume = 0.7 * (1-temp);   
+
+        //PANNING
+        let v1 = p.createVector( mines[i].x-player.x+0.5,  mines[i].y-player.y-player.w/2+13.5);
+        //calcolo l'angolo tra sguardo player e vettore verso mina (deg)
+        this.angle = p.degrees((player.v).angleBetween(v1) ) ;
+        
+        if(dist <= MINE_D1 && dist > MINE_D2){
+          mine_d2.forEach(function(e){ let suono = e; suono.setVolume(0)});
+          mine_d3.forEach(function(e){ let suono = e; suono.setVolume(0)});
+          mine_d1.forEach(function(e){ 
+            let suono = e;
+            //panning e volume
+            if (this.angle >= 0 && this.angle < 100){
+              let panning = p.map(angle, 0,100, 0, 1);
+              suono.pan(panning)
+              suono.setVolume(this.volume);
+            } else if (this.angle < 0 && this.angle > -100) {  
+              let panning = p.map(angle, 0,-100, 0, -1)
+              suono.pan(panning)
+              suono.setVolume(this.volume);
+            } else {  //dietro 
+              suono.setVolume(0);
+            }
+          })  
+        } else if (dist <= MINE_D2 && dist > MINE_D3){
+          mine_d1.forEach(function(e){ let suono = e; suono.setVolume(0)});
+          mine_d3.forEach(function(e){ let suono = e; suono.setVolume(0)});
+          mine_d2.forEach(function(e){ 
+            let suono = e;
+            //panning e volume
+            if (this.angle >= 0 && this.angle < 100){
+              let panning = p.map(angle, 0,100, 0, 1);
+              suono.pan(panning)
+              suono.setVolume(this.volume);
+            } else if (this.angle < 0 && this.angle > -100) {  
+              let panning = p.map(angle, 0,-100, 0, -1)
+              suono.pan(panning)
+              suono.setVolume(this.volume);
+            } else {  //dietro 
+              suono.setVolume(0);
+            }
+          })  
+        } else if (dist <= MINE_D3){
+          mine_d1.forEach(function(e){ let suono = e; suono.setVolume(0)});
+          mine_d2.forEach(function(e){ let suono = e; suono.setVolume(0)});
+          mine_d3.forEach(function(e){ 
+            let suono = e;
+            //panning e volume
+            if (this.angle >= 0 && this.angle < 100){
+              let panning = p.map(angle, 0,100, 0, 1);
+              suono.pan(panning)
+              suono.setVolume(this.volume);
+            } else if (this.angle < 0 && this.angle > -100) {  
+              let panning = p.map(angle, 0,-100, 0, -1)
+              suono.pan(panning)
+              suono.setVolume(this.volume);
+            } else {  //dietro 
+              suono.setVolume(0);
+            }
+          })  
+        } 
+     } else {
+      let suono = mine_sound_array[i];
+      suono.setVolume(0);
+     }
+
+     //SUONO DELLA CAMMINATA
+     if(player.walk === true){
+       walk_sound.setVolume(0.7);
+     } else {
+       walk_sound.setVolume(0);
+     }
+   }
+  }
+
+  crystalSound() {
+    crystal_sound.setVolume(0.5);
+    crystal_sound.play();
+  }
+} //end classe SoundLogic
+*/
