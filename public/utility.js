@@ -10,7 +10,6 @@ async function randomName(){
 }
 */
 
-
 async function randomName(){
     let name = await fetch("https://random-names-api.herokuapp.com/random")
     .then(response => response.json())
@@ -24,7 +23,6 @@ async function randomName(){
     });
     return name;
 }
-
 
 class Perlin_Map{
 
@@ -109,3 +107,4 @@ class Perlin{
      return v;
   }
 }
+// FINE

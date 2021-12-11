@@ -1,4 +1,3 @@
-
 // Inizio del programma
 pagina = new Lobby();
 //pagina = new MultiPlayerLobby();

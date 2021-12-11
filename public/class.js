@@ -51,7 +51,7 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     //centerPanel.className = "center panel";
     centerPanel.classList.add("center")
     super.getSchermo().appendChild(centerPanel);
-    let text = '<div id = "text">Come vuoi giocare?</div>'
+    let text = '<div id = "text">How do you want to play?</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
     /*
     //IMMAGINI
@@ -219,7 +219,7 @@ class MultiPlayerLobby extends Pagina{
     centerPanel.classList.add("center")
     super.getSchermo().appendChild(centerPanel);
 
-    let text = '<div id = "text">Pronto?</div>'
+    let text = '<div id = "text">Ready?</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
 
     let pulsante1 = '<button id = "quickGame" class = "button">Quick Game</button>'

@@ -730,6 +730,6 @@ class GameOver {
     // TODO, non so perchè non fa vedere un secondo testo T-T
     //p.text('time: ', this.timeValue);
   }
-}
-
-} // FINE
+ }
+} 
+// FINE
