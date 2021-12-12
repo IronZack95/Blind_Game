@@ -125,16 +125,18 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     //// prova Prova prova
     super();    // chiamo il costruttore della superclasse
 
-    // Creo Titolo E Sottotitolo
+    // Creo Titolo E Sottotitolo    
+    /*
     let h = document.createElement("h1");
     h.id= "title";
-    h.innerHTML = "B L I N D"
-    super.getSchermo().appendChild(h);
+    //h.innerHTML = "B L I N D"
+    super.getSchermo().appendChild(h);    
 
     h = document.createElement("h2");
     h.id= "subtitle";
     h.innerHTML = "Single Player"
     super.getSchermo().appendChild(h);
+    */
 
     //this.canvas = new Canvas();
     let canvasContainer = document.createElement('div');
@@ -151,6 +153,7 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     c.className = "gameTxt"
     c.innerHTML = "0";
     bottomPanel.appendChild(c);
+    
     /*
     let n = document.createElement("h3");
     n.id = "testoCounter";

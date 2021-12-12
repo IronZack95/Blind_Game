@@ -194,12 +194,11 @@
    #canvas{
      font-size: 18px;
      min-width: 200px;
+     position: absolute;
      justify-content: center;
      align-items: center;
-     position: absolute;
-     top: 50%;
      left: 50%;
-     transform: translate(-50%, -50%);
+     transform: translate(-50%, 2%);
    }
    
    #bottomPanel {
@@ -215,46 +214,35 @@
    
    .gameTxt {
      color: white;
+     background-color: #4b362f;
+     text-align: center;
+     padding: 4px;
+     margin: 4px;
+     height: 18px;
+     width: 80px;
    }
    
    #PlayerNameInGame {
      position: absolute;
      top: 50%;
-     transform: translate(10%, -50%);
-     background-color: #262626;
-     
+     transform: translate(10%, -50%);     
    }
-   
-   /* cose per counter */
+
    #counter {
-     padding: 2px;
-     margin: 2px;
      position: relative;
      left: 50%;
      top: 50%;
      transform: translate(-50%, -50%);
-     /*bottom: 10%;
-     margin-left: -50px;
-     z-index: -1;
-     
-     top: 50%;
-     */
-     height: 20px;
-     width: 100px;
-     background-color: #262626;
    }
+
    #timer {
-     padding: 2px;
-     margin: 2px;
      position: absolute;
      right: 10%;
      top: 50%;
      transform: translate(0%, -50%);
-     height: 20px;
-     width: 100px;
-     background-color: #262626;
    }
    
+   /*
    #testoCounter, #testoTimer {
      font-family: Arial, Helvetica, sans-serif;
      text-align: right;
@@ -265,6 +253,7 @@
      margin-right: 10%;
      position: relative;
    }
+   */
    
    #CloudScore {
      max-width: 400px;
