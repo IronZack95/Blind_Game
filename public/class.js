@@ -80,7 +80,6 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     let input = '<input type="text" id="PlayerName" placeholder="Insert your name">';
     centerPanel.insertAdjacentHTML('afterEnd', input);
 
-
     let self = this;
     singleplayer.onclick = function(){
       let txt = self.getText()
@@ -194,7 +193,6 @@ class Canvas{
 }
 
 let socket;
-
 class MultiPlayerLobby extends Pagina{
   constructor() {
     super();
@@ -344,9 +342,7 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
       console.log("Mi sono disconnesso: "+socket.id);
     });
   }
-
 }
-
 class EndGameMulti extends EndGame{    // costruisco la pagina della lobby
 
   constructor(name, score, time){
@@ -380,9 +376,7 @@ class EndGameMulti extends EndGame{    // costruisco la pagina della lobby
 
     a.innerHTML = txt;
     centerPanel.appendChild(a);
-
   }
-
 }
 
 let gameState;
@@ -423,7 +417,6 @@ class MultiPlayer extends Pagina{
       g.innerHTML = "0";
       super.getSchermo().appendChild(f);
       f.appendChild(g)
-
       }
   }
 
@@ -533,7 +526,6 @@ class Recive{
       this.msg = msg;
       this.endgame = true;
     });
-
   }
 
   endGame(){
@@ -543,6 +535,5 @@ class Recive{
       return null;
     }
   }
-
-
 }
+// FINE

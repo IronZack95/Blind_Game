@@ -785,17 +785,10 @@ class GameOver {
     p.rect(0, 0, this.border, height );
     p.rect(0, 0, width, this.border );
     p.rect(width-this.border, 0, this.border, height );
-    p.rect(0, height-this.border, width, this.border );
-
-     
-   }
-   
+    p.rect(0, height-this.border, width, this.border ); 
+   } 
  } //fine classe background
-
-
 } 
-// FINE
-
 
 /*
 //SoundLogic per quando abbiamo i nuovi file audio (lunedì)
@@ -922,3 +915,4 @@ class SoundLogic {
   }
 } //end classe SoundLogic
 */
+// FINE
