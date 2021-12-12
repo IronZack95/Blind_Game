@@ -11,7 +11,7 @@
  const THRESHOLD = 100000;
 
  const NUM_MINE = 1;
- const NUM_CRISTALLI = 1;//35
+ const NUM_CRISTALLI = 30;//35
  const MINE_DISTANCE = 80;   //distanza entro cui inizio a sentire mina
 
  const CRYSTAL = 100;        //punti per un cristallo
@@ -53,7 +53,7 @@
 
   p.draw = function() {
     p.clear();
-    p.background(p.color(25,28,30));
+    p.background(p.color(25,26,27));
     g.update();
   }
 
@@ -659,12 +659,6 @@ class Player{
     let y_sx = p.sin(dir + p.PI/6);
     let x_dx = p.cos(dir - p.PI/6);
     let y_dx = p.sin(dir - p.PI/6);
-
-    /* let dir = Number.parseFloat(this.dir);
-    let x_sx = p.cos(dir+p.PI/6);
-    let y_sx = p.sin(dir+p.PI/6);
-    let x_dx = p.cos(dir-p.PI/6);
-    let y_dx = p.sin(dir-p.PI/6); */
 
     if(y_sx <= 0){p.fill(155,155,155);}
     else{p.fill(255,255,255);}
