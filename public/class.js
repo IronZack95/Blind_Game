@@ -207,7 +207,7 @@ class MultiPlayerLobby extends Pagina{
 
     h = document.createElement("h2");
     h.id= "subtitle";
-    h.className = "subtitles"
+    //h.className = "subtitles"
     h.innerHTML = "Multi Player Lobby"
     super.getSchermo().appendChild(h);
 
