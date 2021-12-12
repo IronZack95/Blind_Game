@@ -113,13 +113,6 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
 }
 
 class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
-  // variabili private
-  #snake;
-  #resolution = 20;
-  #food;
-  #score = 0;
-  #canvasWidth = 400;
-  #canvasHeight = 400;
 
   constructor() {
     //// prova Prova prova
@@ -153,7 +146,7 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     c.className = "gameTxt"
     c.innerHTML = "0";
     bottomPanel.appendChild(c);
-    
+
     /*
     let n = document.createElement("h3");
     n.id = "testoCounter";
@@ -214,6 +207,7 @@ class MultiPlayerLobby extends Pagina{
 
     h = document.createElement("h2");
     h.id= "subtitle";
+    h.className = "subtitles"
     h.innerHTML = "Multi Player Lobby"
     super.getSchermo().appendChild(h);
 
@@ -313,7 +307,6 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
 
     //punteggi fine partita
     let a = document.createElement("h3");
-
     a.id = "finalscore";
 
     // SOCKET
@@ -328,12 +321,14 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
         let classifica = '';
         var i = 1;
         var position;
+
         for( let key in response.status){
           if(response.status[key].name == this.name && response.status[key].score == this.score && response.status[key].time == this.time){position = i;}
           classifica = classifica + i + '° '+response.status[key].name + ' SCORE: ' + response.status[key].score + ' TIME: ' + response.status[key].time+ '<br>';
           //classifica = JSON.stringify(response.status[key]) + classifica;
           i++;
         }
+
         //console.log(classifica);
         a.innerHTML = 'Final score:  ' + this.score + '<br>'+'Time :   ' + this.time + '<br>' + 'POSITION: ' + position +'°';
         centerPanel.appendChild(a);

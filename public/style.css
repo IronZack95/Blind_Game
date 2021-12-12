@@ -160,17 +160,29 @@
      font-weight: bolder;
    }
    
+   /*
    #subtitle {
-     margin: 0;
+     margin: 5px;
      text-align: center;
      color:  #0a1b1e;
-     /*background-color: olivedrab;*/
+     /*background-color: olivedrab;
      font-size: 30px;
      font-weight: bolder;
    }
+   */
+
+   .subtitles {
+    margin: 5px;
+    text-align: center;
+    color:  #0a1b1e;
+    /*background-color: olivedrab;*/
+    font-size: 30px;
+    font-weight: bolder;
+  }
    
    #PlayerName {
      position: absolute;
+     margin: 5px;
      left: 50%;
      top: 53%;  
      transform: translate(-50%);
@@ -198,18 +210,20 @@
      justify-content: center;
      align-items: center;
      left: 50%;
-     transform: translate(-50%, 2%);
+     top: 50%;
+     transform: translate(-50%, -50%);
    }
    
    #bottomPanel {
      position: absolute;
+     min-width: 200px;
      padding: 4px;
      background-color: white;
      left: 50%;
      bottom: 1%;
      transform: translate(-50%);
-     width: 80%;
-     height: 8%;
+     width: 1200px;
+     height: 5%;
    }
    
    .gameTxt {
@@ -256,26 +270,19 @@
    */
    
    #CloudScore {
-     max-width: 400px;
-     width: 80%;
-     height: 15%;
-     border-radius: 18px;
-     text-align: left;
-     color: white;
-     /*background-color: #002c35;
-     border: 2px solid #000000;*/
-     font-size: 18px;
-     min-width: 200px;
-     position: absolute;
-     top: 130px;
-     /*left: 20%;*/
-     transform: translate(5%, -50%);
-   
-     /* left: 21%; */
-     /* top: 50%;
-     align-items: center;
-     justify-content: center;
-     margin: 0;*/
+    max-width: 400px;
+    width: 80%;
+    height: 15%;
+    border-radius: 18px;
+    text-align: center;
+    color: white;
+    font-size: 18px;
+    min-width: 200px;
+    position: relative;
+    /* top: 130px; */
+    left: 50%;
+    transform: translate(-50%);
+    /* left: 21%;*/
    }
    
    /* cose per multiplayer */
@@ -301,14 +308,20 @@
    }
    
    .bottom{
-     bottom: 0px;
-     border-top-left-radius: 5px;
-     border-top-right-radius: 5px;
+    bottom: 0px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    left: 50%;
+    transform: translate(-50%, 150%);
+    position: relative;
+    overflow-y: scroll;
+    height: 150px;
    }
    
    /* modifiche a centerpanel*/
    .center {
      max-width: 400px;
+     margin: 10px;
      width: 80%;
      height: 20%;
      border-radius: 20px;
