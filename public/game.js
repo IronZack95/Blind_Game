@@ -341,9 +341,9 @@ class SoundLogic {
     //MINE
     for(var i=0; i<mine_sound_array.length; i++){
       let suono = mine_sound_array[i];
-      suono.setVolume(0);
+      suono.setVolume(0); 
       suono.pan(0);
-      suono.loop(); //fin dall'inizio le mine son tutte in loop
+      suono.loop(0,1,1,null,0.5); //fin dall'inizio le mine son tutte in loop
     }
     //SUONO CAMMINATA
     walk_sound.setVolume(0);
