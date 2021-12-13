@@ -10,7 +10,7 @@
  const RESOLUTION = 2; //2 ogni box contiente RESOLUTION X RESOLUTION muri dentro la griglia
  const THRESHOLD = 100000;
 
- const NUM_MINE = 1;
+ const NUM_MINE = 30;
  const NUM_CRISTALLI = 30;//35
  const MINE_DISTANCE = 80;   //distanza entro cui inizio a sentire mina
 
@@ -338,12 +338,14 @@ class GameLogicMulti extends GameLogic{
 class SoundLogic {
 
   constructor() {
+    this.interval = 1.5;  //sec
+
     //MINE
     for(var i=0; i<mine_sound_array.length; i++){
       let suono = mine_sound_array[i];
       suono.setVolume(0); 
       suono.pan(0);
-      suono.loop(0,1,1,null,0.5); //fin dall'inizio le mine son tutte in loop
+      suono.loop(0,1,1,null,this.interval); //fin dall'inizio le mine son tutte in loop
     }
     //SUONO CAMMINATA
     walk_sound.setVolume(0);
@@ -362,11 +364,21 @@ class SoundLogic {
 
         //se sono abbastanza vicino calcolo il volume e il panning
         let temp = Math.sqrt(dist / MINE_DISTANCE);  //calcolo distanza normalizzata etc
-        let temp1 = 0.7 * (1-temp);   //70% di 1, ossia il massimo
+        let temp1 = 0.7 * (1-temp);   
 
         //setto il volume
         let suono = mine_sound_array[i];
-        //suono.setVolume(temp1);
+
+        if(dist <= 100 && dist >60){
+          this.interval = 1.5;
+          suono.loop.duration = this.interval;
+        } else if (dist <= 60 && dist > 35){
+          this.interval = 0.9;
+          suono.loop.duration = this.interval;
+        } else if (dist <= 35 ){
+          this.interval = 0.5;
+          suono.loop.duration = this.interval;
+        }
 
         //setto il panning
         let v1 = p.createVector( mines[i].x-player.x+0.5,  mines[i].y-player.y-player.w/2+13.5);
@@ -385,7 +397,7 @@ class SoundLogic {
         } else {  //dietro (volume basso)
           suono.setVolume(temp1*0.5);
         }
-        //let panning = p.map(p.mouseX, 0, p.width, -1.0, 1.0);
+     
 
         //console.log('suona la mina '+[i]+ ' at volume '+temp1);
       } else {
