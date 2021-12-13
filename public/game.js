@@ -12,7 +12,7 @@
 
  const NUM_MINE = 30;
  const NUM_CRISTALLI = 30;//35
- const MINE_DISTANCE = 80;   //distanza entro cui inizio a sentire mina
+ const MINE_DISTANCE = 120;   //distanza entro cui inizio a sentire mina
 
  const CRYSTAL = 100;        //punti per un cristallo
  const EXPLOSION = 200;      //punti in meno per un'esplosione
@@ -368,17 +368,6 @@ class SoundLogic {
 
         //setto il volume
         let suono = mine_sound_array[i];
-
-        if(dist <= 100 && dist >60){
-          this.interval = 1.5;
-          suono.loop.duration = this.interval;
-        } else if (dist <= 60 && dist > 35){
-          this.interval = 0.9;
-          suono.loop.duration = this.interval;
-        } else if (dist <= 35 ){
-          this.interval = 0.5;
-          suono.loop.duration = this.interval;
-        }
 
         //setto il panning
         let v1 = p.createVector( mines[i].x-player.x+0.5,  mines[i].y-player.y-player.w/2+13.5);
