@@ -12,10 +12,12 @@
 
  const NUM_MINE = 30;
  const NUM_CRISTALLI = 30;//35
- const MINE_DISTANCE = 120;   //distanza entro cui inizio a sentire mina
+ const NUM_MAGIC_CRYSTAL = 1;
+ const MINE_DISTANCE = 80;   //distanza entro cui inizio a sentire mina
 
  const CRYSTAL = 100;        //punti per un cristallo
  const EXPLOSION = 200;      //punti in meno per un'esplosione
+ const MAGIC_CRYSTAL = 1000; //punti per un cristallo magico
 
  let sketch = function(p) {
 
@@ -28,20 +30,20 @@
   p.preload = function(){
       //suoni
       p.soundFormats('mp3', 'ogg');
-      for(var i=0; i < NUM_MINE; i++){mine_sound_array[i] = p.loadSound('sounds/mine')};
+      //for(var i=0; i < NUM_MINE; i++){mine_sound_array[i] = p.loadSound('sounds/mine_sonar')};
+      for(var i=0; i < NUM_MINE; i++){mine_sound_array[i] = p.loadSound('sounds/bip')};
       crystal_sound = p.loadSound('sounds/crystal');
       walk_sound = p.loadSound('sounds/walk');
       console.log('Loaded these sounds: ', mine_sound_array, crystal_sound, walk_sound);
       //immagini
       crystal_img = p.loadImage('images/crystal.png');
+      magic_crystal_img = p.loadImage('images/magic_crystal.png');
       skull_img = p.loadImage('images/skull.png');
       for(var i = 0; i<6; i++){let e = p.loadImage('images/walls/1.png'); walls_imgs.push(e)};
       walls_imgs.push(p.loadImage('images/walls/2.png'));
       walls_imgs.push(p.loadImage('images/walls/3.png'));
       walls_imgs.push(p.loadImage('images/walls/4.png'));
-      /* background_imgs.push(p.loadImage('images/background/b1.png'));
-      background_imgs.push(p.loadImage('images/background/b2.png'));
-      background_imgs.push(p.loadImage('images/background/b3.png')); */
+      
     };
 
 /**********************************************************/
@@ -159,16 +161,32 @@ class GameLogicSingle extends GameLogic{
     let perlin_map = new Perlin_Map(GRID_SIZE,RESOLUTION,THRESHOLD);
     this.walls = this.createWalls(perlin_map, this.p);
 
-    let objects = this.createObjects(NUM_MINE + NUM_CRISTALLI, this.walls);
+    let objects = this.createObjects(NUM_MINE + NUM_CRISTALLI + NUM_MAGIC_CRYSTAL, this.walls);
     this.mines = objects.mines;
     this.crystals = objects.crystals;
+    this.magic_crystals = objects.magic_crystals;
     this.p = new Player(p.width/2,580,'#0077ff');
     
-    console.log('creati questi oggetti: mine: ', this.mines, 'cristalli: ',this.crystals, 'walls: ',this.walls);
+    console.log('creati questi oggetti: mine: ', this.mines, 
+                'cristalli: ',                   this.crystals, 
+                'walls: ',                       this.walls,
+                'magic crystals: ',              this.magic_crystals);
   }
 
   update(){
     super.update();
+
+    //questione cristallo magico:
+    this.magic_crystals.forEach(function(magic_crystal){magic_crystal.updateCrystal(); })
+    //check cristallo magico:
+    for(var i = 0; i < this.magic_crystals.length; i++) {
+      if( this.magic_crystals[i].checkEatCrystal(this.p.x, this.p.y)){
+        this.playerScore += MAGIC_CRYSTAL;
+        //this.crystalEvent.status = true;
+        //this.crystalEvent.index = i;
+        //this.s.crystalSound();
+      }; }
+    
     // verifico il fine partita;
     this.checkEndGame();
   }
@@ -204,6 +222,7 @@ class GameLogicSingle extends GameLogic{
   createObjects(numObj, walls){
     let mines = [];
     let crystals = [];
+    let magic_crystals = [];
     let x_r, y_r;
     let temp = [];
     let approvati = [];
@@ -222,15 +241,18 @@ class GameLogicSingle extends GameLogic{
         y_r = LATO + Math.floor(Math.random() *(p.height - LATO * 1.5)/ 50)* 50;
       }
       approvati[i] = {x: x_r, y: y_r};
+
       //quando vanno bene piazziamole negli array
       if(i < NUM_MINE ){
         mines[i] = new Mine(x_r, y_r)
-      } else {
+      } else if(i >= NUM_MINE && i < (numObj-1)) {
         crystals[ i- (NUM_MINE) ] = new Crystal(x_r, y_r)
+      } else {
+        magic_crystals[i - NUM_MINE - NUM_CRISTALLI] = new MagicCrystal(x_r, y_r)
       }
     } //end of for loop
 
-    return {mines, crystals};
+    return {mines, crystals, magic_crystals};
 
     function checkEveryWall(walls, x_r, y_r){
       for (var i = 0; i < walls.length; i++){
@@ -338,14 +360,15 @@ class GameLogicMulti extends GameLogic{
 class SoundLogic {
 
   constructor() {
-    this.interval = 1.5;  //sec
-
+    this.interval = 1;
+    
     //MINE
     for(var i=0; i<mine_sound_array.length; i++){
       let suono = mine_sound_array[i];
       suono.setVolume(0); 
       suono.pan(0);
-      suono.loop(0,1,1,null,this.interval); //fin dall'inizio le mine son tutte in loop
+      suono.loop(2,1,1,null,this.interval); 
+      suono.rate(1);
     }
     //SUONO CAMMINATA
     walk_sound.setVolume(0);
@@ -364,10 +387,15 @@ class SoundLogic {
 
         //se sono abbastanza vicino calcolo il volume e il panning
         let temp = Math.sqrt(dist / MINE_DISTANCE);  //calcolo distanza normalizzata etc
-        let temp1 = 0.7 * (1-temp);   
+        let temp1 = 0.5 * (1-temp);   
+        console.log(temp1)
+        let rate = p.map(temp1, 0.001, 0.27, 0.8, 2)
 
         //setto il volume
         let suono = mine_sound_array[i];
+
+        //setto il rate
+        suono.rate(rate)
 
         //setto il panning
         let v1 = p.createVector( mines[i].x-player.x+0.5,  mines[i].y-player.y-player.w/2+13.5);
@@ -552,6 +580,32 @@ class Crystal{
       }
     }
   }
+}
+
+class MagicCrystal extends Crystal{
+  constructor(x,y){
+    super(x,y);
+  }
+
+  drawInvisibleCrystal(){
+    //da rendere invisibile poi...
+    p.fill(p.color(0,255,0));
+    p.circle(this.x, this.y, 1.5*RAGGIO_C);
+  }
+
+  drawFoundCrystal(){
+    p.image(magic_crystal_img, this.x-RAGGIO_M, this.y-RAGGIO_M, 25, 23);
+  }
+
+  updateCrystal(){
+    if(this.eaten == false){
+      this.drawInvisibleCrystal();
+    } else {
+      this.drawFoundCrystal();
+
+    }
+  }
+
 }
 
 class Player{
@@ -746,7 +800,7 @@ class GameOver {
      this.matrix = new Array(this.righe);
      this.border = 5;  //px
 
-     console.log('colonne: ', this.colonne, 'righe: ', this.righe, 'px: ', this.latoQuadrato)
+     //console.log('colonne: ', this.colonne, 'righe: ', this.righe, 'px: ', this.latoQuadrato)
 
      for(var i = 0; i < this.righe; i++){
        this.matrix[i] = new Array(this.colonne);
