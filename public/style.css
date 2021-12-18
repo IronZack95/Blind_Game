@@ -89,7 +89,6 @@
      border: none;
      border-radius: 10px;
      box-shadow: 0 7px #999;
-     font-family: papytus;
      font-weight: bolder;
      }
 
@@ -157,22 +156,30 @@
      position: absolute;
      min-width: 200px;
      padding: 4px;
-     background-color: white;
+     background-color: #212325;
      left: 50%;
      bottom: 1%;
+     border: solid 2px #3c3c3c;
+     border-radius: 10%;
      transform: translate(-50%);
      width: 1200px;
      height: 5%;
    }
 
-   .gameTxt {
-     color: white;
-     background-color: #4b362f;
+    .text{
+      color: #888899;
+    }
+
+   .game{
+     color: #ebd8d8;
+     background-color: #1a1716;
      text-align: center;
      padding: 4px;
-     margin: 4px;
-     height: 18px;
+     height: 28px;
      width: 80px;
+     border: solid 2px #00b4d8;
+     border-radius: 10%;
+
    }
 
    #PlayerNameInGame {
@@ -197,8 +204,10 @@
 
    #sus{
      position: absolute;
+     transform: translate(0%, -50%);
+     width: 50px;
      left: 0%;
-     top: 50%;
+     bottom: 20%;
    }
    /*
    #testoCounter, #testoTimer {
@@ -265,7 +274,7 @@
    /* modifiche a centerpanel*/
    .center {
      max-width: 400px;
-     margin: 10px;
+     /*margin: 10px;*/
      width: 80%;
      height: 20%;
      border-radius: 20px;

@@ -23,7 +23,7 @@
  let sketch = function(p) {
 
   /* preload dei suoni e delle immagini *********************/
-  let mine_sound_array = []; 
+  let mine_sound_array = [];
   let walls_imgs = [];
   let background_imgs = [];
   let crystal_sound, crystal_img, skull_img;
@@ -45,7 +45,7 @@
       walls_imgs.push(p.loadImage('images/walls/2.png'));
       walls_imgs.push(p.loadImage('images/walls/3.png'));
       walls_imgs.push(p.loadImage('images/walls/4.png'));
-      
+
     };
 
 /**********************************************************/
@@ -113,7 +113,7 @@ class GameLogic{
       }; }
       //console.log(this.crystalEvent)
 
-  
+
     this.updateScore();
     this.updateTimer();
   }
@@ -167,9 +167,9 @@ class GameLogicSingle extends GameLogic{
     this.magic_crystals = objects.magic_crystals;
     this.p = new Player(p.width/2,580,'#0077ff');
     this.s = new SoundLogic();
-    
-    console.log('creati questi oggetti: mine: ', this.mines, 
-                'cristalli: ',                   this.crystals, 
+
+    console.log('creati questi oggetti: mine: ', this.mines,
+                'cristalli: ',                   this.crystals,
                 'walls: ',                       this.walls,
                 'magic crystals: ',              this.magic_crystals);
   }
@@ -188,7 +188,7 @@ class GameLogicSingle extends GameLogic{
         //this.crystalEvent.index = i;
         //this.s.crystalSound();
       }; }
-    
+
     // verifico il fine partita;
     this.checkEndGame();
   }
@@ -365,13 +365,13 @@ class SoundLogic {
 
   constructor() {
     this.interval = 1;
-    
+
     //MINE
     for(var i=0; i<mine_sound_array.length; i++){
       let suono = mine_sound_array[i];
-      suono.setVolume(0); 
+      suono.setVolume(0);
       suono.pan(0);
-      suono.loop(2,1,1,null,this.interval); 
+      suono.loop(2,1,1,null,this.interval);
       suono.rate(1);
     }
     //SUONO CAMMINATA
@@ -399,7 +399,7 @@ class SoundLogic {
 
         //se sono abbastanza vicino calcolo il volume e il panning
         let temp = Math.sqrt(dist / MINE_DISTANCE);  //calcolo distanza normalizzata etc
-        let temp1 = 0.5 * (1-temp);   
+        let temp1 = 0.5 * (1-temp);
         console.log(temp1)
         let rate = p.map(temp1, 0.001, 0.27, 0.8, 2)
 
@@ -426,7 +426,7 @@ class SoundLogic {
         } else {  //dietro (volume basso)
           suono.setVolume(temp1*0.5);
         }
-     
+
 
         //console.log('suona la mina '+[i]+ ' at volume '+temp1);
       } else {
@@ -442,11 +442,11 @@ class SoundLogic {
 
       if( dist <= MAGIC_CRYSTAL_DISTANCE && magicCrystal[i].found === false){
         let temp = Math.sqrt(dist / MINE_DISTANCE);  //calcolo distanza normalizzata etc
-        let temp1 = 0.5 * (1-temp);   
-       
+        let temp1 = 0.5 * (1-temp);
+
         let hertz = p.map(temp1, 0.001, 0.27, 20, 20000);
         this.filter.freq(hertz)   //setto frequenza
-    
+
       }
 
      } */
@@ -472,7 +472,7 @@ class SoundLogic {
 
         //se sono abbastanza vicino calcolo il volume e il panning
         let temp = Math.sqrt(dist / MINE_DISTANCE);  //calcolo distanza normalizzata etc
-        let temp1 = 0.5 * (1-temp);   
+        let temp1 = 0.5 * (1-temp);
         console.log(temp1)
         let rate = p.map(temp1, 0.001, 0.27, 0.8, 2)
 
@@ -499,7 +499,7 @@ class SoundLogic {
         } else {  //dietro (volume basso)
           suono.setVolume(temp1*0.5);
         }
-     
+
 
         //console.log('suona la mina '+[i]+ ' at volume '+temp1);
       } else {
@@ -721,7 +721,7 @@ class Player{
     //let dir =  Number.parseFloat( 2 * p.PI * p.winMouseX / p.windowWidth).toFixed(2);  //tra 0 e 1
     //if(dir <= 2 * p.PI && dir > 0){ this.dir = dir; }
 
-    if (p.keyIsDown(p.LEFT_ARROW) && this.x > 0 + this.diameter / 2 ) {
+    if (p.keyIsDown(/*p.LEFT_ARROW*/ 65) && this.x > 0 + this.diameter / 2 ) {
       let temp = this.x - 1;
       if (walls.every(element => element.checkCollisionsPlayer(temp, this.y) === false)){
         this.walk = true;
@@ -729,7 +729,7 @@ class Player{
       }
     }
 
-    if (p.keyIsDown(p.RIGHT_ARROW) && this.x < WIDTH - this.diameter / 2) {
+    if (p.keyIsDown(/*p.RIGHT_ARROW*/ 68) && this.x < WIDTH - this.diameter / 2) {
       let temp = this.x + 1;
       if (walls.every(element => element.checkCollisionsPlayer(temp, this.y) === false)){
         this.walk = true;
@@ -737,7 +737,7 @@ class Player{
       }
     }
 
-    if (p.keyIsDown(p.UP_ARROW) && this.y > 0 + this.diameter / 2 ) {
+    if (p.keyIsDown(/*p.UP_ARROW*/ 87) && this.y > 0 + this.diameter / 2 ) {
       let temp = this.y - 1;
       if (walls.every(element => element.checkCollisionsPlayer(this.x, temp) === false)){
         this.walk = true;
@@ -745,7 +745,7 @@ class Player{
       }
     }
 
-    if (p.keyIsDown(p.DOWN_ARROW)  && this.y < HEIGHT - this.diameter / 2 ) {
+    if (p.keyIsDown(/*p.DOWN_ARROW*/ 83)  && this.y < HEIGHT - this.diameter / 2 ) {
       let temp = this.y + 1;
       if (walls.every(element => element.checkCollisionsPlayer(this.x, temp) === false)){
         this.walk = true;
@@ -867,7 +867,7 @@ class GameOver {
   }
 
   update() {
- 
+
     p.fill(p.color(255,0,0));
     p.textSize(50);
     p.textAlign(p.CENTER);
@@ -877,7 +877,7 @@ class GameOver {
 
  class GameBackground {
    constructor(width, height){
-   
+
      let gcd = computeGCD(width, height);
      this.latoQuadrato = gcd / 6 //px
      this.righe = height / this.latoQuadrato;
@@ -891,7 +891,7 @@ class GameOver {
        this.matrix[i] = new Array(this.colonne);
      }
 
-     //riempio le colonne 
+     //riempio le colonne
      for(var i = 0; i < this.colonne; i++){
        for(var j = 0; j < this .righe; j++){
         this.matrix[j][i] = getRandomImg();
@@ -912,7 +912,7 @@ class GameOver {
    }
 
    update(width, height){
-     //disegno le colonne 
+     //disegno le colonne
      //TODO : mi disegna solo metà, devo sistemare
      /* for(var i = 0; i < this.colonne; i++){
        for(var j = 0; j < this.righe; j++){
@@ -924,8 +924,8 @@ class GameOver {
     p.rect(0, 0, this.border, height );
     p.rect(0, 0, width, this.border );
     p.rect(width-this.border, 0, this.border, height );
-    p.rect(0, height-this.border, width, this.border ); 
-   } 
+    p.rect(0, height-this.border, width, this.border );
+   }
  } //fine classe background
-} 
+}
 // FINE

@@ -51,7 +51,7 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     //centerPanel.className = "center panel";
     centerPanel.classList.add("center")
     super.getSchermo().appendChild(centerPanel);
-    let text = '<div id = "text">How do you want to play?</div>'
+    let text = '<div id = "text" class = "text">How do you want to play?</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
 
     //IMMAGINI
@@ -60,11 +60,15 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     image1.id = "sus";
     image1.className = "lobby image";
     super.getSchermo().appendChild(image1);
-    /*
+
     this.i= 0;
-    setInterval(ciao(),100);
-    function ciao(){document.getElementById("sus").style.left = this.i+"%"; this.i += 1 ; console.log(this.i)}
-    */
+    setInterval(function(){pagina.ciao()},100);
+
+    let image2 = document.createElement("img");
+    image2.src = "images/fire.gif";
+    image2.id = "sus";
+    image2.className = "lobby image";
+    super.getSchermo().appendChild(image2);
     /*
     let image2 = document.createElement("img");
     image2.src = "images/SnakeRed.png";
@@ -115,6 +119,12 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
   getText(){
     return document.getElementById("text");
   }
+
+  ciao(){
+    document.getElementById("sus").style.left = this.i+"%";
+    this.i += 0.1 ;
+    console.log(this.i)
+  }
 }
 
 class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
@@ -148,7 +158,7 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     // Creo counter
     let c = document.createElement("div");
     c.id = "counter";
-    c.className = "gameTxt"
+    c.className = "game text"
     c.innerHTML = "0";
     bottomPanel.appendChild(c);
 
@@ -163,7 +173,7 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     // Creo timer
     let f = document.createElement("div");
     f.id = "timer";
-    f.className = "gameTxt";
+    f.className = "game text";
     f.innerHTML = "0";
     bottomPanel.appendChild(f);
 
@@ -179,7 +189,7 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     //creo player getName   // DA SISTEMARE
     let name = document.createElement("div");
     name.id= "PlayerNameInGame";
-    name.className = "gameTxt";
+    name.className = "game text";
     name.innerHTML = playerName;
     bottomPanel.appendChild(name);
   }
@@ -220,7 +230,7 @@ class MultiPlayerLobby extends Pagina{
     centerPanel.classList.add("center")
     super.getSchermo().appendChild(centerPanel);
 
-    let text = '<div id = "text">Ready?</div>'
+    let text = '<div id = "text" class = "text">Ready?</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
 
     let pulsante1 = '<button id = "quickGame" class = "button">Quick Game</button>'
