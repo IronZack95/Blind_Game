@@ -18,6 +18,7 @@
  const CRYSTAL = 100;        //punti per un cristallo
  const EXPLOSION = 200;      //punti in meno per un'esplosione
  const MAGIC_CRYSTAL = 1000; //punti per un cristallo magico
+ const MAGIC_CRYSTAL_DISTANCE = 350; //distanza a cui inizio a sentire suono filtrato
 
  let sketch = function(p) {
 
@@ -34,6 +35,7 @@
       for(var i=0; i < NUM_MINE; i++){mine_sound_array[i] = p.loadSound('sounds/bip')};
       crystal_sound = p.loadSound('sounds/crystal');
       walk_sound = p.loadSound('sounds/walk');
+      carillon_sound = p.loadSound('sounds/BackgroundMusic.mp3')
       console.log('Loaded these sounds: ', mine_sound_array, crystal_sound, walk_sound);
       //immagini
       crystal_img = p.loadImage('images/crystal.png');
@@ -74,7 +76,7 @@ class GameLogic{
     this.p = null;
     this.enemy = [];
     this.ctx =  p.createCanvas(WIDTH, HEIGHT);
-    this.s = new SoundLogic();
+    this.s = null;
     this.gameOver = new GameOver();
     this.startGameTime = Date.now(); //per timer
     this.timer = 0; //per timer
@@ -111,9 +113,7 @@ class GameLogic{
       }; }
       //console.log(this.crystalEvent)
 
-    //update suoni
-    this.s.update(this.p, this.mines);
-
+  
     this.updateScore();
     this.updateTimer();
   }
@@ -166,6 +166,7 @@ class GameLogicSingle extends GameLogic{
     this.crystals = objects.crystals;
     this.magic_crystals = objects.magic_crystals;
     this.p = new Player(p.width/2,580,'#0077ff');
+    this.s = new SoundLogic();
     
     console.log('creati questi oggetti: mine: ', this.mines, 
                 'cristalli: ',                   this.crystals, 
@@ -175,6 +176,7 @@ class GameLogicSingle extends GameLogic{
 
   update(){
     super.update();
+    this.s.update(this.p, this.mines, this.magic_crystals);
 
     //questione cristallo magico:
     this.magic_crystals.forEach(function(magic_crystal){magic_crystal.updateCrystal(); })
@@ -284,6 +286,7 @@ class GameLogicMulti extends GameLogic{
     this.mines = this.createMines(state.mines);
     this.crystals = this.createCrystals(state.crystals);
     this.startGameTime = state.startTime;
+    this.s = new SoundLogic();
 
     state.players.forEach((item, i) => {
       if(state.myid == item.id){this.p = new Player(item.position.x,item.position.y,item.color);}
@@ -302,6 +305,7 @@ class GameLogicMulti extends GameLogic{
     this.t.transmitPosition();
     this.t.transmitDirection();
     super.update();
+    this.s.update(this.p, this.mines);
     // verifico il fine partita
     let result = this.r.endGame();
     if(result != null){ this.checkEndGame(result)}
@@ -374,8 +378,89 @@ class SoundLogic {
     walk_sound.setVolume(0);
     walk_sound.loop();
 
+    //SUONO CRISTALLO MAGICO (x single)
+    /* carillon_sound.setVolume(0);
+    carillon_sound.loop();
+    this.filter = new p5.LowPass();
+    carillon_sound.connect(this.filter);
+    this.freq = 300;  //Hz
+    filter.freq(this.freq); */
+
   };
 
+  //update per single con cristallo magico
+  update(player, mines, magicCrystal){
+     // SUONI DELLE MINE
+     for (var i=0; i<mines.length; i++){
+      //...calcolo distanza dal player
+      let dist = p.dist(player.x, player.y, mines[i].x, mines[i].y);
+
+      if( dist <= MINE_DISTANCE && mines[i].exploded === false) {
+
+        //se sono abbastanza vicino calcolo il volume e il panning
+        let temp = Math.sqrt(dist / MINE_DISTANCE);  //calcolo distanza normalizzata etc
+        let temp1 = 0.5 * (1-temp);   
+        console.log(temp1)
+        let rate = p.map(temp1, 0.001, 0.27, 0.8, 2)
+
+        //setto il volume
+        let suono = mine_sound_array[i];
+
+        //setto il rate
+        suono.rate(rate)
+
+        //setto il panning
+        let v1 = p.createVector( mines[i].x-player.x+0.5,  mines[i].y-player.y-player.w/2+13.5);
+
+        //calcolo l'angolo tra sguardo player e vettore verso mina (deg)
+        let angle = p.degrees((player.v).angleBetween(v1) ) ;
+        //console.log(angle)
+        if (angle >= 0 && angle < 100){
+          let panning = p.map(angle, 0,100, 0, 1);
+          suono.pan(panning)
+          suono.setVolume(temp1);
+        } else if (angle < 0 && angle > -100) {  //da centro a sinistra fino a -100°
+          let panning = p.map(angle, 0,-100, 0, -1)
+          suono.pan(panning)
+          suono.setVolume(temp1);
+        } else {  //dietro (volume basso)
+          suono.setVolume(temp1*0.5);
+        }
+     
+
+        //console.log('suona la mina '+[i]+ ' at volume '+temp1);
+      } else {
+        let suono = mine_sound_array[i];
+        suono.setVolume(0);
+      }
+     }
+
+     //SUONO CRISTALLO MAGICO
+    /*  for (var i=0; i<magicCrystal.length; i++){
+       //...calcolo distanza dal player
+      let dist = p.dist(player.x, player.y, magicCrystal[i].x, magicCrystal[i].y);
+
+      if( dist <= MAGIC_CRYSTAL_DISTANCE && magicCrystal[i].found === false){
+        let temp = Math.sqrt(dist / MINE_DISTANCE);  //calcolo distanza normalizzata etc
+        let temp1 = 0.5 * (1-temp);   
+       
+        let hertz = p.map(temp1, 0.001, 0.27, 20, 20000);
+        this.filter.freq(hertz)   //setto frequenza
+    
+      }
+
+     } */
+
+     //SUONO DELLA CAMMINATA
+     if(player.walk === true){
+       walk_sound.setVolume(0.7);
+     } else {
+       walk_sound.setVolume(0);
+     }
+
+  }
+
+  //update per multi
   update(player, mines){
     // SUONI DELLE MINE
 
