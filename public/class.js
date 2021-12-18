@@ -53,13 +53,19 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     super.getSchermo().appendChild(centerPanel);
     let text = '<div id = "text">How do you want to play?</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
-    /*
+
     //IMMAGINI
     let image1 = document.createElement("img");
-    image1.src = "images/SnakeGreen.png";
-    image1.classList.add("snakeGreen");
+    image1.src = "images/sus.png";
+    image1.id = "sus";
+    image1.className = "lobby image";
     super.getSchermo().appendChild(image1);
-
+    /*
+    this.i= 0;
+    setInterval(ciao(),100);
+    function ciao(){document.getElementById("sus").style.left = this.i+"%"; this.i += 1 ; console.log(this.i)}
+    */
+    /*
     let image2 = document.createElement("img");
     image2.src = "images/SnakeRed.png";
     image2.classList.add("snakeRed");
@@ -117,12 +123,12 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     //// prova Prova prova
     super();    // chiamo il costruttore della superclasse
 
-    // Creo Titolo E Sottotitolo    
+    // Creo Titolo E Sottotitolo
     /*
     let h = document.createElement("h1");
     h.id= "title";
     //h.innerHTML = "B L I N D"
-    super.getSchermo().appendChild(h);    
+    super.getSchermo().appendChild(h);
 
     h = document.createElement("h2");
     h.id= "subtitle";
@@ -251,6 +257,7 @@ class MultiPlayerLobby extends Pagina{
     });
 
     quickGame.onclick = function(){
+        quickGame.disabled = true;  // disabilito il pulsante se hìl'ho già premuto una volta
         let msg = {name: playerName};
         socket.emit("Lobby", msg ,(response) => {
             console.log("Il server dice: "+response.status+ " la mia stanza è: "+response.room); // ok
@@ -258,9 +265,7 @@ class MultiPlayerLobby extends Pagina{
             if(response.status == "start"){
               socket.emit("startMultiplayer", this.room);
             }else if(response.status == "wait"){
-              document.getElementById("text").innerText = "Attesa secondo giocatore..."
-            }else if(response.status == "full"){
-              document.getElementById("text").innerText = "Server pieno!";
+              document.getElementById("text").innerText = "Attesa secondo giocatore...";
             }
         });
     }

@@ -47,6 +47,7 @@
    html, body {
      margin: 0;
      height:100%;
+     overflow: hidden;
      background-color: rgb(143, 142, 142);
      background: linear-gradient(0deg, #000000 0%, #15353b 100%);
      font-family: 'Roboto', sans-serif;
@@ -98,30 +99,6 @@
      background-color: #7bff00;
      box-shadow: 0 2px #666;
      transform: translate(0%, 40%);
-     }
-
-     /* Pulante schermata game over */
-   .buttonEndgame {
-     position: relative;
-     margin: 8px;
-     bottom: 10px;
-     padding: 10px 20px;
-     cursor: pointer;
-     color: black;
-     background-color: #3b6e77;
-     border: none;
-     border-radius: 10px;
-     box-shadow: 0 7px #999;
-     font-family: papytus;
-     font-weight: bolder;
-     }
-
-     button:hover {background-color: #1cd79f}
-
-     button:active {
-     background-color: #7bff00;
-     box-shadow: 0 2px #666;
-     transform: translate(0%, 25%);
      }
 
    /* STILI ID */
@@ -218,6 +195,11 @@
      transform: translate(0%, -50%);
    }
 
+   #sus{
+     position: absolute;
+     left: 0%;
+     top: 50%;
+   }
    /*
    #testoCounter, #testoTimer {
      font-family: Arial, Helvetica, sans-serif;
