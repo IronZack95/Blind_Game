@@ -271,12 +271,13 @@
    .bottom{
     bottom: 0px;
     border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+    border-top-right-radius: 25px;
     left: 50%;
-    transform: translate(-50%, 150%);
-    position: relative;
+    transform: translate(-50%);
+    position: absolute;
     overflow-y: scroll;
-    height: 150px;
+    height: 237px;
+    width: 400px;
    }
 
    /* modifiche a centerpanel*/

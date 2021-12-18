@@ -5,6 +5,17 @@ const fs = require('fs')
 //const game = require('./server/game')
 
 
+function endGameFunction(room){
+  let endMsg = {timer: room.getTimer(), player: room.getClient(), name: room.getPlayerNames() ,score: room.getScore()};
+  room.getClient().forEach((item, ii) => {
+    server.io.in(item).emit("EndGameMulti",endMsg);
+  });
+  // elimino la stanza se il gioco è finito
+  let deleteElement = game.rooms.splice(game.rooms.indexOf(room), 1);
+  // faccio vedere quante stanze rimangono
+  if(deleteElement.length =! 0){console.log("Cancellata",room.getName(),"rimangono",game.rooms.length,"stanze");}
+}
+
 // socket IO instances
 server.io.on("connection", (socket) => {
 
@@ -17,15 +28,17 @@ server.io.on("connection", (socket) => {
     console.log("disconnected client : " + socket.id);
     let removeThisIndex;
     game.players.pop(socket.id);
+
     game.rooms.forEach(
-      function(room, index) {
+      function(room, roomIndex) {
           room.getClient().forEach((client, i) => {
-          if(client == socket.id){removeThisIndex = i;}
+          if(client == socket.id){
+               endGameFunction(room);
+          }
         });
       }
     )
-    game.rooms.splice(removeThisIndex,1);
-    //game.room = JSON.parse(game.room);
+
   });
 
   // GAME  start game  ACKNOWLEDGMENT
@@ -108,14 +121,7 @@ server.io.on("connection", (socket) => {
         room.setTimer();
         if(room.checkEndGame()){
           // verifico il check end game
-          let endMsg = {timer: room.getTimer(), player: room.getClient(), name: room.getPlayerNames() ,score: room.getScore()};
-          room.getClient().forEach((item, ii) => {
-            server.io.in(item).emit("EndGameMulti",endMsg);
-          });
-          // elimino la stanza se il gioco è finito
-          let deleteElement = game.rooms.splice(roomIndex, 1);
-          // faccio vedere quante stanze rimangono
-          if(deleteElement.length =! 0){console.log("Cancellata",room.getName(),"rimangono",game.rooms.length,"stanze");}
+          endGameFunction(room);
         }else{
           //inoltro il messaggio all'avversario
           data.address.forEach((item, i) => {
