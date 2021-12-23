@@ -17,13 +17,8 @@
 
  const CRYSTAL = 100;        //punti per un cristallo
  const EXPLOSION = 200;      //punti in meno per un'esplosione
-
- const PPS = 70; //player personal space. non possono generarsi oggetti a meno di questa distanza da lui
- // TODO: sistemare anche game.js su server per questa faccenda?
-
- const MAGIC_CRYSTAL = 1000;   //punti per un cristallo magico
- const MAGIC_CRYSTAL_VD = 200; //(view distance) distanza a cui inizio a vedere cristallo magico
- const MAGIC_CRYSTAL_SD = 300; //(sound distance) distanza a cui inizio a sentire cristallo magico
+ const MAGIC_CRYSTAL = 1000; //punti per un cristallo magico
+ const MAGIC_CRYSTAL_DISTANCE = 350; //distanza a cui inizio a sentire suono filtrato
 
  let sketch = function(p) {
 
@@ -34,15 +29,14 @@
   let crystal_sound, crystal_img, skull_img;
 
   p.preload = function(){
-      
-    //suoni
+      //suoni
       p.soundFormats('mp3', 'ogg');
+      //for(var i=0; i < NUM_MINE; i++){mine_sound_array[i] = p.loadSound('sounds/mine_sonar')};
       for(var i=0; i < NUM_MINE; i++){mine_sound_array[i] = p.loadSound('sounds/bip')};
       crystal_sound = p.loadSound('sounds/crystal');
       walk_sound = p.loadSound('sounds/walk');
-      background_sound = p.loadSound('sounds/background_mines.mp3');   
-      console.log('Loaded these sounds: ', mine_sound_array, crystal_sound, walk_sound, background_sound);
-      
+      carillon_sound = p.loadSound('sounds/BackgroundMusic.mp3')
+      console.log('Loaded these sounds: ', mine_sound_array, crystal_sound, walk_sound);
       //immagini
       crystal_img = p.loadImage('images/crystal.png');
       magic_crystal_img = p.loadImage('images/magic_crystal.png');
@@ -82,19 +76,23 @@ class GameLogic{
     this.p = null;
     this.enemy = [];
     this.ctx =  p.createCanvas(WIDTH, HEIGHT);
-    this.s = null;   //viene creata nelle classi figlie
+    this.s = null;
     this.gameOver = new GameOver();
     this.startGameTime = Date.now(); //per timer
     this.timer = 0; //per timer
     this.i = 0; //per timer
-    //this.gamebackground = new GameBackground(WIDTH, HEIGHT);
+    this.gamebackground = new GameBackground(WIDTH, HEIGHT);
   }
 
   update(){
-    //this.gamebackground.update(WIDTH, HEIGHT);
+    this.gamebackground.update(WIDTH, HEIGHT);
     this.walls.forEach(function(wall){wall.updateWall(); })
     this.mines.forEach(function(mine){mine.updateMine(); })
+    this.crystals.forEach(function(crystal){crystal.updateCrystal(); })
+    this.enemy.forEach(function(enemy){enemy.update(); })
+    this.p.update(this.walls);  //per ultimo così viene disegnato sopra a tutto
 
+    this.crystalEvent.status = false;  //flag che dice se è successo un evento
     //check mangiato cristallo + modifica punteggio (SINGLE PLAYER)
     for(var i = 0; i < this.crystals.length; i++) {
       if( this.crystals[i].checkEatCrystal(this.p.x, this.p.y)){
@@ -104,13 +102,7 @@ class GameLogic{
         this.s.crystalSound();
       }; }
 
-    this.crystals.forEach(function(crystal){crystal.updateCrystal(); })
-    this.enemy.forEach(function(enemy){enemy.update(); })
-    this.p.update(this.walls);  //per ultimo così viene disegnato sopra a tutto
-
-    this.crystalEvent.status = false;  //flag che dice se è successo un evento
     this.mineEvent.status = false;    //flag che dice se è successo un evento
-    
     //check esploso su mina + modifica punteggio
     for(var i = 0; i < this.mines.length; i++) {
       if( this.mines[i].checkExplosion(this.p.x, this.p.y)) {
@@ -120,6 +112,7 @@ class GameLogic{
 
       }; }
       //console.log(this.crystalEvent)
+
 
     this.updateScore();
     this.updateTimer();
@@ -143,9 +136,7 @@ class GameLogic{
     }
   }
 
-  EndGameProcedure(){  
-    
-    //stoppa i suoni del player e delle mine  
+  EndGameProcedure(){    //stoppa i suoni del player e delle mine
       for(let i=0; i<NUM_MINE; i++){
         let suono = mine_sound_array[i];
         suono.stop();
@@ -167,16 +158,14 @@ class GameLogicSingle extends GameLogic{
   constructor(width, height){
     super(width,height);
 
-    this.p = new Player(p.width/2,580,'#0077ff');
-
     let perlin_map = new Perlin_Map(GRID_SIZE,RESOLUTION,THRESHOLD);
-    this.walls = this.createWalls(perlin_map);
-    let objects = this.createObjects(NUM_MINE + NUM_CRISTALLI + NUM_MAGIC_CRYSTAL, this.walls, this.p.x, this.p.y);
+    this.walls = this.createWalls(perlin_map, this.p);
+
+    let objects = this.createObjects(NUM_MINE + NUM_CRISTALLI + NUM_MAGIC_CRYSTAL, this.walls);
     this.mines = objects.mines;
     this.crystals = objects.crystals;
     this.magic_crystals = objects.magic_crystals;
-    
-    
+    this.p = new Player(p.width/2,580,'#0077ff');
     this.s = new SoundLogic();
 
     console.log('creati questi oggetti: mine: ', this.mines,
@@ -187,16 +176,18 @@ class GameLogicSingle extends GameLogic{
 
   update(){
     super.update();
+    this.s.update(this.p, this.mines, this.magic_crystals);
 
+    //questione cristallo magico:
+    this.magic_crystals.forEach(function(magic_crystal){magic_crystal.updateCrystal(); })
+    //check cristallo magico:
     for(var i = 0; i < this.magic_crystals.length; i++) {
       if( this.magic_crystals[i].checkEatCrystal(this.p.x, this.p.y)){
-        this.playerScore += MAGIC_CRYSTAL;  //update punteggio
-      }; 
-      this.magic_crystals[i].updateMagicCrystal(this.p.x, this.p.y);  //update grafica
-    }
-
-    //update della SoundLogic:
-    this.s.update(this.p, this.mines, this.magic_crystals);
+        this.playerScore += MAGIC_CRYSTAL;
+        //this.crystalEvent.status = true;
+        //this.crystalEvent.index = i;
+        //this.s.crystalSound();
+      }; }
 
     // verifico il fine partita;
     this.checkEndGame();
@@ -230,7 +221,7 @@ class GameLogicSingle extends GameLogic{
     return walls;
   }
 
-  createObjects(numObj, walls, pX, pY){
+  createObjects(numObj, walls){
     let mines = [];
     let crystals = [];
     let magic_crystals = [];
@@ -244,9 +235,8 @@ class GameLogicSingle extends GameLogic{
       x_r = LATO + Math.floor(Math.random() *(p.width - LATO*1.5) / 50)* 50;
       y_r = LATO + Math.floor(Math.random() *(p.height - LATO * 1.5)/ 50)* 50;
 
-      //finchè cadono su muri ricalcoliamole
+      //finchè cadono su muri o giocatore ricalcoliamole
       while (checkEveryWall(walls, x_r, y_r).some(e => e === true) ||
-            (x_r <= pX+PPS && x_r >= pX-PPS && y_r <= pY+PPS && y_r > pY-PPS ) ||
              approvati.some(e => (e.x == x_r) && (e.y == y_r))) {
         console.log('oops');
         x_r = LATO + Math.floor(Math.random() *(p.width - LATO*1.5) / 50)* 50;
@@ -285,7 +275,7 @@ class GameLogicSingle extends GameLogic{
       setTimeout(function(){pagina = new EndGameSingle(playerName, score, timer); p.remove();}, 3000);
     };
   }
-} // end of GameLogic single
+} // end of GameLogic
 
 class GameLogicMulti extends GameLogic{
 
@@ -296,7 +286,6 @@ class GameLogicMulti extends GameLogic{
     this.mines = this.createMines(state.mines);
     this.crystals = this.createCrystals(state.crystals);
     this.startGameTime = state.startTime;
-
     this.s = new SoundLogic();
 
     state.players.forEach((item, i) => {
@@ -316,9 +305,7 @@ class GameLogicMulti extends GameLogic{
     this.t.transmitPosition();
     this.t.transmitDirection();
     super.update();
-
     this.s.update(this.p, this.mines);
-
     // verifico il fine partita
     let result = this.r.endGame();
     if(result != null){ this.checkEndGame(result)}
@@ -378,10 +365,6 @@ class SoundLogic {
 
   constructor() {
     this.interval = 1;
-
-    //BACKGROUND SOUND
-    background_sound.setVolume(0.5);
-    background_sound.loop();
 
     //MINE
     for(var i=0; i<mine_sound_array.length; i++){
@@ -490,7 +473,7 @@ class SoundLogic {
         //se sono abbastanza vicino calcolo il volume e il panning
         let temp = Math.sqrt(dist / MINE_DISTANCE);  //calcolo distanza normalizzata etc
         let temp1 = 0.5 * (1-temp);
-        //console.log(temp1)
+        console.log(temp1)
         let rate = p.map(temp1, 0.001, 0.27, 0.8, 2)
 
         //setto il volume
@@ -638,8 +621,9 @@ class Crystal{
   constructor(x,y){
     this.x = x;
     this.y = y;
-    this.eaten = false;   
+    this.eaten = false;
     this.dimensions = 2*RAGGIO_C;
+    //this.color = p.color(153, 255, 255);
   }
 
   getEaten(){
@@ -672,8 +656,8 @@ class Crystal{
       var distance = Math.sqrt(dx * dx + dy * dy);
       if (distance < RAGGIO_C + RAGGIO_P && this.eaten == false){
 
-        console.log('ho mangiato un cristallo magico');
-        this.eaten = true;  
+        console.log('ho mangiato un cristallo');
+        this.eaten = true;   //funzionale al singolo cristallo
         return true;
 
       } else {
@@ -686,12 +670,11 @@ class Crystal{
 class MagicCrystal extends Crystal{
   constructor(x,y){
     super(x,y);
-    this.found = false;  //controllo se nelle vicinanze
   }
 
   drawInvisibleCrystal(){
-    //TODO : rendere invisibile anche contorno poi
-    p.fill(p.color(p.color(25,26,27)));
+    //da rendere invisibile poi...
+    p.fill(p.color(0,255,0));
     p.circle(this.x, this.y, 1.5*RAGGIO_C);
   }
 
@@ -699,34 +682,12 @@ class MagicCrystal extends Crystal{
     p.image(magic_crystal_img, this.x-RAGGIO_M, this.y-RAGGIO_M, 25, 23);
   }
 
-  checkFoundCrystal(playerX, playerY){
-
-    if(this.eaten == false){   // verifico che non sia già stato mangiato
-
-      var dx = (this.x + RAGGIO_P) - (playerX + RAGGIO_C);
-      var dy = (this.y + RAGGIO_P) - (playerY + RAGGIO_C);
-      var distance = Math.sqrt(dx * dx + dy * dy);
-      //console.log('distance is ', distance);
-
-      if (distance < MAGIC_CRYSTAL_VD){
-        this.found = true; 
-        return true;
+  updateCrystal(){
+    if(this.eaten == false){
+      this.drawInvisibleCrystal();
     } else {
-      return;
-    }
-  }
- }
+      this.drawFoundCrystal();
 
-  updateMagicCrystal(playerX, playerY){  //fa il check del trovato (check mangiato già fatto)
-    
-    this.checkFoundCrystal(playerX, playerY);
-
-    if(this.eaten == false && this.found == false){
-      this.drawInvisibleCrystal();   //non trovato, non mangiato
-    } else if(this.found == true && this.eaten == false ) {
-      this.drawFoundCrystal();   //trovato 
-    } else if(this.found == true && this.eaten == true){
-      this.drawInvisibleCrystal();   //trovato e mangiato
     }
   }
 
