@@ -11,7 +11,7 @@
  const THRESHOLD = 100000;
 
  const NUM_MINE = 30;
- const NUM_CRISTALLI = 30;//35
+ const NUM_CRISTALLI = 1;//35
  const NUM_MAGIC_CRYSTAL = 1;
  const MINE_DISTANCE = 80;   //distanza entro cui inizio a sentire mina
 

@@ -54,6 +54,7 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     let text = '<div id = "text" class = "text">How do you want to play?</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
 
+    /*
     //IMMAGINI
     let image1 = document.createElement("img");
     image1.src = "images/sus.png";
@@ -87,8 +88,8 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     bottone = '<button id = "multiplayer" class = "button">MultiPlayer</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', bottone);
 
-    let input = '<input type="text" id="PlayerName" placeholder="Insert your name">';
-    centerPanel.insertAdjacentHTML('afterEnd', input);
+    let input = '<input type="text" id="PlayerName" class=""placeholder="Insert your name">';
+    centerPanel.insertAdjacentHTML('beforeEnd', input);
 
     let self = this;
     singleplayer.onclick = function(){
@@ -133,19 +134,6 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     //// prova Prova prova
     super();    // chiamo il costruttore della superclasse
 
-    // Creo Titolo E Sottotitolo
-    /*
-    let h = document.createElement("h1");
-    h.id= "title";
-    //h.innerHTML = "B L I N D"
-    super.getSchermo().appendChild(h);
-
-    h = document.createElement("h2");
-    h.id= "subtitle";
-    h.innerHTML = "Single Player"
-    super.getSchermo().appendChild(h);
-    */
-
     //this.canvas = new Canvas();
     let canvasContainer = document.createElement('div');
     let cnv = new Canvas(canvasContainer,'SinglePlayer',super.getSchermo())
@@ -162,14 +150,6 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     c.innerHTML = "0";
     bottomPanel.appendChild(c);
 
-    /*
-    let n = document.createElement("h3");
-    n.id = "testoCounter";
-    super.getSchermo().appendChild(c);
-    c.appendChild(n);
-    bottomPanel.appendChild(c);
-    */
-
     // Creo timer
     let f = document.createElement("div");
     f.id = "timer";
@@ -177,18 +157,9 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     f.innerHTML = "0";
     bottomPanel.appendChild(f);
 
-    /*
-    let g = document.createElement("h3");
-    g.id = "testoTimer";
-    g.innerHTML = "0";
-    super.getSchermo().appendChild(f);
-    f.appendChild(g);
-    */
-
-
     //creo player getName   // DA SISTEMARE
     let name = document.createElement("div");
-    name.id= "PlayerNameInGame";
+    name.id= "name";
     name.className = "game text";
     name.innerHTML = playerName;
     bottomPanel.appendChild(name);
@@ -310,10 +281,10 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
     centerPanel.classList.add("center")
     super.getSchermo().appendChild(centerPanel);
 
-    // Bottom  Panel
-    let bottomPanel = document.createElement("div");
-    bottomPanel.classList.add("bottom")
-    super.getSchermo().appendChild(bottomPanel);
+    // Cloud  Panel
+    let cloudpanel = document.createElement("div");
+    cloudpanel.classList.add("bottom")
+    super.getSchermo().appendChild(cloudpanel);
 
     let text = '<div id = "text">CONGRATS!!</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
@@ -349,7 +320,7 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
         a.id = "CloudScore";
         //a.className = "center";
         a.innerHTML = classifica;
-        bottomPanel.appendChild(a);
+        cloudpanel.appendChild(a);
       });
     });
 
@@ -358,81 +329,79 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
     });
   }
 }
-class EndGameMulti extends EndGame{    // costruisco la pagina della lobby
-
-  constructor(name, score, time){
-    super(name, score, time);    // chiamo il costruttore della superclasse
-
-    // Center  Panel
-    let centerPanel = document.createElement("div");
-    //centerPanel.className = "center";
-    centerPanel.classList.add("center")
-    super.getSchermo().appendChild(centerPanel);
-
-    // Bottom  Panel
-    let bottomPanel = document.createElement("div");
-    bottomPanel.classList.add("bottom")
-    super.getSchermo().appendChild(bottomPanel);
-
-    let text = '<div id = "text">CONGRATS!! MULTI</div>'
-    centerPanel.insertAdjacentHTML('afterBegin', text);
-
-    //punteggi fine partita
-    let a = document.createElement("h3");
-    a.className = "finalscore";
-    a.id = "finalscore";
-    let txt = '';
-    name.forEach((item, i) => {
-      txt = txt + item + ' SCORE: ' + score[i];
-      if(i == 0){
-        txt = txt+ '<br> VS. <br>'
-      }
-    });
-
-    a.innerHTML = txt;
-    centerPanel.appendChild(a);
-  }
-}
 
 let gameState;
 class MultiPlayer extends Pagina{
   constructor(state) {
     super();
 
-      // Creo Titolo E Sottotitolo
-      let h = document.createElement("h1");
-      h.id= "title";
-      h.innerHTML = "B L I N D"
-      super.getSchermo().appendChild(h);
-
-      h = document.createElement("h2");
-      h.id= "subtitle";
-      h.innerHTML = "Multi Player"
-      super.getSchermo().appendChild(h);
-
       //this.canvas = new Canvas();
       gameState = state;
       let canvasContainer = document.createElement('div');
       let cnv = new Canvas(canvasContainer,'MultiPlayer',super.getSchermo())
 
+      // Creo pannello contenente nome, counter + timer e punteggio
+      let bottomPanel = document.createElement("div");
+      bottomPanel.id = "bottomPanel";
+      super.getSchermo().appendChild(bottomPanel);
+
       // Creo counter
       let c = document.createElement("div");
-      let n = document.createElement("h3");
       c.id = "counter";
-      n.id = "testoCounter";
-      n.innerHTML = "0";
-      super.getSchermo().appendChild(c);
-      c.appendChild(n)
+      c.className = "game text"
+      c.innerHTML = "0";
+      bottomPanel.appendChild(c);
 
       // Creo timer
       let f = document.createElement("div");
-      let g = document.createElement("h3");
       f.id = "timer";
-      g.id = "testoTimer";
-      g.innerHTML = "0";
-      super.getSchermo().appendChild(f);
-      f.appendChild(g)
+      f.className = "game text";
+      f.innerHTML = "0";
+      bottomPanel.appendChild(f);
+
+      //creo player getName   // DA SISTEMARE
+      let name = document.createElement("div");
+      name.id= "name";
+      name.className = "game text";
+      name.innerHTML = playerName;
+      bottomPanel.appendChild(name);
       }
+  }
+
+  class EndGameMulti extends EndGame{    // costruisco la pagina della lobby
+
+    constructor(name, score, time){
+      super(name, score, time);    // chiamo il costruttore della superclasse
+
+      // Center  Panel
+      let centerPanel = document.createElement("div");
+      //centerPanel.className = "center";
+      centerPanel.classList.add("center")
+      super.getSchermo().appendChild(centerPanel);
+
+      // Bottom  Panel
+      let bottomPanel = document.createElement("div");
+      bottomPanel.classList.add("bottom")
+      super.getSchermo().appendChild(bottomPanel);
+
+      let text = '<div id = "text">CONGRATS!! MULTI</div>'
+      centerPanel.insertAdjacentHTML('afterBegin', text);
+
+      //punteggi fine partita
+      let a = document.createElement("h3");
+      a.className = "finalscore";
+      a.id = "finalscore";
+      let txt = '';
+      name.forEach((item, i) => {
+        txt = txt + item + ' SCORE: ' + score[i];
+        if(i == 0){
+          txt = txt+ '<br> VS. <br>'
+        }
+      });
+
+      a.innerHTML = txt;
+      centerPanel.appendChild(a);
+    }
   }
 
 class Transmit{
