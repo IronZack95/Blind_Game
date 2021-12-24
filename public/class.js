@@ -281,17 +281,17 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
     centerPanel.classList.add("center")
     super.getSchermo().appendChild(centerPanel);
 
-    // Cloud  Panel
-    let cloudpanel = document.createElement("div");
-    cloudpanel.classList.add("bottom")
-    super.getSchermo().appendChild(cloudpanel);
-
     let text = '<div id = "text">CONGRATS!!</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
 
     //punteggi fine partita
     let a = document.createElement("h3");
     a.id = "finalscore";
+
+    // Cloud  Panel
+    let cloudpanel = document.createElement("div");
+    cloudpanel.id = "CloudScore";
+    super.getSchermo().appendChild(cloudpanel);
 
     // SOCKET
     socket = io();
@@ -302,13 +302,13 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
       console.log(msg)
       socket.emit("EndGame",msg, (response) => {
         //console.log(response.status);
-        let classifica = '';
+        let classifica = '<tr><th>POSITION</th><th>PLAYERS</th><th>SCORE</th><th>TIME</th></tr>';
         var i = 1;
         var position;
 
         for( let key in response.status){
           if(response.status[key].name == this.name && response.status[key].score == this.score && response.status[key].time == this.time){position = i;}
-          classifica = classifica + i + '° '+response.status[key].name + ' SCORE: ' + response.status[key].score + ' TIME: ' + response.status[key].time+ '<br>';
+          classifica = classifica + '<tr>'+'<td>'+ i + '°' + '</td><td>'+ response.status[key].name + '</td><td>' + response.status[key].score + '</td><td>' + response.status[key].time +'s'+ '</td>' + '</tr>';
           //classifica = JSON.stringify(response.status[key]) + classifica;
           i++;
         }
@@ -316,9 +316,8 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
         //console.log(classifica);
         a.innerHTML = 'Final score:  ' + this.score + '<br>'+'Time :   ' + this.time + '<br>' + 'POSITION: ' + position +'°';
         centerPanel.appendChild(a);
-        a = document.createElement("div");
-        a.id = "CloudScore";
-        //a.className = "center";
+        a = document.createElement("table");
+        a.id = "table";
         a.innerHTML = classifica;
         cloudpanel.appendChild(a);
       });
