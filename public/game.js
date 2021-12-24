@@ -11,14 +11,16 @@
  const THRESHOLD = 100000;
 
  const NUM_MINE = 30;
- const NUM_CRISTALLI = 1;//35
+ const NUM_CRISTALLI = 20;//35
  const NUM_MAGIC_CRYSTAL = 1;
  const MINE_DISTANCE = 80;   //distanza entro cui inizio a sentire mina
+ const PPS = 80; //player personal space entro cui non compaiono oggetti
 
  const CRYSTAL = 100;        //punti per un cristallo
  const EXPLOSION = 200;      //punti in meno per un'esplosione
  const MAGIC_CRYSTAL = 1000; //punti per un cristallo magico
- const MAGIC_CRYSTAL_DISTANCE = 350; //distanza a cui inizio a sentire suono filtrato
+ const MAGIC_CRYSTAL_SD = 200; //cristallo verde "sound distance" a cui inizio a sentirlo
+ const MAGIC_CRYSTAL_VD = 100; //cristallo verde "view distance" a cui inizio a vederlo
 
  let sketch = function(p) {
 
@@ -29,14 +31,15 @@
   let crystal_sound, crystal_img, skull_img;
 
   p.preload = function(){
-      //suoni
+      
+    //suoni
       p.soundFormats('mp3', 'ogg');
-      //for(var i=0; i < NUM_MINE; i++){mine_sound_array[i] = p.loadSound('sounds/mine_sonar')};
       for(var i=0; i < NUM_MINE; i++){mine_sound_array[i] = p.loadSound('sounds/bip')};
       crystal_sound = p.loadSound('sounds/crystal');
       walk_sound = p.loadSound('sounds/walk');
-      carillon_sound = p.loadSound('sounds/BackgroundMusic.mp3')
-      console.log('Loaded these sounds: ', mine_sound_array, crystal_sound, walk_sound);
+      background_sound = p.loadSound('sounds/background_mines.mp3')
+      console.log('Loaded these sounds: ', mine_sound_array, crystal_sound, walk_sound, background_sound);
+      
       //immagini
       crystal_img = p.loadImage('images/crystal.png');
       magic_crystal_img = p.loadImage('images/magic_crystal.png');
@@ -45,7 +48,6 @@
       walls_imgs.push(p.loadImage('images/walls/2.png'));
       walls_imgs.push(p.loadImage('images/walls/3.png'));
       walls_imgs.push(p.loadImage('images/walls/4.png'));
-
     };
 
 /**********************************************************/
@@ -160,34 +162,34 @@ class GameLogicSingle extends GameLogic{
 
     let perlin_map = new Perlin_Map(GRID_SIZE,RESOLUTION,THRESHOLD);
     this.walls = this.createWalls(perlin_map, this.p);
-
-    let objects = this.createObjects(NUM_MINE + NUM_CRISTALLI + NUM_MAGIC_CRYSTAL, this.walls);
+    this.p = new Player(p.width/2,580,'#0077ff');
+    let objects = this.createObjects(NUM_MINE + NUM_CRISTALLI + 3, this.walls, this.p.x, this.p.y);
     this.mines = objects.mines;
     this.crystals = objects.crystals;
-    this.magic_crystals = objects.magic_crystals;
-    this.p = new Player(p.width/2,580,'#0077ff');
+
+    //per il cristallo magico scelgo una posizione abbastanza lontana da giocatore (da una lista di possibilità)
+    let temp = objects.magic_crystal_possibilities.find(e => e.y < HEIGHT*0.8 );
+    this.magic_crystal = new MagicCrystal(temp.x, temp.y);
+    
+    //creo set di muri vicino a cristallo verde
+    this.magic_crystal_area = this.magicCrystalArea(this.magic_crystal, this.walls);
+    
     this.s = new SoundLogic();
 
     console.log('creati questi oggetti: mine: ', this.mines,
                 'cristalli: ',                   this.crystals,
                 'walls: ',                       this.walls,
-                'magic crystals: ',              this.magic_crystals);
+                'magic crystal: ',               this.magic_crystal);
   }
 
   update(){
-    super.update();
-    this.s.update(this.p, this.mines, this.magic_crystals);
 
-    //questione cristallo magico:
-    this.magic_crystals.forEach(function(magic_crystal){magic_crystal.updateCrystal(); })
-    //check cristallo magico:
-    for(var i = 0; i < this.magic_crystals.length; i++) {
-      if( this.magic_crystals[i].checkEatCrystal(this.p.x, this.p.y)){
-        this.playerScore += MAGIC_CRYSTAL;
-        //this.crystalEvent.status = true;
-        //this.crystalEvent.index = i;
-        //this.s.crystalSound();
-      }; }
+    if(this.magic_crystal.checkEatCrystal(this.p.x, this.p.y)){this.playerScore += MAGIC_CRYSTAL};
+    this.magic_crystal.updateMagicCrystal(this.p.x, this.p.y);
+
+    super.update();
+
+    this.s.update(this.p, this.mines, this.magic_crystal);
 
     // verifico il fine partita;
     this.checkEndGame();
@@ -221,25 +223,25 @@ class GameLogicSingle extends GameLogic{
     return walls;
   }
 
-  createObjects(numObj, walls){
+  createObjects(numObj, walls, p_x, p_y){
     let mines = [];
     let crystals = [];
-    let magic_crystals = [];
+    let magic_crystal_possibilities = [];
     let x_r, y_r;
     let temp = [];
     let approvati = [];
 
     for (var i = 0; i < numObj; i++){
-      //creo delle coordinate ipotetiche
-      //min + Math.floor(Math.random() * max / step) * step;
+      //creo delle coordinate ipotetiche : min + Math.floor(Math.random() * max / step) * step;
       x_r = LATO + Math.floor(Math.random() *(p.width - LATO*1.5) / 50)* 50;
       y_r = LATO + Math.floor(Math.random() *(p.height - LATO * 1.5)/ 50)* 50;
 
-      //finchè cadono su muri o giocatore ricalcoliamole
+      //controllo che 1) no su muri, 2) a distanza da player, 3) non sovrapposti
       while (checkEveryWall(walls, x_r, y_r).some(e => e === true) ||
+             ((x_r <= p_x + PPS) && (x_r > p_x - PPS) && (y_r <= p_y + PPS) && (y_r > p_y - PPS)) ||
              approvati.some(e => (e.x == x_r) && (e.y == y_r))) {
-        console.log('oops');
-        x_r = LATO + Math.floor(Math.random() *(p.width - LATO*1.5) / 50)* 50;
+        
+        x_r = LATO + Math.floor(Math.random() *(p.width - LATO * 1.5) / 50)* 50;
         y_r = LATO + Math.floor(Math.random() *(p.height - LATO * 1.5)/ 50)* 50;
       }
       approvati[i] = {x: x_r, y: y_r};
@@ -247,14 +249,14 @@ class GameLogicSingle extends GameLogic{
       //quando vanno bene piazziamole negli array
       if(i < NUM_MINE ){
         mines[i] = new Mine(x_r, y_r)
-      } else if(i >= NUM_MINE && i < (numObj-1)) {
+      } else if(i >= NUM_MINE && i < (numObj-3)) {
         crystals[ i- (NUM_MINE) ] = new Crystal(x_r, y_r)
       } else {
-        magic_crystals[i - NUM_MINE - NUM_CRISTALLI] = new MagicCrystal(x_r, y_r)
+        magic_crystal_possibilities[i - NUM_MINE - NUM_CRISTALLI] = {x: x_r, y: y_r}
       }
     } //end of for loop
 
-    return {mines, crystals, magic_crystals};
+    return {mines, crystals, magic_crystal_possibilities};
 
     function checkEveryWall(walls, x_r, y_r){
       for (var i = 0; i < walls.length; i++){
@@ -263,7 +265,13 @@ class GameLogicSingle extends GameLogic{
       return temp;   //array di true and false
     }
 
-} //end of createObjects()
+  } //end of createObjects()
+
+  magicCrystalArea(crystal, walls){  //trova i muri vicini al cristallo magico
+    let temp = walls.filter( e => ((e.x <= crystal.x + MAGIC_CRYSTAL_SD && e.x > crystal.x - MAGIC_CRYSTAL_SD) &&
+                        (e.y <= crystal.y + MAGIC_CRYSTAL_SD && e.y > crystal.y - MAGIC_CRYSTAL_SD)))
+    return temp;
+  }
 
   checkEndGame(){
     if(this.crystals.some(e => e.eaten === false)){
@@ -364,7 +372,7 @@ class GameLogicMulti extends GameLogic{
 class SoundLogic {
 
   constructor() {
-    this.interval = 1;
+    this.interval = 1;  //per loop mine
 
     //MINE
     for(var i=0; i<mine_sound_array.length; i++){
@@ -374,9 +382,14 @@ class SoundLogic {
       suono.loop(2,1,1,null,this.interval);
       suono.rate(1);
     }
+
     //SUONO CAMMINATA
     walk_sound.setVolume(0);
     walk_sound.loop();
+
+    //SUONO SOTTOFONDO MINIERA
+    background_sound.setVolume(0.5);
+    background_sound.loop();
 
     //SUONO CRISTALLO MAGICO (x single)
     /* carillon_sound.setVolume(0);
@@ -544,9 +557,7 @@ class Wall{
   }
 
   checkCollisionsPlayer(playerX, playerY) {
-    //let playerX = giocatoreX; let playerY = giocatoreY; let player = giocatore;
     if (this.checkOverlapPlayer(playerX, playerY)){
-      //console.log('OUCH!!');
       return true;
     } else {
       return false;};
@@ -670,26 +681,95 @@ class Crystal{
 class MagicCrystal extends Crystal{
   constructor(x,y){
     super(x,y);
+    this.found = false;  //verifica se è nelle vicinanze del player
   }
 
   drawInvisibleCrystal(){
-    //da rendere invisibile poi...
-    p.fill(p.color(0,255,0));
-    p.circle(this.x, this.y, 1.5*RAGGIO_C);
+    //TODO : rendere poi invisibile anche contorno
+    p.fill(p.color(25,26,27));
+    p.circle(this.x, this.y, 1.5 * RAGGIO_C);
   }
 
   drawFoundCrystal(){
     p.image(magic_crystal_img, this.x-RAGGIO_M, this.y-RAGGIO_M, 25, 23);
   }
 
-  updateCrystal(){
-    if(this.eaten == false){
-      this.drawInvisibleCrystal();
-    } else {
-      this.drawFoundCrystal();
+  checkFoundCrystal(playerX, playerY){
 
+    if(this.eaten == false){   // verifico che non sia già stato mangiato
+
+      var dx = (this.x + RAGGIO_P) - (playerX + RAGGIO_C);
+      var dy = (this.y + RAGGIO_P) - (playerY + RAGGIO_C);
+      var distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < MAGIC_CRYSTAL_VD){
+        this.found = true; 
+        return true;
+    } else {
+      return;
     }
   }
+ }
+
+ checkVisibleCrystal(playerX, playerY, crystalX, crystalY, list){
+   
+   let a = playerX;     
+   let b = playerY;
+   let c = crystalX;
+   let d = crystalY;
+   let checks = [];  //array dove mettere true/false di intersezioni coi muri
+   
+   for(var i=0; i < list.length; i++){
+    //lato superiore
+    let cond1 = intersects(a,b,c,d, list[i].x, list[i].y, list[i].x + LATO, list[i].y );
+    //lato inferiore
+    let cond2 = intersects(a,b,c,d, list[i].x, list[i].y + LATO, list[i].x + LATO, list[i].y + LATO );
+    //lato sinistro
+    let cond3 = intersects(a,b,c,d, list[i].x, list[i].y, list[i].x, list[i].y + LATO );
+    //lato destro
+    let cond4 = intersects(a,b,c,d, list[i].x + LATO, list[i].y, list[i].x + LATO, list[i].y + LATO );
+    
+    if(cond1 || cond2 || cond3 || cond4){
+      checks[i] = false;   //ho almeno un'intersezione! quindi non lo vedo
+    } else {
+      checks[i] = true;    //lo posso vedere
+    }
+
+    if (checks.every(e => e === false)){
+      this.visible = true;
+    } else {
+      this.visible = false;
+    }
+   };
+
+   //returns true if the line from (a,b)->(c,d) intersects with (p,q)->(r,s)
+   function intersects(a,b,c,d,p,q,r,s){
+    var det, gamma, lambda;
+    det = (c - a) * (s - q) - (r - p) * (d - b);
+    if (det === 0) {
+      return false;
+    } else {
+      lambda = ((s - q) * (r - a) + (p - r) * (s - b)) / det;
+      gamma = ((b - d) * (r - a) + (c - a) * (s - b)) / det;
+      return (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1);
+      }
+    };
+  }
+
+
+
+ updateMagicCrystal(playerX, playerY){  //fa il check del trovato (check mangiato già fatto nella game logic)
+    
+  this.checkFoundCrystal(playerX, playerY);
+
+  if(this.eaten == false && this.found == false){
+    this.drawInvisibleCrystal();   //non trovato, non mangiato
+  } else if(this.found == true && this.eaten == false ) {
+    this.drawFoundCrystal();   //trovato, non mangiato 
+  } else if(this.found == true && this.eaten == true){
+    this.drawInvisibleCrystal();   //trovato e mangiato
+  }
+}
 
 }
 
