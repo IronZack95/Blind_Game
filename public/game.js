@@ -19,8 +19,8 @@
  const CRYSTAL = 100;        //punti per un cristallo
  const EXPLOSION = 200;      //punti in meno per un'esplosione
  const MAGIC_CRYSTAL = 1000; //punti per un cristallo magico
- const MAGIC_CRYSTAL_SD = 200; //cristallo verde "sound distance" a cui inizio a sentirlo
- const MAGIC_CRYSTAL_VD = 100; //cristallo verde "view distance" a cui inizio a vederlo
+ const MAGIC_CRYSTAL_SD = 250; //cristallo verde "sound distance" a cui inizio a sentirlo
+ const MAGIC_CRYSTAL_VD = 50; //cristallo verde "view distance" a cui inizio a vederlo
 
  let sketch = function(p) {
 
@@ -83,11 +83,11 @@ class GameLogic{
     this.startGameTime = Date.now(); //per timer
     this.timer = 0; //per timer
     this.i = 0; //per timer
-    this.gamebackground = new GameBackground(WIDTH, HEIGHT);
+    //this.gamebackground = new GameBackground(WIDTH, HEIGHT);
   }
 
   update(){
-    this.gamebackground.update(WIDTH, HEIGHT);
+    //this.gamebackground.update(WIDTH, HEIGHT);
     this.walls.forEach(function(wall){wall.updateWall(); })
     this.mines.forEach(function(mine){mine.updateMine(); })
     this.crystals.forEach(function(crystal){crystal.updateCrystal(); })
@@ -95,7 +95,7 @@ class GameLogic{
     this.p.update(this.walls);  //per ultimo così viene disegnato sopra a tutto
 
     this.crystalEvent.status = false;  //flag che dice se è successo un evento
-    //check mangiato cristallo + modifica punteggio (SINGLE PLAYER)
+   
     for(var i = 0; i < this.crystals.length; i++) {
       if( this.crystals[i].checkEatCrystal(this.p.x, this.p.y)){
         this.playerScore += CRYSTAL;
@@ -167,11 +167,11 @@ class GameLogicSingle extends GameLogic{
     this.mines = objects.mines;
     this.crystals = objects.crystals;
 
-    //per il cristallo magico scelgo una posizione abbastanza lontana da giocatore (da una lista di possibilità)
+    //per il cristallo magico scelgo una posizione abbastanza lontana da giocatore (da una lista di 3 possibilità)
     let temp = objects.magic_crystal_possibilities.find(e => e.y < HEIGHT*0.8 );
     this.magic_crystal = new MagicCrystal(temp.x, temp.y);
     
-    //creo set di muri vicino a cristallo verde
+    //creo set di muri vicino a cristallo verde (per la funzione visibilità attraverso muri)
     this.magic_crystal_area = this.magicCrystalArea(this.magic_crystal, this.walls);
     
     this.s = new SoundLogic();
@@ -184,11 +184,14 @@ class GameLogicSingle extends GameLogic{
 
   update(){
 
+    //update relativi solo al cristallo magico
     if(this.magic_crystal.checkEatCrystal(this.p.x, this.p.y)){this.playerScore += MAGIC_CRYSTAL};
-    this.magic_crystal.updateMagicCrystal(this.p.x, this.p.y);
-
+    this.magic_crystal.updateMagicCrystal(this.p.x, this.p.y, this.magic_crystal.x, this.magic_crystal.y, this.magic_crystal_area);
+    
+    //tutti gli altri update
     super.update();
-
+    
+    //update sound Logic
     this.s.update(this.p, this.mines, this.magic_crystal);
 
     // verifico il fine partita;
@@ -401,7 +404,7 @@ class SoundLogic {
 
   };
 
-  //update per single con cristallo magico
+  //update per single con cristallo magico *******************************************
   update(player, mines, magicCrystal){
      // SUONI DELLE MINE
      for (var i=0; i<mines.length; i++){
@@ -473,7 +476,7 @@ class SoundLogic {
 
   }
 
-  //update per multi
+  //update per multi ************************************************
   update(player, mines){
     // SUONI DELLE MINE
 
@@ -486,7 +489,6 @@ class SoundLogic {
         //se sono abbastanza vicino calcolo il volume e il panning
         let temp = Math.sqrt(dist / MINE_DISTANCE);  //calcolo distanza normalizzata etc
         let temp1 = 0.5 * (1-temp);
-        console.log(temp1)
         let rate = p.map(temp1, 0.001, 0.27, 0.8, 2)
 
         //setto il volume
@@ -681,7 +683,9 @@ class Crystal{
 class MagicCrystal extends Crystal{
   constructor(x,y){
     super(x,y);
-    this.found = false;  //verifica se è nelle vicinanze del player
+    this.found = false;    //verifica se è molto vicino ( e quindi compare l'icona del cristallo)
+    this.hearable = false; //verifica se posso sentirlo filtrato
+    this.filter = true;    //di default lo sento filtrato perchè c'è un muro
   }
 
   drawInvisibleCrystal(){
@@ -694,7 +698,7 @@ class MagicCrystal extends Crystal{
     p.image(magic_crystal_img, this.x-RAGGIO_M, this.y-RAGGIO_M, 25, 23);
   }
 
-  checkFoundCrystal(playerX, playerY){
+  checkDistanceCrystal(playerX, playerY){
 
     if(this.eaten == false){   // verifico che non sia già stato mangiato
 
@@ -702,46 +706,60 @@ class MagicCrystal extends Crystal{
       var dy = (this.y + RAGGIO_P) - (playerY + RAGGIO_C);
       var distance = Math.sqrt(dx * dx + dy * dy);
 
-      if (distance < MAGIC_CRYSTAL_VD){
-        this.found = true; 
-        return true;
-    } else {
-      return;
+      if(distance < MAGIC_CRYSTAL_SD && distance > MAGIC_CRYSTAL_VD){
+        this.hearable = true;
+        this.found = false;
+      } else if(distance <= MAGIC_CRYSTAL_VD) {
+        this.found = true;
+        this.hearable = true;
+      } else {
+        this.hearable = false;
+        this.found = false;
+        return;
+      }
     }
-  }
  }
+ 
+ checkWallsCrystal(playerX, playerY, crystalX, crystalY, list){
+  //passo coordinate del player e del cristallo verde + lista muri vicino cristallo verde
+  
+  if (this.hearable === true && this.eaten === false){   //verifico di essere nel range
 
- checkVisibleCrystal(playerX, playerY, crystalX, crystalY, list){
-   
-   let a = playerX;     
-   let b = playerY;
-   let c = crystalX;
-   let d = crystalY;
-   let checks = [];  //array dove mettere true/false di intersezioni coi muri
-   
-   for(var i=0; i < list.length; i++){
-    //lato superiore
-    let cond1 = intersects(a,b,c,d, list[i].x, list[i].y, list[i].x + LATO, list[i].y );
-    //lato inferiore
-    let cond2 = intersects(a,b,c,d, list[i].x, list[i].y + LATO, list[i].x + LATO, list[i].y + LATO );
-    //lato sinistro
-    let cond3 = intersects(a,b,c,d, list[i].x, list[i].y, list[i].x, list[i].y + LATO );
-    //lato destro
-    let cond4 = intersects(a,b,c,d, list[i].x + LATO, list[i].y, list[i].x + LATO, list[i].y + LATO );
+    let a = playerX;     
+    let b = playerY;
+    let c = crystalX;
+    let d = crystalY;
+    this.checks = [];  //array dove mettere i true/false delle intersezioni coi muri
     
-    if(cond1 || cond2 || cond3 || cond4){
-      checks[i] = false;   //ho almeno un'intersezione! quindi non lo vedo
-    } else {
-      checks[i] = true;    //lo posso vedere
-    }
+    for(var i=0; i < list.length; i++){  //...per ogni muro della lista....
+     //lato superiore
+     let cond1 = intersects(a,b,c,d, list[i].x, list[i].y, list[i].x + LATO, list[i].y );
+     
+     //lato inferiore
+     let cond2 = intersects(a,b,c,d, list[i].x, list[i].y + LATO, list[i].x + LATO, list[i].y + LATO );
+     
+     //lato sinistro
+     let cond3 = intersects(a,b,c,d, list[i].x, list[i].y, list[i].x, list[i].y + LATO );
+     
+     //lato destro
+     let cond4 = intersects(a,b,c,d, list[i].x + LATO, list[i].y, list[i].x + LATO, list[i].y + LATO );
+     
+     if(cond1 === true || cond2 === true || cond3 === true || cond4 === true){
+       this.checks[i] = false;   //ho almeno un'intersezione! quindi non lo vedo
+     } else {
+       this.checks[i] = true;    //lo posso vedere
+     }
 
-    if (checks.every(e => e === false)){
-      this.visible = true;
-    } else {
-      this.visible = false;
     }
-   };
-
+    if (this.checks.every(e => e === true)){
+       this.filter = false;
+       console.log('NO muro :D')
+     } else {
+       this.filter = true;
+       console.log('muro!')
+     }  
+   } else {return}; 
+  
    //returns true if the line from (a,b)->(c,d) intersects with (p,q)->(r,s)
    function intersects(a,b,c,d,p,q,r,s){
     var det, gamma, lambda;
@@ -751,17 +769,19 @@ class MagicCrystal extends Crystal{
     } else {
       lambda = ((s - q) * (r - a) + (p - r) * (s - b)) / det;
       gamma = ((b - d) * (r - a) + (c - a) * (s - b)) / det;
-      return (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1);
+      return (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1);  //this means intersection
       }
     };
   }
 
 
-
- updateMagicCrystal(playerX, playerY){  //fa il check del trovato (check mangiato già fatto nella game logic)
-    
-  this.checkFoundCrystal(playerX, playerY);
-
+ updateMagicCrystal(playerX, playerY, crystalX, crystalY, list){ 
+   //1) fa il check della distanza, del "trovato" e del  "posso sentirlo" (check del "mangiato" già fatto da Game Logic)
+   //2) fa il check dell'effettiva "sentibilità" attraverso i muri
+   this.checkDistanceCrystal(playerX, playerY);
+   this.checkWallsCrystal(playerX, playerY, crystalX, crystalY, list)
+  
+   //check per grafica 
   if(this.eaten == false && this.found == false){
     this.drawInvisibleCrystal();   //non trovato, non mangiato
   } else if(this.found == true && this.eaten == false ) {
