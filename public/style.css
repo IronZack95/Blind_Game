@@ -78,6 +78,20 @@
    transform: translate(0%, 25%);
  }
 
+ #mainMenuButton {
+   left: 50%;
+   transform: translate(-50%, 400%);
+ }
+ #mainMenuButton:hover {
+  background-color: #1cd79f
+}
+
+#mainMenuButton:active {
+  background-color: #7bff00;
+  box-shadow: 0 2px #666;
+  transform: translate(-50%, 425%);
+}
+
  td,th{
    padding: 7px;
    text-align: center;
@@ -120,6 +134,10 @@
    transform: translate(-50%, -50%);
  }
 
+ #buttonContainer {
+   display: inline-flex;
+ }
+
  /* STILI ID */
  #title {
    text-align: center;
@@ -129,9 +147,10 @@
  }
 
  #subtitle {
+     margin: 8px;
      text-align: center;
      color: #0a1b1e;
-     background-color: #526e17;
+     /*background-color: #526e17;*/
      font-size: 30px;
      font-weight: bolder;
  }
@@ -154,7 +173,7 @@
 }
 
  #finalscore {
-   text-align: left;
+   /*text-align: left;*/
    color: whitesmoke;
    font-size: 20px;
    font-weight: lighter;

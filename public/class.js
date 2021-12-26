@@ -76,18 +76,24 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     image2.classList.add("snakeRed");
     super.getSchermo().appendChild(image2);
     */
-    let bottone = '<button id = "singleplayer" class = "button">SinglePlayer</button>'
-    centerPanel.insertAdjacentHTML('beforeEnd', bottone);
 
     /*
     pulsante_singlePLayer = document.createElement("button");
     pulsante_singlePLayer.classList.add("button");
     centerPanel.insertAdjacentHTML('beforeEnd', pulsante_singlePLayer);
-    */
+    */  
 
-    bottone = '<button id = "multiplayer" class = "button">MultiPlayer</button>'
-    centerPanel.insertAdjacentHTML('beforeEnd', bottone);
+    let buttonContainer = document.createElement("div");
+    buttonContainer.id = "buttonContainer";
+    centerPanel.appendChild(buttonContainer);
+    //centerPanel.insertAdjacentHTML('beforeEnd', buttonContainer);
+    
+    let bottone = '<button id = "singleplayer" class = "button">SinglePlayer</button>';
+    buttonContainer.insertAdjacentHTML('beforeEnd', bottone);
 
+    bottone = '<button id = "multiplayer" class = "button">MultiPlayer</button>';
+    buttonContainer.insertAdjacentHTML('beforeEnd', bottone);
+    
     let input = '<input type="text" id="PlayerName" class=""placeholder="Insert your name">';
     centerPanel.insertAdjacentHTML('beforeEnd', input);
 
@@ -233,7 +239,7 @@ class MultiPlayerLobby extends Pagina{
       // Allego al game state il mio soket ID
       state['myid'] = socket.id;
       console.log("GAME STATE: ",state);
-      document.getElementById("text").innerText = "Inizio Partita!"
+      //document.getElementById("text").innerText = "Inizio Partita!"
       setTimeout(function(){pagina = new MultiPlayer(state);},2000)
     });
 
@@ -280,13 +286,27 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
     //centerPanel.className = "center";
     centerPanel.classList.add("center")
     super.getSchermo().appendChild(centerPanel);
-
+    
+    /*
     let text = '<div id = "text">CONGRATS!!</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
+    */
 
     //punteggi fine partita
     let a = document.createElement("h3");
     a.id = "finalscore";
+
+    //Pulsante per tornare alla lobby iniziale
+    let mainMenuButton = document.createElement("button");
+    mainMenuButton.className = "button";
+    mainMenuButton.innerText = "Main Menu";
+    mainMenuButton.id = "mainMenuButton";
+    super.getSchermo().appendChild(mainMenuButton);
+
+    mainMenuButton.onclick = function(){
+      //inputFieldCaputre();
+      setTimeout(function(){ pagina = new Lobby();},1000)
+    }
 
     // Cloud  Panel
     let cloudpanel = document.createElement("div");
@@ -383,8 +403,21 @@ class MultiPlayer extends Pagina{
       bottomPanel.classList.add("bottom")
       super.getSchermo().appendChild(bottomPanel);
 
+      let mainMenuButton = document.createElement("button");
+      mainMenuButton.className = "button";
+      mainMenuButton.innerText = "Main Menu";
+      mainMenuButton.id = "mainMenuButton";
+      super.getSchermo().appendChild(mainMenuButton);
+      
+      mainMenuButton.onclick = function(){
+        //inputFieldCaputre();
+        setTimeout(function(){ pagina = new Lobby();},1000)
+      }
+
+      /*
       let text = '<div id = "text">CONGRATS!! MULTI</div>'
       centerPanel.insertAdjacentHTML('afterBegin', text);
+      */
 
       //punteggi fine partita
       let a = document.createElement("h3");
@@ -392,9 +425,9 @@ class MultiPlayer extends Pagina{
       a.id = "finalscore";
       let txt = '';
       name.forEach((item, i) => {
-        txt = txt + item + ' SCORE: ' + score[i];
+        txt = txt + item + ': ' + score[i];
         if(i == 0){
-          txt = txt+ '<br> VS. <br>'
+          txt = txt + '<br> VS. <br>'
         }
       });
 
