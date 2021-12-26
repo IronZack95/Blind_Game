@@ -11,7 +11,7 @@
  const THRESHOLD = 100000;
 
  const NUM_MINE = 30;
- const NUM_CRISTALLI = 20;//35
+ const NUM_CRISTALLI = 15;//35
  const NUM_MAGIC_CRYSTAL = 1;
  const MINE_DISTANCE = 80;   //distanza entro cui inizio a sentire mina
  const PPS = 80; //player personal space entro cui non compaiono oggetti
@@ -20,14 +20,13 @@
  const EXPLOSION = 200;      //punti in meno per un'esplosione
  const MAGIC_CRYSTAL = 1000; //punti per un cristallo magico
  const MAGIC_CRYSTAL_SD = 250; //cristallo verde "sound distance" a cui inizio a sentirlo
- const MAGIC_CRYSTAL_VD = 50; //cristallo verde "view distance" a cui inizio a vederlo
+ const MAGIC_CRYSTAL_VD = 80; //cristallo verde "view distance" a cui inizio a vederlo
 
  let sketch = function(p) {
 
   /* preload dei suoni e delle immagini *********************/
   let mine_sound_array = [];
   let walls_imgs = [];
-  let background_imgs = [];
   let crystal_sound, crystal_img, skull_img;
 
   p.preload = function(){
@@ -38,6 +37,7 @@
       crystal_sound = p.loadSound('sounds/crystal');
       walk_sound = p.loadSound('sounds/walk');
       background_sound = p.loadSound('sounds/background_mines.mp3')
+      //carillon... TODO
       console.log('Loaded these sounds: ', mine_sound_array, crystal_sound, walk_sound, background_sound);
       
       //immagini
@@ -83,11 +83,11 @@ class GameLogic{
     this.startGameTime = Date.now(); //per timer
     this.timer = 0; //per timer
     this.i = 0; //per timer
-    //this.gamebackground = new GameBackground(WIDTH, HEIGHT);
+    this.gameframes = new GameFrames();  //cornice
   }
 
   update(){
-    //this.gamebackground.update(WIDTH, HEIGHT);
+    this.gameframes.update(WIDTH, HEIGHT);   //cornice
     this.walls.forEach(function(wall){wall.updateWall(); })
     this.mines.forEach(function(mine){mine.updateMine(); })
     this.crystals.forEach(function(crystal){crystal.updateCrystal(); })
@@ -174,7 +174,7 @@ class GameLogicSingle extends GameLogic{
     //creo set di muri vicino a cristallo verde (per la funzione visibilità attraverso muri)
     this.magic_crystal_area = this.magicCrystalArea(this.magic_crystal, this.walls);
     
-    this.s = new SoundLogic();
+    this.s = new SoundLogic(1);   //il valore 1 serve per dire alla sound logic di creare anche le cose riguardanti il cristallo magico
 
     console.log('creati questi oggetti: mine: ', this.mines,
                 'cristalli: ',                   this.crystals,
@@ -192,7 +192,7 @@ class GameLogicSingle extends GameLogic{
     super.update();
     
     //update sound Logic
-    this.s.update(this.p, this.mines, this.magic_crystal);
+    this.s.updateSingle(this.p, this.mines, this.magic_crystal);
 
     // verifico il fine partita;
     this.checkEndGame();
@@ -297,7 +297,7 @@ class GameLogicMulti extends GameLogic{
     this.mines = this.createMines(state.mines);
     this.crystals = this.createCrystals(state.crystals);
     this.startGameTime = state.startTime;
-    this.s = new SoundLogic();
+    this.s = new SoundLogic(0);   //0 dice di non creare anche le cose riguardanti il cristallo magico
 
     state.players.forEach((item, i) => {
       if(state.myid == item.id){this.p = new Player(item.position.x,item.position.y,item.color);}
@@ -316,7 +316,8 @@ class GameLogicMulti extends GameLogic{
     this.t.transmitPosition();
     this.t.transmitDirection();
     super.update();
-    this.s.update(this.p, this.mines);
+    this.s.updateMulti(this.p, this.mines);
+
     // verifico il fine partita
     let result = this.r.endGame();
     if(result != null){ this.checkEndGame(result)}
@@ -374,7 +375,7 @@ class GameLogicMulti extends GameLogic{
 
 class SoundLogic {
 
-  constructor() {
+  constructor(value) {
     this.interval = 1;  //per loop mine
 
     //MINE
@@ -394,18 +395,24 @@ class SoundLogic {
     background_sound.setVolume(0.5);
     background_sound.loop();
 
-    //SUONO CRISTALLO MAGICO (x single)
-    /* carillon_sound.setVolume(0);
-    carillon_sound.loop();
-    this.filter = new p5.LowPass();
-    carillon_sound.connect(this.filter);
-    this.freq = 300;  //Hz
-    filter.freq(this.freq); */
+    if(value){
+      console.log('creo cose audio cristallo verde')
+      //se questo value è true allora creo anche cose riguardanti cristallo verde:
 
+      /*carillon_sound.setVolume(0);
+      carillon_sound.loop();
+
+      this.filter = new p5.LowPass();
+      carillon_sound.connect(this.filter);
+
+      this.freq = 300;  //Hz
+      filter.freq(this.freq); */
+    }
   };
 
   //update per single con cristallo magico *******************************************
-  update(player, mines, magicCrystal){
+  updateSingle(player, mines, magic_crystal){
+
      // SUONI DELLE MINE
      for (var i=0; i<mines.length; i++){
       //...calcolo distanza dal player
@@ -416,8 +423,7 @@ class SoundLogic {
         //se sono abbastanza vicino calcolo il volume e il panning
         let temp = Math.sqrt(dist / MINE_DISTANCE);  //calcolo distanza normalizzata etc
         let temp1 = 0.5 * (1-temp);
-        console.log(temp1)
-        let rate = p.map(temp1, 0.001, 0.27, 0.8, 2)
+        let rate = p.map(temp1, 0.001, 0.27, 0.7, 1.3)
 
         //setto il volume
         let suono = mine_sound_array[i];
@@ -442,8 +448,6 @@ class SoundLogic {
         } else {  //dietro (volume basso)
           suono.setVolume(temp1*0.5);
         }
-
-
         //console.log('suona la mina '+[i]+ ' at volume '+temp1);
       } else {
         let suono = mine_sound_array[i];
@@ -452,20 +456,27 @@ class SoundLogic {
      }
 
      //SUONO CRISTALLO MAGICO
-    /*  for (var i=0; i<magicCrystal.length; i++){
-       //...calcolo distanza dal player
-      let dist = p.dist(player.x, player.y, magicCrystal[i].x, magicCrystal[i].y);
+     
+     if(magic_crystal.hearable===true && magic_crystal.filter===true && magic_crystal.eaten===false){  
+       //se sono nel range ed è dietro a un muro... e non è stato mangiato
+      console.log('filtrato')
+     /*  let dist = p.dist(player.x, player.y, magic_crystal.x, magic_crystal.y);
+      let temp = Math.sqrt(dist / MINE_DISTANCE);  
+      let temp1 = 0.5 * (1-temp);
+      //NB SETTIAMO VOLUME O FILTRO? O TUTTI E DUE??
+      let hertz = p.map(temp1, 0.001, 0.27, 20, 20000);
+      this.filter.freq(hertz)   //setto frequenza */
 
-      if( dist <= MAGIC_CRYSTAL_DISTANCE && magicCrystal[i].found === false){
-        let temp = Math.sqrt(dist / MINE_DISTANCE);  //calcolo distanza normalizzata etc
-        let temp1 = 0.5 * (1-temp);
-
-        let hertz = p.map(temp1, 0.001, 0.27, 20, 20000);
-        this.filter.freq(hertz)   //setto frequenza
-
-      }
-
-     } */
+     } else if (magic_crystal.hearable===true && magic_crystal.filter===false && magic_crystal.eaten===false){ 
+       //se sono nel range e NON è dietro a un muro... e non è stato mangiato
+      console.log('non filtrato')
+     /*  let dist = p.dist(player.x, player.y, magic_crystal.x, magic_crystal.y);
+      let temp = Math.sqrt(dist / MINE_DISTANCE);  
+      let temp1 = 0.5 * (1-temp);
+      //NB SETTIAMO VOLUME O FILTRO? O TUTTI E DUE??
+      let hertz = 0; //???????
+      this.filter.freq(hertz)   //setto frequenza */
+     }
 
      //SUONO DELLA CAMMINATA
      if(player.walk === true){
@@ -477,7 +488,7 @@ class SoundLogic {
   }
 
   //update per multi ************************************************
-  update(player, mines){
+  updateMulti(player, mines){
     // SUONI DELLE MINE
 
     for (var i=0; i<mines.length; i++){
@@ -489,7 +500,7 @@ class SoundLogic {
         //se sono abbastanza vicino calcolo il volume e il panning
         let temp = Math.sqrt(dist / MINE_DISTANCE);  //calcolo distanza normalizzata etc
         let temp1 = 0.5 * (1-temp);
-        let rate = p.map(temp1, 0.001, 0.27, 0.8, 2)
+        let rate = p.map(temp1, 0.001, 0.27, 0.7, 1.3)
 
         //setto il volume
         let suono = mine_sound_array[i];
@@ -532,7 +543,7 @@ class SoundLogic {
 
   }
 
-  crystalSound() {
+  crystalSound() { //per single e multi
     crystal_sound.setVolume(0.5);
     crystal_sound.play();
   }
@@ -758,7 +769,9 @@ class MagicCrystal extends Crystal{
        this.filter = true;
        console.log('muro!')
      }  
-   } else {return}; 
+   } else {
+     return
+   }; 
   
    //returns true if the line from (a,b)->(c,d) intersects with (p,q)->(r,s)
    function intersects(a,b,c,d,p,q,r,s){
@@ -969,63 +982,25 @@ class GameOver {
   update() {
 
     p.fill(p.color(255,0,0));
-    p.textSize(50);
+    p.textSize(60);
     p.textAlign(p.CENTER);
+    p.textStyle(p.BOLD);
     p.text('GAME OVER', this.x, this.y);
   }
  }
 
- class GameBackground {
-   constructor(width, height){
-
-     let gcd = computeGCD(width, height);
-     this.latoQuadrato = gcd / 6 //px
-     this.righe = height / this.latoQuadrato;
-     this.colonne = width / this.latoQuadrato;
-     this.matrix = new Array(this.righe);
-     this.border = 5;  //px
-
-     //console.log('colonne: ', this.colonne, 'righe: ', this.righe, 'px: ', this.latoQuadrato)
-
-     for(var i = 0; i < this.righe; i++){
-       this.matrix[i] = new Array(this.colonne);
-     }
-
-     //riempio le colonne
-     for(var i = 0; i < this.colonne; i++){
-       for(var j = 0; j < this .righe; j++){
-        this.matrix[j][i] = getRandomImg();
-       }
-     }
-
-     function computeGCD(a,b){  //massimo comune divisore
-      if (a == 0){return b};
-      while (b != 0) {
-        if (a > b){a = a - b;} else {b = b - a; return a;}
-      }
-    }
-
-      function getRandomImg(){
-        let img = background_imgs[Math.floor(Math.random()*background_imgs.length)];
-        return img;
-      }
+class GameFrames {
+   constructor(){
+    this.border = 5;  //px
    }
-
    update(width, height){
-     //disegno le colonne
-     //TODO : mi disegna solo metà, devo sistemare
-     /* for(var i = 0; i < this.colonne; i++){
-       for(var j = 0; j < this.righe; j++){
-        p.image(this.matrix[j][i], j*this.latoQuadrato, [i]*this.latoQuadrato, this.latoQuadrato, this.latoQuadrato);
-       }
-    } */
-
     p.fill(p.color(159,129,105));
     p.rect(0, 0, this.border, height );
     p.rect(0, 0, width, this.border );
     p.rect(width-this.border, 0, this.border, height );
     p.rect(0, height-this.border, width, this.border );
    }
- } //fine classe background
+ } 
+
 }
 // FINE
