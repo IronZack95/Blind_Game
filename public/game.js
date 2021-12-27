@@ -10,7 +10,7 @@
  const RESOLUTION = 2; //2 ogni box contiente RESOLUTION X RESOLUTION muri dentro la griglia
  const THRESHOLD = 100000;
 
- const NUM_MINE = 30;
+ const NUM_MINE = 20;
  const NUM_CRISTALLI = 15;//35
  const NUM_MAGIC_CRYSTAL = 1;
  const MINE_DISTANCE = 80;   //distanza entro cui inizio a sentire mina
@@ -36,9 +36,11 @@
       for(var i=0; i < NUM_MINE; i++){mine_sound_array[i] = p.loadSound('sounds/bip')};
       crystal_sound = p.loadSound('sounds/crystal');
       walk_sound = p.loadSound('sounds/walk');
-      background_sound = p.loadSound('sounds/background_mines.mp3')
-      //carillon... TODO
-      console.log('Loaded these sounds: ', mine_sound_array, crystal_sound, walk_sound, background_sound);
+      background_sound = p.loadSound('sounds/background_mines.mp3');
+      glitter_sound_filter = p.loadSound('sounds/Green_Crystal_Sound_FILTERED.mp3');
+      glitter_sound_nofilter = p.loadSound('sounds/Green_Crystal_Sound_NOT_FILTERED.mp3');
+      console.log('Loaded these sounds: ', mine_sound_array, crystal_sound, 
+                                          walk_sound, background_sound);
       
       //immagini
       crystal_img = p.loadImage('images/crystal.png');
@@ -392,22 +394,18 @@ class SoundLogic {
     walk_sound.loop();
 
     //SUONO SOTTOFONDO MINIERA
-    background_sound.setVolume(0.5);
+    background_sound.setVolume(0.3);
     background_sound.loop();
 
     if(value){
       console.log('creo cose audio cristallo verde')
       //se questo value è true allora creo anche cose riguardanti cristallo verde:
 
-      /*carillon_sound.setVolume(0);
-      carillon_sound.loop();
-
-      this.filter = new p5.LowPass();
-      carillon_sound.connect(this.filter);
-
-      this.freq = 300;  //Hz
-      filter.freq(this.freq); */
-    }
+      glitter_sound_filter.setVolume(0);
+      glitter_sound_nofilter.setVolume(0);
+      glitter_sound_filter.loop();
+      glitter_sound_nofilter.loop(); 
+    } 
   };
 
   //update per single con cristallo magico *******************************************
@@ -457,26 +455,31 @@ class SoundLogic {
 
      //SUONO CRISTALLO MAGICO
      
-     if(magic_crystal.hearable===true && magic_crystal.filter===true && magic_crystal.eaten===false){  
+      if(magic_crystal.hearable===true && magic_crystal.filter===true && magic_crystal.eaten===false){  
        //se sono nel range ed è dietro a un muro... e non è stato mangiato
       console.log('filtrato')
-     /*  let dist = p.dist(player.x, player.y, magic_crystal.x, magic_crystal.y);
-      let temp = Math.sqrt(dist / MINE_DISTANCE);  
-      let temp1 = 0.5 * (1-temp);
-      //NB SETTIAMO VOLUME O FILTRO? O TUTTI E DUE??
-      let hertz = p.map(temp1, 0.001, 0.27, 20, 20000);
-      this.filter.freq(hertz)   //setto frequenza */
+      let dist = p.dist(player.x, player.y, magic_crystal.x, magic_crystal.y);
+      let temp = Math.sqrt(dist / MAGIC_CRYSTAL_SD);  
+      let volume = 0.3 * (1-(0.8*temp));
+
+      glitter_sound_filter.setVolume(volume);
+      glitter_sound_nofilter.setVolume(0);
+
 
      } else if (magic_crystal.hearable===true && magic_crystal.filter===false && magic_crystal.eaten===false){ 
        //se sono nel range e NON è dietro a un muro... e non è stato mangiato
       console.log('non filtrato')
-     /*  let dist = p.dist(player.x, player.y, magic_crystal.x, magic_crystal.y);
-      let temp = Math.sqrt(dist / MINE_DISTANCE);  
-      let temp1 = 0.5 * (1-temp);
-      //NB SETTIAMO VOLUME O FILTRO? O TUTTI E DUE??
-      let hertz = 0; //???????
-      this.filter.freq(hertz)   //setto frequenza */
-     }
+      let dist = p.dist(player.x, player.y, magic_crystal.x, magic_crystal.y);
+      let temp = Math.sqrt(dist / MAGIC_CRYSTAL_SD);  
+      let volume = 0.3 * (1-(0.8*temp));
+
+      glitter_sound_nofilter.setVolume(volume);
+      glitter_sound_filter.setVolume(0);
+
+     } else {
+      glitter_sound_filter.setVolume(0);
+      glitter_sound_nofilter.setVolume(0);
+     } 
 
      //SUONO DELLA CAMMINATA
      if(player.walk === true){
