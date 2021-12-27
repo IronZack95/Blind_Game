@@ -187,7 +187,10 @@ class GameLogicSingle extends GameLogic{
   update(){
 
     //update relativi solo al cristallo magico
-    if(this.magic_crystal.checkEatCrystal(this.p.x, this.p.y)){this.playerScore += MAGIC_CRYSTAL};
+    if(this.magic_crystal.checkEatCrystal(this.p.x, this.p.y)){
+      this.playerScore += MAGIC_CRYSTAL;
+      this.s.crystalSound();
+    };
     this.magic_crystal.updateMagicCrystal(this.p.x, this.p.y, this.magic_crystal.x, this.magic_crystal.y, this.magic_crystal_area);
     
     //tutti gli altri update
@@ -420,7 +423,7 @@ class SoundLogic {
 
         //se sono abbastanza vicino calcolo il volume e il panning
         let temp = Math.sqrt(dist / MINE_DISTANCE);  //calcolo distanza normalizzata etc
-        let temp1 = 0.5 * (1-temp);
+        let temp1 = 0.9 * (1-temp);
         let rate = p.map(temp1, 0.001, 0.27, 0.7, 1.3)
 
         //setto il volume
@@ -502,7 +505,7 @@ class SoundLogic {
 
         //se sono abbastanza vicino calcolo il volume e il panning
         let temp = Math.sqrt(dist / MINE_DISTANCE);  //calcolo distanza normalizzata etc
-        let temp1 = 0.5 * (1-temp);
+        let temp1 = 0.9 * (1-temp);
         let rate = p.map(temp1, 0.001, 0.27, 0.7, 1.3)
 
         //setto il volume
@@ -547,7 +550,7 @@ class SoundLogic {
   }
 
   crystalSound() { //per single e multi
-    crystal_sound.setVolume(0.5);
+    crystal_sound.setVolume(0.4);
     crystal_sound.play();
   }
 } //end of SoundLogic
@@ -596,9 +599,9 @@ class Mine{
     this.x = x;
     this.y = y;
     this.exploded = false;
-    this.color = p.color(204,0,0);  //di default è rossa (in realtà nera)
-    //per mettere le mine nere:
-    //this.color = p.color(0);
+    this.color = p.color(25,26,27);
+    //per mettere le mine rosse:
+    //this.color = p.color(204,0,0);  //di default è rossa (in realtà nera)
   }
 
   getExplosion(){
@@ -619,6 +622,7 @@ class Mine{
   }
 
   drawMine(){
+    p.stroke(this.color);
     p.fill(this.color);
     p.circle(this.x, this.y, 2*RAGGIO_M);
   }
@@ -703,7 +707,7 @@ class MagicCrystal extends Crystal{
   }
 
   drawInvisibleCrystal(){
-    //TODO : rendere poi invisibile anche contorno
+    p.stroke(p.color(25,26,27));
     p.fill(p.color(25,26,27));
     p.circle(this.x, this.y, 1.5 * RAGGIO_C);
   }
