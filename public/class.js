@@ -54,6 +54,7 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     let text = '<div id = "text" class = "text">How do you want to play?</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
 
+
     /*
     //IMMAGINI
     let image1 = document.createElement("img");
@@ -81,21 +82,26 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     pulsante_singlePLayer = document.createElement("button");
     pulsante_singlePLayer.classList.add("button");
     centerPanel.insertAdjacentHTML('beforeEnd', pulsante_singlePLayer);
-    */  
+    */
 
     let buttonContainer = document.createElement("div");
     buttonContainer.id = "buttonContainer";
     centerPanel.appendChild(buttonContainer);
     //centerPanel.insertAdjacentHTML('beforeEnd', buttonContainer);
-    
+
     let bottone = '<button id = "singleplayer" class = "button">SinglePlayer</button>';
     buttonContainer.insertAdjacentHTML('beforeEnd', bottone);
 
     bottone = '<button id = "multiplayer" class = "button">MultiPlayer</button>';
     buttonContainer.insertAdjacentHTML('beforeEnd', bottone);
-    
+
     let input = '<input type="text" id="PlayerName" class=""placeholder="Insert your name">';
     centerPanel.insertAdjacentHTML('beforeEnd', input);
+
+    let control = '<img src="images/rules.png" id="WASD"/>'
+    let rules = '<ul>  <li>Collect all the crystals</li>  <li>Listen carefully</li>  <li>Find the Bonus</li></ul><br>(Tip: use headphones)';
+    let tabella =   '<table id = "RulesPanel"><tr><th>Controls:</th><th>Rules:</th></tr>'+'<tr><td>'+control+'</td><td>'+rules+'</td></tr></table>'
+    super.getSchermo().insertAdjacentHTML('beforeEnd', tabella);
 
     let self = this;
     singleplayer.onclick = function(){
@@ -286,7 +292,7 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
     //centerPanel.className = "center";
     centerPanel.classList.add("center")
     super.getSchermo().appendChild(centerPanel);
-    
+
     /*
     let text = '<div id = "text">CONGRATS!!</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
@@ -325,7 +331,7 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
         let classifica = '<tr><th>POSITION</th><th>PLAYERS</th><th>SCORE</th><th>TIME</th></tr>';
         var i = 1;
         var position;
-        
+
         for( let key in response.status){
           if(response.status[key].name == this.name && response.status[key].score == this.score && response.status[key].time == this.time)
           {
@@ -347,7 +353,7 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
 
         // Roba per fare l'highlight del nome
         let tbody = document.querySelector("tbody");
-        tbody.children[position].style.backgroundColor = "yellow";
+        tbody.children[position].style.backgroundColor = "green";
 
       });
     });
@@ -416,7 +422,7 @@ class MultiPlayer extends Pagina{
       mainMenuButton.innerText = "Main Menu";
       mainMenuButton.id = "mainMenuButton";
       super.getSchermo().appendChild(mainMenuButton);
-      
+
       mainMenuButton.onclick = function(){
         //inputFieldCaputre();
         setTimeout(function(){ pagina = new Lobby();},1000)
