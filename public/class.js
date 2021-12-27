@@ -325,24 +325,32 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
         let classifica = '<tr><th>POSITION</th><th>PLAYERS</th><th>SCORE</th><th>TIME</th></tr>';
         var i = 1;
         var position;
-
+        
         for( let key in response.status){
-          if(response.status[key].name == this.name && response.status[key].score == this.score && response.status[key].time == this.time){position = i;}
+          if(response.status[key].name == this.name && response.status[key].score == this.score && response.status[key].time == this.time)
+          {
+            position = i;
+          }
           classifica = classifica + '<tr>'+'<td>'+ i + '°' + '</td><td>'+ response.status[key].name + '</td><td>' + response.status[key].score + '</td><td>' + response.status[key].time +'s'+ '</td>' + '</tr>';
           //classifica = JSON.stringify(response.status[key]) + classifica;
           i++;
         }
 
         //console.log(classifica);
-        a.innerHTML = 'Final score:  ' + this.score + '<br>'+'Time :   ' + this.time + '<br>' + 'POSITION: ' + position +'°';
+        //a.innerHTML = 'Final score:  ' + this.score + '<br>'+'Time :   ' + this.time + '<br>' + 'POSITION: ' + position +'°';
+        a.innerHTML = 'Final score:  ' + this.score + '<br>'+'Time :   ' + this.time;
         centerPanel.appendChild(a);
         a = document.createElement("table");
         a.id = "table";
         a.innerHTML = classifica;
         cloudpanel.appendChild(a);
+
+        // Roba per fare l'highlight del nome
+        let tbody = document.querySelector("tbody");
+        tbody.children[position].style.backgroundColor = "yellow";
+
       });
     });
-
     socket.on("disconnect", () => {
       console.log("Mi sono disconnesso: "+socket.id);
     });
