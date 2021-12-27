@@ -40,9 +40,9 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     super();    // chiamo il costruttore della superclasse
 
     // Creo Titolo
-    let h1 = document.createElement("h1");
+    let h1 = document.createElement("div");
     h1.id= "title";
-    h1.innerHTML = "B L I N D"
+    h1.innerHTML = '<img src="images/titolo_v0.png" width=60% >'
     super.getSchermo().appendChild(h1);
 
     // Center  Panel

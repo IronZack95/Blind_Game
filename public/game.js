@@ -140,12 +140,15 @@ class GameLogic{
     }
   }
 
-  EndGameProcedure(){    //stoppa i suoni del player e delle mine
+  EndGameProcedure(){    //stoppa i suoni 
       for(let i=0; i<NUM_MINE; i++){
         let suono = mine_sound_array[i];
         suono.stop();
       }
       walk_sound.stop();
+      background_sound.stop();
+      glitter_sound_filter.stop();
+      glitter_sound_nofilter.stop();
 
       //fermo il player
       this.p.stopWalk();
