@@ -139,7 +139,20 @@
  }
 
  /* STILI ID */
+ #titleImage {
+   position: absolute;
+  top: -4%;
+  left: 50%;
+  width: 100vh;
+  transform: translate(-50%, 0%);
+ }
+
  #title {
+   position: absolute;
+  top: 3%;
+  left: 50%;
+  width: 100vh;
+  transform: translate(-50%, 0%);
    text-align: center;
    color: #19778a;
    font-size: 110px;
