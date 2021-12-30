@@ -33,12 +33,20 @@
 
     //suoni
       p.soundFormats('mp3', 'ogg');
-      for(var i=0; i < NUM_MINE; i++){mine_sound_array[i] = p.loadSound('sounds/bip')};
+      var man_num_mine = 0;
+      if(type == 'SinglePlayer'){
+        man_num_mine = NUM_MINE;
+      }
+      else if(type == 'MultiPlayer'){
+        man_num_mine = gameState.mines.length;
+      }
+
+      for(var i=0; i < man_num_mine; i++){mine_sound_array[i] = p.loadSound('sounds/bip')};
       crystal_sound = p.loadSound('sounds/crystal');
       walk_sound = p.loadSound('sounds/walk');
-      background_sound = p.loadSound('sounds/background_mines.mp3');
       glitter_sound_filter = p.loadSound('sounds/Green_Crystal_Sound_FILTERED.mp3');
       glitter_sound_nofilter = p.loadSound('sounds/Green_Crystal_Sound_NOT_FILTERED.mp3');
+      background_sound = p.loadSound('sounds/background_mines.mp3');
       console.log('Loaded these sounds: ', mine_sound_array, crystal_sound,
                                           walk_sound, background_sound);
 
@@ -140,7 +148,7 @@ class GameLogic{
     }
   }
 
-  EndGameProcedure(){    //stoppa i suoni 
+  EndGameProcedure(){    //stoppa i suoni
       for(let i=0; i<NUM_MINE; i++){
         let suono = mine_sound_array[i];
         suono.stop();
