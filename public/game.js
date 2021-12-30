@@ -34,6 +34,7 @@
     //suoni
       p.soundFormats('mp3', 'ogg');
       var man_num_mine = 0;
+
       if(type == 'SinglePlayer'){
         man_num_mine = NUM_MINE;
       }

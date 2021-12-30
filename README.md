@@ -1,5 +1,6 @@
 # B L I N D - game
- **Advanced Coding Tools**  _and Metodologies_ \- **Final Project**
+
+Sei un minatore, rimasto intrappolato dentro la caverna, trova tutti i cristalli e batti sul tempo i rivalima attenzione! Evita le mine!!
 
  ### Authors \- **"Good kids of the teacher"**
 - [Zaccaria Eliseo Carrettoni](https://github.com/IronZack95)
@@ -9,7 +10,7 @@
 
 ![alt text](https://imag.malavida.com/mvimgbig/download-fs/among-us-28791-5.jpg)
 
-## After clone this repo (only first time):
+## After cloning this repo (only the first time):
 1. _open the terminal_
 2. _go to the project path_
 3. _run:_ **$ npm install**
@@ -18,31 +19,40 @@
 ## How to run this code:
 1. _open the terminal_
 2. _go to the project path_
-3. _run:_ **$ npx run dev**  (FOR DEVELOPMENTS)
-4. _run:_ **$ npx run start**  (FOR RELEASE)
+3. _run:_ **$ npm run dev**  (FOR DEVELOPMENTS)
+4. _run:_ **$ npm run start**  (FOR RELEASE)
 5. _follow the instrutions on the console for access the browser interface_
 6. _for stop node js run_ CTRL+C : **$ ^C**
 
-## Environment for Node.js:
-package.json
-package-lock.json
+(testato ed ottimizzato per Chrome, Brave, Edge, NOT WORKING ON Safari)
 
-## OVERLEAF LaTeX REPORT LINK:
-[OverLeaf Report Link]()
+# Documentazione:
+- indice 1
+- indice 2
 
-### *info:*
-_Target:_  Multiplayer Game with Audio based Gameplay
+# Intro
+ **Advanced Coding Tools**  _and Metodologies_ \- **Final Project**,
+Il nostro obbiettivo è stato quello di creare un Audio based Game on
+self hosted environment, focused on full stack development and deployment.
+Front End Frameworks
 
-### WORKFLOW:
+## Gameplay
+info sugli oggetti di gioco sigle
+- p5.js (lib ecc..)                         // WENDY
+- game logic (player, muro, mine, crystals) // LORE
+- Audio logic (panning, sounds, volume, rate, walls check)  // LORE
+- Utilities(perlin noise)                   // ALE
 
-1. _hei hei_
-2. _bla bla bla_
-3. _ciaonee_
-4. _cose intelligenti_
-5. _ciao mamma_
+## One Page APP
+info sulle pagine
+- page division                                                         // ALE
+- singleton (class schermo, metodi astratti)                          // WENDY
+- Score system (database, lettura file sincrona, noSQL, .gitignore)  // ALE
+- automatic naming (API)                                            //ALE
 
-
-### Note per il report:
-- [x] Togliere immagini codice mfcc fig4 154-191 200-205
-- [x] 293-298 codice delle features visualisation
-- [x] smaltire tutta la parte di features visualisation non fondamentale pag 8
+## Server
+info sul MultiPlayer
+- Node.js (npm, express, nodemon)                                  // WENDY
+- Socket.io(volatile, )                                            // ZACK..
+- GameState (oggetti server game.js, moduli)
+- Docker (reverse proxy, https, routing)
