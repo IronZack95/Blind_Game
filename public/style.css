@@ -119,7 +119,7 @@
  /* modifiche a centerpanel*/
  .center {
    max-width: 440px;
-   /* margin: 0px; */
+   margin: 8px;
    width: 50%;
    height: 20%;
    border-radius: 20px;
@@ -147,7 +147,7 @@
  }
 
  #subtitle {
-     margin: 8px;
+     /*margin: 8px;*/
      text-align: center;
      color: #0a1b1e;
      /*background-color: #526e17;*/

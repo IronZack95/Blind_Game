@@ -212,6 +212,17 @@ class MultiPlayerLobby extends Pagina{
 
     let pulsante1 = '<button id = "quickGame" class = "button">Quick Game</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', pulsante1);
+
+    let backButton = document.createElement("button");
+    backButton.className = "button";
+    backButton.innerText = "Back";
+    backButton.id = "backButton";
+    centerPanel.appendChild(backButton);
+
+    backButton.onclick = function(){
+      //inputFieldCaputre();
+      setTimeout(function(){ pagina = new Lobby();},1000)
+    }
     /*
     let pulsante2 = '<button id = "createGame" class = "button">Create Game</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', pulsante2);
