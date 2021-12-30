@@ -113,20 +113,25 @@
 
  /* modifiche a centerpanel*/
  .center {
-   max-width: 440px;
-   margin: 8px;
-   width: 50%;
-   height: 20%;
-   border-radius: 20px;
-   text-align: center;
-   background-color: #002c35;
-   border: 2px solid #000000;
-   font-size: 22px;
-   min-width: 200px;
-   position: absolute;
-   top: 50%;
-   left: 50%;
-   transform: translate(-50%, -50%);
+      max-width: 448px;
+       margin: 0px;
+       width: 50%;
+      height: 20%;
+       border-radius: 20px;
+       text-align: center;
+       background-color: #002c35;
+       border: 2px solid #000000;
+       font-size: 22px;
+       line-height: 6.5vh;
+       /* vertical-align: middle; */
+       /* display: inherit; */
+       /* vertical-align: text-bottom; */
+       min-width: 200px;
+       position: absolute;
+       top: 50%;
+       left: 50%;
+       transform: translate(-50%, -50%);
+   }
  }
 
  #buttonContainer {
@@ -155,7 +160,7 @@
  }
 
  #subtitle {
-     /*margin: 8px;*/
+     margin: 8px;
      text-align: center;
      color: #0a1b1e;
      /*background-color: #526e17;*/
