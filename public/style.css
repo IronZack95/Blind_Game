@@ -1,3 +1,9 @@
+:root {
+  --game: #ebd8d8;
+  --text: #888899;
+}
+
+
 /* Codice Reset CSS per supporto multibrowser */
    html, body, div, span, applet, object, iframe,
    h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -16,16 +22,12 @@
      padding: 0;
      border: 0;
      font-size: 100%;
-     font: inherit;
      vertical-align: baseline;
    }
    /* HTML5 display-role reset for older browsers */
    article, aside, details, figcaption, figure,
    footer, header, hgroup, menu, nav, section {
      display: -webkit-box;
-   }
-   body {
-     line-height: 2;
    }
    ol, ul {
      list-style-position: inside;
@@ -45,7 +47,6 @@
 
    /* STILI BODY */
    html, body {
-     margin: 0;
      height: 100%;
      overflow: hidden;
      background: linear-gradient(0deg, #000000 4%, #00687c 100%);
@@ -56,7 +57,6 @@
  button {
    position: relative;
    margin: 10px;
-   top: 7%;
    padding: 10px 20px;
    cursor: pointer;
    color: black;
@@ -79,18 +79,12 @@
  }
 
  #mainMenuButton {
+   position:absolute;
    left: 50%;
-   transform: translate(-50%, 400%);
+   bottom: 5%;
+   transform: translate(-50%, 0%);
  }
- #mainMenuButton:hover {
-  background-color: #1cd79f
-}
 
-#mainMenuButton:active {
-  background-color: #7bff00;
-  box-shadow: 0 2px #666;
-  transform: translate(-50%, 425%);
-}
 
  td,th{
    padding: 7px;
@@ -98,15 +92,16 @@
  }
 
   .text{
-   color: #888899;
+   color: var(--text);
   }
 
   .game{
-    color: #ebd8d8;
+    color: var(--game);
     background-color: #1a1716;
     text-align: center;
     padding: 4px;
     height: 28px;
+    line-height: 28px;
     width: 80px;
     border: solid 2px #00b4d8;
     border-radius: 20px;
@@ -139,7 +134,20 @@
  }
 
  /* STILI ID */
+ #titleImage {
+   position: absolute;
+  top: -4%;
+  left: 50%;
+  width: 100vh;
+  transform: translate(-50%, 0%);
+ }
+
  #title {
+   position: absolute;
+  top: 3%;
+  left: 50%;
+  width: 100vh;
+  transform: translate(-50%, 0%);
    text-align: center;
    color: #19778a;
    font-size: 110px;
@@ -156,17 +164,17 @@
  }
 
  #PlayerName {
-   position: absolute;
-   background-color: #dfdfdf;
-   width: 233px;
-   left: 50%;
-   margin: 0px 0;
-   border: 2px solid #0031e9;
-   bottom: 10%;
-   transform: translate(-50%,0%);
-   text-align: center;
-   transition: 1.5s background-color;
-}
+       /* position: absolute; */
+       background-color: #dfdfdf;
+       /* width: 233px; */
+       /* left: 50%; */
+       margin: 0px 0;
+       border: 2px solid #0031e9;
+       /* bottom: 10%; */
+       /* transform: translate(-50%,0%); */
+       text-align: center;
+       transition: 1.5s background-color;
+   }
 
 #PlayerName:hover {
   background-color: #1cd79f;
@@ -209,7 +217,7 @@
     transform: translate(-50%);
     width: 700px;
     height: 5%;
-    border-radius: 26px;
+    border-radius: 15px;
  }
 
  #name {
@@ -221,9 +229,9 @@
 
  #counter {
   position: absolute;
+  top: 50%;
   right: 50%;
-  transform: translate(50%, 0%);
-  text-align: center;
+  transform: translate(50%, -50%);
  }
 
  #timer {
@@ -233,49 +241,50 @@
    transform: translate(0%, -50%);
  }
 
- #sus{
+ #RulesPanel {
+   color: var(--text);
    position: absolute;
-   transform: translate(0%, -50%);
-   width: 50px;
-   left: 0%;
-   bottom: 20%;
+   bottom: 0%;
+   left: 49%;
+   transform: translate(-50%,0%);
+ }
+
+ #WASD{
+   width: 45%;
+    position: absolute;
+    left: -5%;
+ }
+
+ #RulesPanel td,
+ #RulesPanel th{
+   text-align: left;
+   width: 50%;
+   height: 100%;
+   line-height:10px;
+ }
+
+  #RulesPanel li{
+   padding:0px;
+   line-height:20px;
  }
 
  #CloudScore {
      position: absolute;
      max-width: 24%;
      width: 28%;
-     height: 80%;
-     /* border-radius: 37px; */
-     /* text-align: center; */
      color: white;
-     /* font-size: 18px; */
-     min-width: 270px;
-     /* position: relative; */
-     /* display: none; */
+     min-width: 300px;
      overflow-y: scroll;
      left: 2%;
+     height: 80%;
      transform: translate(0%,0%);
-     /* right: 1%; */
      top: 20%;
  }
 
   #CloudScore::-webkit-scrollbar {
     display: none;
 }
-/*
- .bottom{
-  bottom: 0px;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 25px;
-  left: 50%;
-  transform: translate(-50%);
-  position: absolute;
 
-  height: 237px;
-  width: 400px;
- }
-*/
  #message {
    font-family: Arial, Helvetica, sans-serif;
    left: 50%;
