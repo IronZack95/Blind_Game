@@ -180,7 +180,6 @@
        text-align: center;
        transition: 1.5s background-color;
    }
-}
 
 #PlayerName:hover {
   background-color: #1cd79f;
