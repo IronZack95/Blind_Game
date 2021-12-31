@@ -132,7 +132,7 @@
        left: 50%;
        transform: translate(-50%, -50%);
    }
- }
+ 
 
  #buttonContainer {
    display: inline-flex;
@@ -167,6 +167,14 @@
      font-size: 30px;
      font-weight: bolder;
  }
+
+ #gameoverImage {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  width: 100vh;
+  transform: translate(-50%, 0%);
+}
 
  #PlayerName {
        /* position: absolute; */

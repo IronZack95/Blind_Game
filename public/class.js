@@ -285,11 +285,11 @@ class EndGame extends Pagina{    // costruisco la pagina della lobby
     this.score = score;
     this.time = time;
 
-    // creo titolo
+    /* // creo titolo
     let h1 = document.createElement("h1");
     h1.id= "title";
     h1.innerHTML = "GAME OVER"
-    super.getSchermo().appendChild(h1);
+    super.getSchermo().appendChild(h1); */
   }
 }
 
@@ -297,6 +297,12 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
 
   constructor(name, score, time){
     super(name, score, time);    // chiamo il costruttore della superclasse
+
+    // Creo Titolo
+    let titolo = document.createElement("img");
+    titolo.src= "images/gameover_single.png";
+    titolo.id = "gameoverImage"
+    super.getSchermo().appendChild(titolo);
 
     // Center  Panel
     let centerPanel = document.createElement("div");
@@ -416,6 +422,12 @@ class MultiPlayer extends Pagina{
 
     constructor(name, score, time){
       super(name, score, time);    // chiamo il costruttore della superclasse
+
+      // Creo Titolo
+      let titolo = document.createElement("img");
+      titolo.src= "images/gameover_multi.png";
+      titolo.id = "gameoverImage"
+      super.getSchermo().appendChild(titolo);
 
       // Center  Panel
       let centerPanel = document.createElement("div");

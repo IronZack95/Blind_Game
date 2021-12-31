@@ -150,7 +150,7 @@ class GameLogic{
   }
 
   EndGameProcedure(){    //stoppa i suoni
-      for(let i=0; i<NUM_MINE; i++){
+      for(let i=0; i<this.mines.length; i++){
         let suono = mine_sound_array[i];
         suono.stop();
       }

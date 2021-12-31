@@ -1,6 +1,6 @@
-# B L I N D - game
+<center><img src="design/titolo_v0.png" alt="title image"  width="800"/> </center> <br>
+You're a miner and you got trapped in a cave. Find all crystals and beat your rivals' time! Watch out for mines!
 
-Sei un minatore, rimasto intrappolato dentro la caverna, trova tutti i cristalli e batti sul tempo i rivalima attenzione! Evita le mine!!
 
  ### Authors \- **"Good kids of the teacher"**
 - [Zaccaria Eliseo Carrettoni](https://github.com/IronZack95)
@@ -21,24 +21,28 @@ Sei un minatore, rimasto intrappolato dentro la caverna, trova tutti i cristalli
 2. _go to the project path_
 3. _run:_ **$ npm run dev**  (FOR DEVELOPMENTS)
 4. _run:_ **$ npm run start**  (FOR RELEASE)
-5. _follow the instrutions on the console for access the browser interface_
+5. _follow the instrutions on the console for accessing the browser interface_
 6. _for stop node js run_ CTRL+C : **$ ^C**
 
-(testato ed ottimizzato per Chrome, Brave, Edge, NOT WORKING ON Safari)
+Tested and optimized for Chrome, Brave, Edge. DOES NOT WORK on Safari.
 
 # Documentazione:
-- indice 1
-- indice 2
+1. [Introduction](#intro)
+2. [Gameplay](#gameplay)
+3. [One Page App](#onepageapp)
+4. [Server](#server)
 
-# Intro
- **Advanced Coding Tools**  _and Metodologies_ \- **Final Project**,
-Il nostro obbiettivo è stato quello di creare un Audio based Game on
-self hosted environment, focused on full stack development and deployment.
-Front End Frameworks
+# Intro <a name = "intro"></a>
+ **Advanced Coding Tools**  _and Metodologies_ \- **Final Project**  
+Our main objective was to develop an audio base video game running on a self hosted environment,
+emulating full stack development and deployment.
 
-## Gameplay
+## Gameplay <a name = "gameplay"></a>
 info sugli oggetti di gioco sigle
-- p5.js (lib ecc..)                         // WENDY
+- p5.js is a JavaScript library based on Processing and mostly used by creative coders.  
+By creating a new p5 instance, we exploited the library primarily to draw on a _canvas_ element following the same workflow available in Processing i.e. 
+setting the _setup_ and a _draw_ functions. Also, p5.js came in handy for sound files manipulation, multiple vectorial computations and more.   
+
 - game logic (player, muro, mine, crystals) // LORE
 - Audio logic (panning, sounds, volume, rate, walls check)  // LORE
 - Utilities(perlin noise)                   // ALE
