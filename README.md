@@ -14,7 +14,7 @@ You're a miner and you got trapped in a cave. Find all crystals and beat your ri
 1. _open the terminal_
 2. _go to the project path_
 3. _run:_ **$ npm install**
-4. _waiting operation to finish_
+4. _wait for the operation to finish_
 
 ## How to run this code:
 1. _open the terminal_
@@ -24,7 +24,7 @@ You're a miner and you got trapped in a cave. Find all crystals and beat your ri
 5. _follow the instrutions on the console for accessing the browser interface_
 6. _for stop node js run_ CTRL+C : **$ ^C**
 
-Tested and optimized for Chrome, Brave, Edge. DOES NOT WORK on Safari.
+**Tested and optimized for Chrome, Brave, Edge. DOES NOT WORK on Safari.**
 
 # Documentazione:
 1. [Introduction](#intro)
@@ -39,9 +39,7 @@ emulating full stack development and deployment.
 
 ## Gameplay <a name = "gameplay"></a>
 info sugli oggetti di gioco sigle
-- p5.js is a JavaScript library based on Processing and mostly used by creative coders.  
-By creating a new p5 instance, we exploited the library primarily to draw on a _canvas_ element following the same workflow available in Processing i.e. 
-setting the _setup_ and a _draw_ functions. Also, p5.js came in handy for sound files manipulation, multiple vectorial computations and more.   
+- [p5.js](https://p5js.org/) is a JavaScript library which allowed us, by creating a new p5 instance, to work on a _canvas_ element following the same procedures available in Processing, i.e. setting up the _setup_ and the _draw_ functions. The library also came in handy for images/sounds file handling, vectorial computations and sound file manipulations. For the sound effects in our game we exploited the [p5.Sound](https://p5js.org/reference/#/libraries/p5.sound) core library, which extends p5 with Web Audio funcionalities.   
 
 - game logic (player, muro, mine, crystals) // LORE
 - Audio logic (panning, sounds, volume, rate, walls check)  // LORE
