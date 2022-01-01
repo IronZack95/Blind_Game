@@ -132,7 +132,7 @@
        left: 50%;
        transform: translate(-50%, -50%);
    }
- 
+  }
 
  #buttonContainer {
    display: inline-flex;
