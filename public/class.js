@@ -39,6 +39,12 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
   constructor() {
     super();    // chiamo il costruttore della superclasse
 
+    // Sfondo
+    let sfondo = document.createElement("img");
+    sfondo.id = "sfondo";
+    sfondo.src= "images/Sfondo.png"
+    super.getSchermo().appendChild(sfondo);
+
     // Creo Titolo
     let titolo = document.createElement("img");
     titolo.src= "images/titolo_v0.png";
@@ -146,6 +152,12 @@ class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
     //// prova Prova prova
     super();    // chiamo il costruttore della superclasse
 
+    // Sfondo
+    let sfondo = document.createElement("img");
+    sfondo.id = "sfondo";
+    sfondo.src= "images/Sfondo.png"
+    super.getSchermo().appendChild(sfondo);
+
     //this.canvas = new Canvas();
     let canvasContainer = document.createElement('div');
     let cnv = new Canvas(canvasContainer,'SinglePlayer',super.getSchermo())
@@ -196,18 +208,25 @@ class MultiPlayerLobby extends Pagina{
   constructor() {
     super();
 
+    // Sfondo
+    let sfondo = document.createElement("img");
+    sfondo.id = "sfondo";
+    sfondo.src= "images/Sfondo.png"
+    super.getSchermo().appendChild(sfondo);
+
     // Creo Titolo E Sottotitolo
     let h = document.createElement("h1");
     h.id= "title";
     h.innerHTML = "B L I N D"
     super.getSchermo().appendChild(h);
 
+/*
     h = document.createElement("h2");
     h.id= "subtitle";
     //h.className = "subtitles"
     h.innerHTML = "Multi Player Lobby"
     super.getSchermo().appendChild(h);
-
+*/
     let centerPanel = document.createElement("div");
     //centerPanel.className = "center panel";
     centerPanel.classList.add("center")
@@ -298,6 +317,12 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
   constructor(name, score, time){
     super(name, score, time);    // chiamo il costruttore della superclasse
 
+    // Sfondo
+    let sfondo = document.createElement("img");
+    sfondo.id = "sfondo";
+    sfondo.src= "images/SfondoEnd.png"
+    super.getSchermo().appendChild(sfondo);
+
     // Creo Titolo
     let titolo = document.createElement("img");
     titolo.src= "images/gameover_single.png";
@@ -385,6 +410,12 @@ class MultiPlayer extends Pagina{
   constructor(state) {
     super();
 
+      // Sfondo
+      let sfondo = document.createElement("img");
+      sfondo.id = "sfondo";
+      sfondo.src= "images/Sfondo.png"
+      super.getSchermo().appendChild(sfondo);
+
       //this.canvas = new Canvas();
       gameState = state;
       let canvasContainer = document.createElement('div');
@@ -422,6 +453,12 @@ class MultiPlayer extends Pagina{
 
     constructor(name, score, time){
       super(name, score, time);    // chiamo il costruttore della superclasse
+
+      // Sfondo
+      let sfondo = document.createElement("img");
+      sfondo.id = "sfondo";
+      sfondo.src= "images/SfondoEnd.png"
+      super.getSchermo().appendChild(sfondo);
 
       // Creo Titolo
       let titolo = document.createElement("img");
