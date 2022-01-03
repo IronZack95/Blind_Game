@@ -1,5 +1,8 @@
-<center><img src="design/titolo_v0.png" alt="title image"  width="50%"/> </center> <p>
-You're a miner and you got trapped in a cave. Find all crystals and beat your rivals' time! Watch out for mines!
+<p align="center">
+  <img src="design/titolo_v0.png" alt="title image"  width="60%" />
+</p>
+
+You're a miner and you got trapped in a cave. Find all crystals :gem: and beat your rivals' time! Watch out for mines!
 
 
  ### Authors \- **"Good kids of the teacher"**
@@ -24,9 +27,8 @@ You're a miner and you got trapped in a cave. Find all crystals and beat your ri
 5. _follow the instructions on the console for accessing the browser interface_
 6. _to stop node js run_ CTRL+C : **$ ^C**
 
-<span style="color:lightgreen"> Tested and optimized for Chrome, Brave, Edge. </span><span style="color:coral">DOES NOT WORK on Safari.</span>
+:warning: Tested and optimized for Chrome, Brave, Edge. </span><span style="color:coral">DOES NOT WORK on Safari. :warning:
 
-- - -
 
 # Documentation:
 1. [Introduction](#intro)
@@ -44,14 +46,21 @@ info sugli oggetti di gioco sigle
 - [p5.js](https://p5js.org/) is a JavaScript library which allowed us, by creating a new p5 instance, to work on a _canvas_ element following the same procedures available in Processing, i.e. setting up the _setup_ and the _draw_ functions. The library also came in handy for images/sounds file handling, vectorial computations and sound file manipulations. For the sound effects in our game we exploited the [p5.Sound](https://p5js.org/reference/#/libraries/p5.sound) core library, which extends p5 with Web Audio funcionalities.   
 
 - game logic (player, muro, mine, crystals) // LORE
+ 
+<p align="center">
+  <img src="design/panning_scheme.png" alt="title image"  width="60%" />
+</p>
 
-<center><img src="design/panning_scheme.png" alt="title image"  width="50%"/> </center> <br>
 - Audio logic (panning, sounds, volume, rate, walls check)  // LORE 
 
 <!---(Lorenzo ti ho scritto la parte dei muri qui sotto. W)--->
 
 **Wall detection** : the "green crystal" object is invisible but can be found by the player if he gets close enough to it as glimmering sound will be heard. If between the crystal and the player there is a wall, the sound comes muffled, otherwise it comes bright and clear. To detect if there's a wall or not between the player and the crystal the game computes line intersections. If the line that goes from the head of the player to the center of the crystal intersects one of the 4 walls of a wall the sound comes muffled.
-<center><img src="design/walldetection_scheme.png" alt="title image"  width="50%"/> </center> <br>
+
+ <p align="center">
+  <img src="design/walldetection_scheme.png" alt="title image"  width="60%" />
+</p>
+
 
 - Utilities(perlin noise)                   // ALE
 
@@ -68,7 +77,17 @@ In our project the "Schermo" object is a singleton. The class constructor verifi
 
 ## Server <a name = "server"></a>
 info sul MultiPlayer
-- Node.js (npm, express, nodemon)                                  // WENDY
+- Node.js (npm, express, nodemon)                                  // WENDY  
+Node.js is a Javascript runtime using non-blocking I/O (it does not block itself on only one request at a time) and asynchronous (uses callbacks) programming. npm is used to manage Node.js packages. In our project the following packages are included:  
+:small_blue_diamond: Express, to setup a server listening to a specific port;  
+:small_blue_diamond: Nodemon, that allowed us to automatically restart the server everytime a change was made in the code.    
+ FORSE C'AGGIUNGO ALTRA ROBA 
 - Socket.io(volatile, )                                            // ZACK..
 - GameState (oggetti server game.js, moduli)
 - Docker (reverse proxy, https, routing)
+
+<p align="center">
+  <img src="design/omino_JS.png" width="20%" />
+  <img src="design/omino_p5.png" width="16%" /> 
+  <img src="design/docker_img.png" width="22%" />
+</p>
