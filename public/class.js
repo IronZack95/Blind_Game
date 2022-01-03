@@ -220,13 +220,6 @@ class MultiPlayerLobby extends Pagina{
     h.innerHTML = "B L I N D"
     super.getSchermo().appendChild(h);
 
-/*
-    h = document.createElement("h2");
-    h.id= "subtitle";
-    //h.className = "subtitles"
-    h.innerHTML = "Multi Player Lobby"
-    super.getSchermo().appendChild(h);
-*/
     let centerPanel = document.createElement("div");
     //centerPanel.className = "center panel";
     centerPanel.classList.add("center")
