@@ -177,6 +177,14 @@
   transform: translate(-50%, 0%);
 }
 
+#lobbyImage {
+  position: absolute;
+  top: 7%;
+  left: 50%;
+  width: 90vh;
+  transform: translate(-50%, 0%);
+}
+
  #PlayerName {
        /* position: absolute; */
        background-color: #dfdfdf;

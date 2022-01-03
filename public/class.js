@@ -207,18 +207,24 @@ let socket;
 class MultiPlayerLobby extends Pagina{
   constructor() {
     super();
-
+    
     // Sfondo
     let sfondo = document.createElement("img");
     sfondo.id = "sfondo";
     sfondo.src= "images/Sfondo.png"
     super.getSchermo().appendChild(sfondo);
 
+     // Creo Titolo
+     let titolo = document.createElement("img");
+     titolo.src= "images/lobby.png";
+     titolo.id = "lobbyImage"
+     super.getSchermo().appendChild(titolo);
+
     // Creo Titolo E Sottotitolo
-    let h = document.createElement("h1");
+    /* let h = document.createElement("h1");
     h.id= "title";
     h.innerHTML = "B L I N D"
-    super.getSchermo().appendChild(h);
+    super.getSchermo().appendChild(h); */
 
     let centerPanel = document.createElement("div");
     //centerPanel.className = "center panel";
