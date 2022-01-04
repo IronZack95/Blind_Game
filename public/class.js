@@ -287,7 +287,7 @@ class MultiPlayerLobby extends Pagina{
             if(response.status == "start"){
               socket.emit("startMultiplayer", this.room);
             }else if(response.status == "wait"){
-              document.getElementById("text").innerText = "Attesa secondo giocatore...";
+              document.getElementById("text").innerText = "Waiting for second player...";
             }
         });
     }

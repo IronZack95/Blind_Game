@@ -44,6 +44,7 @@
 
       for(var i=0; i < man_num_mine; i++){mine_sound_array[i] = p.loadSound('sounds/bip')};
       crystal_sound = p.loadSound('sounds/crystal');
+      explosion_sound = p.loadSound('sounds/boom');
       walk_sound = p.loadSound('sounds/walk');
       glitter_sound_filter = p.loadSound('sounds/Green_Crystal_Sound_FILTERED.mp3');
       glitter_sound_nofilter = p.loadSound('sounds/Green_Crystal_Sound_NOT_FILTERED.mp3');
@@ -122,6 +123,7 @@ class GameLogic{
         this.playerScore -= EXPLOSION;
         this.mineEvent.status = true;
         this.mineEvent.index = i;
+        this.s.explosionSound();
 
       }; }
       //console.log(this.crystalEvent)
@@ -564,6 +566,10 @@ class SoundLogic {
   crystalSound() { //per single e multi
     crystal_sound.setVolume(0.4);
     crystal_sound.play();
+  }
+  explosionSound() { //per single e multi
+    explosion_sound.setVolume(0.4);
+    explosion_sound.play();
   }
 } //end of SoundLogic
 
