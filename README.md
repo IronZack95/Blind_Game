@@ -74,19 +74,33 @@ Moreover, the sound volume of these objects changes according with the player di
 
 **Sounds** : All the sounds are loaded at the beginning of the game and loopped according with their duration. Player will hear only mines and green crystal sounds below a certain distance in pixel. Walk sound and eat crystal sound are loaded at the beginning of the game too but they are played only if the related event happens.
 
-## Utilities // ALE
-**Perlin Noise** : 
+## Utilities
+**Perlin Noise** //ALE
+Since we wanted a map that could be different every time the user begins a new game, we've implemented an algorithm capable of generating random noise.
+In order to do so, a noise-generator, in particular a Perlin noise generator, function has been created; 
+The Perlin noise is a gradient noise, which means that the signal is derived from a random distribution of vectors in a grid and their subsequent interpolation.
+The result is a random but smooth distribution of the signal.
+Finally, the figure has been lowered in resolution in order to obtain a more pixelated effect.
 
-# One Page APP <a name = "onepageapp"></a>
-info sulle pagine
-- page division // ALE
+# One Page APP <a name = "onepageapp"></a> //ALE
+This application is a single-page app.
+This means that all of the necessary code is wether retrieved in a single page-load, or the appropriate resources are dynamically loaded and added to the page when needed (for instance when clicking on a button), and that The page never reloads, nor does it leave control in another page.
 
 - singleton (class schermo, metodi astratti)                          // WENDY  
 The _singleton_ design pattern is a way of creating a single object that is shared among a bunch of other resources in the app. An app can have only one instantiation of this kind of object at a time.
 In our project the "Schermo" object is a singleton. The class constructor verifies if an instance of the object already exists before creating a new one. "Schermo" is associated to an empty div meant to fill the whole window and it's shared by all of our "page type" classes (Lobby, SinglePlayer and Multiplayer game pages, GameOver pages...)
 
 - Score system (database, lettura file sincrona, noSQL, .gitignore)  // ALE
-- automatic naming (API)                                            //ALE
+When a single-player game ends, the previous players list appears on screen, highlighting your score.
+To do so, we store and retrieve players' data in a .json file called "data" through the node's functions "readFile" and "writeFile".
+These functions are capable of reading and writing from/on .json files in an asynchronous way.
+That a function is asynchronous means that, when it is called, the file reading process starts and the control shifts to next line executing the remaining lines of code.
+Once the file data has been loaded, the function will call the callback function provided to it.
+By using async functions we aren't blocking code execution while waiting for the operating system to get back with data.
+
+- automatic naming (API) //ALE
+When you start a new game, whether in single or multi-player, you are prompted to enter a name; if this is not done the game randomly assigns name.
+To implement this feature, we have created the "randomName()" function in "utility.js", which retrieves a random name from the following API: https://random-names-api.herokuapp.com/random.
 
 # Server <a name = "server"></a>
 info sul MultiPlayer
