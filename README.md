@@ -46,26 +46,30 @@ emulating full stack development and deployment.
 **[p5.js](https://p5js.org/)** is a JavaScript library which allowed us, by creating a new p5 instance, to work on a _canvas_ element following the same procedures available in Processing, i.e. setting up the _setup_ and the _draw_ functions. The library also came in handy for images/sounds file handling, vectorial computations and sound file manipulations. For the sound effects in our game we exploited the [p5.Sound](https://p5js.org/reference/#/libraries/p5.sound) core library, which extends p5 with Web Audio funcionalities.   
 
 ## Game Logic
-**Player** : The player figure can be moved in the canvas area with W A S D keys and includes animations during the motion. Legs are moving during the walk and eyes can rotate of a 200 degrees angle (100 degrees on the left and 100 degrees on the right starting from the initial position) thanks to mouse movement on the x axis. 
+**Player** : The player figure can be moved in the canvas area with W A S D keys and includes animations during the motion. Legs are moving as it walks and eyes can rotate by 360° following the mouse. 
 
-<p align="center">
-  <img src="design/panning_scheme.png" alt="title image"  width="60%" />
-</p>
-
-**Walls** : Walls are randomly generated with a prlin noise algorithm in every game and the player cannot move thru them. The player body is considered as a circle and when the its radius hits a wall perimeter and the wall detection function returns a true value, all the movements in the wall direction are forbidden.
+**Walls** : Walls are randomly generated with a perlin noise algorithm in each game and the player cannot move through them. The player body is considered as a circle and when its radius hits a wall perimeter and the wall detection function returns a true value, all the movements in the wall direction are forbidden.
 
 **Mines and Crystals** : Mines and Crystals are created from the same array of objects, splitting them in 2 different sub arrays. If the player accidentally hits a mine, score will be decreases of 200 points, while, if he eats a crystal the score will be increased of 100 points. There is a special green crystal that scores 1000 points too. It has to be discovered by the player using the sound and it appears on the canvas only when the player is below a ceratin distance. The goal of the game is to collect all the crystals on the map avoiding the mines.
+
+<p align="center">
+  <img src="design/points.png" alt="points image"  width="60%" />
+</p> 
  
 ## Audio Logic
 
-**Panning and Gain** : Player cannot see the mines and the green crystal on the canvas and the only way to locate them is to listen and rotate the eyes using the mouse. Eyes rotation is, in fact, related to sound panning. Moreover, the sound volume of these objects changes according with the player distance. Starting from a certain distance, the closer the player is to the mine, the higher the gain will be.
+**Panning and Gain** : Player cannot see the mines and the green crystal on the canvas and the only way to locate them is to listen and rotate the eyes using the mouse. Eyes rotation is, in fact, related to sound panning. If the angle between the vector that goes from the player's head to the mouse, and the vector that goes from the player to the mine position (if the mine is close enough) is between -100° and +100° panning can be appreciated.  
+<p align="center">
+  <img src="design/panning_scheme.png" alt="panning image"  width="50%" />
+</p>  
+Moreover, the sound volume of these objects changes according with the player distance. Starting from a certain distance, the closer the player is to the mine, the higher the gain will be.
 
 **Pitching** : In order to easily locate the mines, in addiction to the panning and gain variation, also the mine sound pitch changes according with player distance. The closer the player is to the mine, the higher the pitch will be.
 
 **Wall Detection** : the green crystal object is invisible but can be found by the player if he gets close enough to it as glimmering sound will be heard. If between the crystal and the player there is a wall, the sound comes muffled, otherwise it comes bright and clear. To detect if there's a wall or not between the player and the crystal the game computes line intersections. If the line that goes from the head of the player to the center of the crystal intersects one of the 4 walls of a wall the sound comes muffled.
 
  <p align="center">
-  <img src="design/walldetection_scheme.png" alt="title image"  width="60%" />
+  <img src="design/walldetection_scheme.png" alt="wall detection image"  width="60%" />
 </p>
 
 **Sounds** : All the sounds are loaded at the beginning of the game and loopped according with their duration. Player will hear only mines and green crystal sounds below a certain distance in pixel. Walk sound and eat crystal sound are loaded at the beginning of the game too but they are played only if the related event happens.
@@ -88,8 +92,8 @@ In our project the "Schermo" object is a singleton. The class constructor verifi
 info sul MultiPlayer
 - Node.js (npm, express, nodemon)                                  // WENDY  
 Node.js is a Javascript runtime using non-blocking I/O (it does not block itself on only one request at a time) and asynchronous (uses callbacks) programming. npm is used to manage Node.js packages. In our project the following packages are included:  
-:small_blue_diamond: Express, to setup a server listening to a specific port;  
-:small_blue_diamond: Nodemon, that allowed us to automatically restart the server everytime a change was made in the code.    
+:small_blue_diamond: [Express](https://expressjs.com/it/) framework, to setup a server listening to a specific port;  
+:small_blue_diamond: [Nodemon](https://github.com/remy/nodemon) wrapper, that allowed us to automatically restart the server everytime a change was made in the code.    
  FORSE C'AGGIUNGO ALTRA ROBA 
 - Socket.io(volatile, )                                            // ZACK..
 - GameState (oggetti server game.js, moduli)
