@@ -568,7 +568,7 @@ class SoundLogic {
     crystal_sound.play();
   }
   explosionSound() { //per single e multi
-    explosion_sound.setVolume(0.4);
+    explosion_sound.setVolume(0.25);
     explosion_sound.play();
   }
 } //end of SoundLogic
