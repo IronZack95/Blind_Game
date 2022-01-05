@@ -162,8 +162,14 @@ server.io.on("connection", (socket) => {
       fileContents = fs.readFileSync(game.DATAPATH);
       fileContents = JSON.parse(fileContents);
       fileContents.push(data);
-      // ordino i campi secondo il tempo impiegato
-      fileContents.sort(function(a, b){return a.time-b.time});
+      // ordino i campi secondo il punteggio e inversamente sul tempo impiegato
+      fileContents.sort(function(a, b){
+        return a.time-b.time;
+      });
+
+      fileContents.sort(function(a, b){
+        return b.score-a.score;
+      });
 
       //console.log('Update file', fileContents);
     } catch (err) {

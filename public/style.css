@@ -48,7 +48,7 @@
    html, body {
      height: 100%;
      overflow: hidden;
-     background: linear-gradient(0deg, #000000 4%, #00687c 100%);
+     background: black;/*linear-gradient(0deg, #000000 4%, #00687c 100%);*/
      font-family: 'Roboto', sans-serif;
    }
 
@@ -266,7 +266,7 @@
  #RulesPanel {
    color: var(--text);
    position: absolute;
-   bottom: 11vh;
+   bottom: 9vh;
    left: 49%;
    transform: translate(-50%,0%);
  }
