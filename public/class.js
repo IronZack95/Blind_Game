@@ -397,8 +397,12 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
         let tbody = document.querySelector("tbody");
         tbody.children[position].style.backgroundColor = "green";
 
+        // Rendo sticky la prima riga
+        let firstLine = tbody.children[0];
+        firstLine.id = "firstLine";
       });
     });
+
     socket.on("disconnect", () => {
       console.log("Mi sono disconnesso: "+socket.id);
     });
