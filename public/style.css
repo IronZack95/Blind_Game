@@ -78,10 +78,10 @@
  }
 
  #mainMenuButton {
-   position:absolute;
-   left: 50%;
-   bottom: 5%;
-   transform: translate(-50%, 0%);
+  position: absolute;
+  left: 50%;
+  bottom: 2%;
+  transform: translate(-50%, 0%);
  }
 
 
@@ -131,7 +131,6 @@
        left: 50%;
        transform: translate(-50%, -50%);
    }
-  }
 
  #buttonContainer {
    display: inline-flex;
@@ -201,15 +200,17 @@
   background-color: #1cd79f;
 }
 
+/*
  #finalscore {
-   /*text-align: left;*/
+   text-align: left;
    color: whitesmoke;
    font-size: 20px;
    font-weight: lighter;
    position: absolute;
    left: 50%;
-   transform: translate(-50%, 0%);
+   transform: translate(-50%, 30%);
  }
+ */
 
  #schermo{
    height: 100%;
@@ -290,17 +291,18 @@
  }
 
  #CloudScore {
-     position: absolute;
-     max-width: 24%;
-     width: 28%;
-     color: white;
-     min-width: 300px;
-     overflow-y: scroll;
-     left: 2%;
-     height: 80%;
-     transform: translate(0%,0%);
-     top: 20%;
+  position: absolute;
+  max-width: 24%;
+  width: 28%;
+  color: white;
+  min-width: 300px;
+  overflow-y: scroll;
+  left: 50%;
+  height: 50%;
+  transform: translate(-50%, 25%);
+  top: 20%;
  }
+ 
 
   #CloudScore::-webkit-scrollbar {
     display: none;

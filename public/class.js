@@ -328,13 +328,13 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
     titolo.id = "gameoverImage"
     super.getSchermo().appendChild(titolo);
 
+    /*
     // Center  Panel
     let centerPanel = document.createElement("div");
     //centerPanel.className = "center";
     centerPanel.classList.add("center")
     super.getSchermo().appendChild(centerPanel);
 
-    /*
     let text = '<div id = "text">CONGRATS!!</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
     */
@@ -342,6 +342,7 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
     //punteggi fine partita
     let a = document.createElement("h3");
     a.id = "finalscore";
+    
 
     //Pulsante per tornare alla lobby iniziale
     let mainMenuButton = document.createElement("button");
@@ -386,7 +387,7 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
         //console.log(classifica);
         //a.innerHTML = 'Final score:  ' + this.score + '<br>'+'Time :   ' + this.time + '<br>' + 'POSITION: ' + position +'°';
         a.innerHTML = 'Final score:  ' + this.score + '<br>'+'Time :   ' + this.time;
-        centerPanel.appendChild(a);
+        //centerPanel.appendChild(a);
         a = document.createElement("table");
         a.id = "table";
         a.innerHTML = classifica;
