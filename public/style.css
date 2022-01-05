@@ -51,7 +51,14 @@
      background: black;/*linear-gradient(0deg, #000000 4%, #00687c 100%);*/
      font-family: 'Roboto', sans-serif;
    }
-
+   /* tolgo il drag */
+   img {
+     -webkit-user-drag: none;
+     -khtml-user-drag: none;
+     -moz-user-drag: none;
+     -o-user-drag: none;
+     user-drag: none;
+   }
  /* CLASS STYLE */
  button {
    position: relative;
@@ -201,17 +208,15 @@
   background-color: #1cd79f;
 }
 
-/*
+
  #finalscore {
-   text-align: left;
    color: whitesmoke;
-   font-size: 20px;
-   font-weight: lighter;
+   text-shadow: -6px 6px 6px black;
    position: absolute;
    left: 50%;
-   transform: translate(-50%, 30%);
+   transform: translate(-50%, 0%);
  }
- */
+
 
  #schermo{
    height: 100%;
@@ -293,8 +298,6 @@
 
  #CloudScore {
   position: absolute;
-  max-width: 24%;
-  width: 28%;
   color: white;
   min-width: 300px;
   overflow-y: scroll;
@@ -303,7 +306,7 @@
   transform: translate(-50%, 25%);
   top: 20%;
  }
- 
+
 
   #CloudScore::-webkit-scrollbar {
     display: none;
@@ -313,7 +316,7 @@
   position: -webkit-sticky; /* Safari */
   position: sticky;
   top: 0;
-  background-color: #000000;
+  background-color: #04031e;
 }
 
 #message {

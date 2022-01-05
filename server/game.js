@@ -1,5 +1,5 @@
 const MAX_PLAYERS = 2;
-const MAX_MINES = 10; //30
+const MAX_MINES = 15; //30
 const MAX_CRYSTALS = 20; //35;
 
 const WIDTH = 1200;         //...del canvas
@@ -12,8 +12,8 @@ const GRID_SIZE = Math.floor(WIDTH/LATO); //10 griglia
 const RESOLUTION = 2; //2 ogni box contiente RESOLUTION X RESOLUTION muri dentro la griglia
 const THRESHOLD = 100000;
 
-const COLOR1 = '#0022ff';
-const COLOR2 = '#ff2200';
+const COLOR1 = '#0077ff';
+const COLOR2 = '#e81b1b';
 
 const DATAPATH = './data/data.json';
 

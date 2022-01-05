@@ -10,8 +10,8 @@
  const RESOLUTION = 2; //2 ogni box contiente RESOLUTION X RESOLUTION muri dentro la griglia
  const THRESHOLD = 100000;
 
- const NUM_MINE = 20;
- const NUM_CRISTALLI = 1;//35
+ const NUM_MINE = 15;
+ const NUM_CRISTALLI = 20;//35
  const NUM_MAGIC_CRYSTAL = 1;
  const MINE_DISTANCE = 80;   //distanza entro cui inizio a sentire mina
  const PPS = 80; //player personal space entro cui non compaiono oggetti
@@ -415,7 +415,7 @@ class SoundLogic {
     background_sound.loop();
 
     if(value){
-      console.log('creo cose audio cristallo verde')
+      //console.log('creo cose audio cristallo verde')
       //se questo value è true allora creo anche cose riguardanti cristallo verde:
 
       glitter_sound_filter.setVolume(0);
@@ -474,7 +474,7 @@ class SoundLogic {
 
       if(magic_crystal.hearable===true && magic_crystal.filter===true && magic_crystal.eaten===false){
        //se sono nel range ed è dietro a un muro... e non è stato mangiato
-      console.log('filtrato')
+      //console.log('filtrato')
       let dist = p.dist(player.x, player.y, magic_crystal.x, magic_crystal.y);
       let temp = Math.sqrt(dist / MAGIC_CRYSTAL_SD);
       let volume = 0.3 * (1-(0.8*temp));
@@ -485,7 +485,7 @@ class SoundLogic {
 
      } else if (magic_crystal.hearable===true && magic_crystal.filter===false && magic_crystal.eaten===false){
        //se sono nel range e NON è dietro a un muro... e non è stato mangiato
-      console.log('non filtrato')
+      //console.log('non filtrato')
       let dist = p.dist(player.x, player.y, magic_crystal.x, magic_crystal.y);
       let temp = Math.sqrt(dist / MAGIC_CRYSTAL_SD);
       let volume = 0.3 * (1-(0.8*temp));
@@ -789,10 +789,10 @@ class MagicCrystal extends Crystal{
     }
     if (this.checks.every(e => e === true)){
        this.filter = false;
-       console.log('NO muro :D')
+       //console.log('NO muro :D')
      } else {
        this.filter = true;
-       console.log('muro!')
+       //console.log('muro!')
      }
    } else {
      return
