@@ -104,7 +104,7 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     let input = '<input type="text" id="PlayerName" class=""placeholder="Insert your name">';
     centerPanel.insertAdjacentHTML('beforeEnd', input);
 
-    let control = '<img src="images/rules.png" id="WASD"/>'
+    let control = '<img src="images/Rules.png" id="WASD"/>'
     let rules = '<ul>  <li>Collect all the crystals</li>  <li>Listen carefully</li>  <li>Find the Bonus</li></ul><br>(Tip: use headphones)';
     let tabella =   '<table id = "RulesPanel"><tr><th>Controls:</th><th>Rules:</th></tr>'+'<tr><td>'+control+'</td><td>'+rules+'</td></tr></table>'
     super.getSchermo().insertAdjacentHTML('beforeEnd', tabella);
@@ -207,7 +207,7 @@ let socket;
 class MultiPlayerLobby extends Pagina{
   constructor() {
     super();
-    
+
     // Sfondo
     let sfondo = document.createElement("img");
     sfondo.id = "sfondo";
@@ -342,7 +342,7 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
     //punteggi fine partita
     let a = document.createElement("h3");
     a.id = "finalscore";
-    
+
 
     //Pulsante per tornare alla lobby iniziale
     let mainMenuButton = document.createElement("button");
