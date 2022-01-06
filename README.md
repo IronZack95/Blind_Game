@@ -5,7 +5,7 @@
 You're a miner and you got trapped in a cave. Find all crystals :gem: and beat your rivals' time! Watch out for mines!
 
 
- ### Authors \- **"Teacher's good kids"**
+ ### Authors \- **</span><span style="color:red">"ACTAM Games.com"**
 - [Zaccaria Eliseo Carrettoni](https://github.com/IronZack95)
 - [Wendy Wang](https://github.com/WendyWang29)
 - [Alessandro Zullo](https://github.com/Alessandro199762)
@@ -46,7 +46,7 @@ emulating full stack development and deployment.
 **[p5.js](https://p5js.org/)** is a JavaScript library which allowed us, by creating a new p5 instance, to work on a _canvas_ element following the same procedures available in Processing, i.e. setting up the _setup_ and the _draw_ functions. The library also came in handy for images/sounds file handling, vectorial computations and sound file manipulations. For the sound effects in our game we exploited the [p5.Sound](https://p5js.org/reference/#/libraries/p5.sound) core library, which extends p5 with Web Audio funcionalities.   
 
 ## Game Logic
-:small_blue_diamond:  **Player** : The player figure can be moved in the canvas area with W A S D keys and includes animations during the motion. Legs are moving as it walks and eyes can rotate by 360° following the mouse. 
+:small_blue_diamond:  **Player** : The player figure can be moved in the canvas area with W A S D keys and includes animations during the motion. Legs are moving as it walks and eyes can rotate by 360° following the mouse.
 
 :small_blue_diamond:  **Walls** : Walls are randomly generated with a perlin noise algorithm in each game and the player cannot move through them. The player body is considered as a circle and when its radius hits a wall perimeter and the wall detection function returns a true value, all the movements in the wall direction are forbidden.
 
@@ -54,15 +54,15 @@ emulating full stack development and deployment.
 
 <p align="center">
   <img src="design/points.png" alt="points image"  width="60%" />
-</p> 
- 
+</p>
+
 ## Audio Logic
 
 :small_blue_diamond:  **Panning and Gain** : Player cannot see the mines and the green crystal on the canvas and the only way to locate them is to listen and rotate the eyes using the mouse. Eyes rotation is, in fact, related to sound panning. If the angle between the vector that goes from the player's head to the mouse, and the vector that goes from the player to the mine position (if the mine is close enough) is between -100° and +100° panning can be appreciated.  
 <p align="center">
   <img src="design/panning_scheme.png" alt="panning image"  width="50%" />
 </p>    
-  
+
 Moreover, the sound volume of these objects changes according with the player distance. Starting from a certain distance, the closer the player is to the mine, the higher the gain will be.
 
 :small_blue_diamond:  **Pitching** : In order to easily locate the mines, in addiction to the panning and gain variation, also the mine sound pitch changes according with player distance. The closer the player is to the mine, the higher the pitch will be.
@@ -78,12 +78,12 @@ Moreover, the sound volume of these objects changes according with the player di
 ## Utilities
 :small_blue_diamond:  **Perlin Noise** :
 Since we wanted a map that could be different every time the user begins a new game, we've implemented an algorithm capable of generating random noise.
-In order to do so, a noise-generator, in particular a Perlin noise generator, function has been created; 
+In order to do so, a noise-generator, in particular a Perlin noise generator, function has been created;
 The Perlin noise is a gradient noise, which means that the signal is derived from a random distribution of vectors in a grid and their subsequent interpolation.
 The result is a random but smooth distribution of the signal.
 Finally, the figure has been lowered in resolution in order to obtain a more pixelated effect.
 
-# One Page APP <a name = "onepageapp"></a> 
+# One Page APP <a name = "onepageapp"></a>
  This application is a single-page app.
 This means that all of the necessary code is wether retrieved in a single page-load, or the appropriate resources are dynamically loaded and added to the page when needed (for instance when clicking on a button), and that The page never reloads, nor does it leave control in another page.
 
@@ -97,7 +97,7 @@ That a function is asynchronous means that, when it is called, the file reading 
 Once the file data has been loaded, the function will call the callback function provided to it.
 By using async functions we aren't blocking code execution while waiting for the operating system to get back with data.
 
-- Automatic naming (API) 
+- Automatic naming (API)
 When you start a new game, whether in single or multi-player, you are prompted to enter a name; if this is not done the game randomly assigns name.
 To implement this feature, we have created the "randomName()" function in "utility.js", which retrieves a random name from the following API: https://random-names-api.herokuapp.com/random.
 
@@ -106,13 +106,48 @@ info sul MultiPlayer
 - Node.js is a Javascript runtime using non-blocking I/O (it does not block itself on only one request at a time) and asynchronous (uses callbacks) programming. npm is used to manage Node.js packages. In our project the following packages are included:  
 :heavy_minus_sign: [Express](https://expressjs.com/it/) framework, to setup a server listening to a specific port;  
 :heavy_minus_sign: [Nodemon](https://github.com/remy/nodemon) wrapper, that allowed us to automatically restart the server everytime a change was made in the code.    
- 
-- Socket.io(volatile, )                                            // ZACK..
+
+- Socket.io                             
+  WebSocket is a communication protocol which provides a full-duplex and low-latency channel between the server and the browser. Questa Sfrutta la preesistente connessione TCP creata da protocollo HTTP per instaurare un canale bidirezionale. Socket.io viene utilizzato in due Contesti diversi nel progetto. Nel multiplayer per scambiare tutte le informazioni tra i vari client connessi ad una stessa stanza da gioco, a cui è assegnato uno specifico soket.id. Nel Singleplayer per caricare i dati aggiornati a fine di una partita e scaricare i dati aggiornati dal database.
+  Utilizzando Web Socket è possibile mettere in comuniczione due client connessi utilizzando sempre come tramite il server, che in un contesto MultiPlayer memorizza coppie di giocatori e reindirizza i messaggi da uno all'altro emulando una comunicazione diretta tra i due.
+  Principalmente si Sono utilizzate le seguenti comunicazioni Socket.io:
+  1. Emitting/Linstening single events: in questo caso ogni comunicazione per cui è richiesto uno specifico protocollo nella dinamica di gioco viene mappato assegnando lui uno specifico evento. Il client trasmette i dati al server o viceversa, in un'unica direzione. Comunicazioni di tipo broadcast sono possibili lato server, ma mai utilizzate.
+  2. ACKNOWLEDGMENT events: simile al caso precedente, ma chiunque abbia emesso l'evento si aspetta un messaggio di callback di ritorno. Questo tipo di messaggio è utilizzato ad esempio nella gestione delle Lobby di gioco e nella creazione delle partite, in quanto il client deve sapere dal server se la partita è pronta o deve aspettare che si colleghi un altro giocatore.
+  3. Messaggi volatili: questo tipo di messaggi sono simili al primo tipo, ma emulano un comportamento simile a quello che si avrebbe su un canale UDP, ovvero vengono sovrascritti da messaggi dello stesso tipo più recenti senza dover aspettare un messaggio di ACKNOWLEDGMENT di basso livello tipo TCP. Questa caratteristica li rende molto performanti nel trasmettere dati di gioco in tempo reale, in quanto l'unica posizione utile ai fini del gameplay è sempre l'ultima emessa.
+
 - GameState (oggetti server game.js, moduli)
+  Il Back-end utilizza principalmente quattro file index.js, game.js server.js utility.js. Tutto parte dal file index.js che si occupa innanzi tutto di caricare gli altri tre file come moduli, nello specifico questi si occupano di:
+
+  - server.js caica le impostazioni di express.js e di fatto mette il server in ascolto sulla porta 3000.
+  - Game.js Contiente tutte le classi e i metodi per creare l'oggetto GameState e       gestirne il funzionamento. Un arrey per memorizzare tutti gli oggetti Game state, quindi tutte le partite che possono avvenire quindi contemporaneamente sul server e un arrey per memorizzare tutti i client connessi contemporaneamente attraverso il loro ID.  L'oggetto Game State viene creato alla connessione del primo client nella Lobby-Multi e tiene traccia di ogni variabile inerente al gioco, dalle posizioni dei muri, ai cristalli, alle mine  ai colori dei singoli giocatori.
+  - Utility contiene le informazioni per generare la perlin map del game state lato server.
+
+  dopo di che Index.js si occupa solo di istanziare l'oggetto server.io al cui interno si trovano tutte le funzioni di Socket.
+
+
 - Docker (reverse proxy, https, routing)
+Il deployment di questo progetto è stato fatto in più fasi che illustreremo cercando di risolvere le seguenti criticità:
+
+1. Ambianete protetto e isolato per far correre l'applicazione lato Server
+2. compatibilità con i moderni browser, quindi utilizzo di un protocollo https
+3. utilizzo di un database no SQL permanente
+
+Vediamo ora quali sono state le soluzioni adottate:
+
+1. To meet all the needs of optimizations and compatibility,
+the best solution was to use Docker container. Dockerization allows
+programs to run bypassing the SO specific linux distribution and using
+only the linux kernel, this allows a better isolation of the softwares
+and a valid alternative to the virtual machine.
+
+2. Allo stato attuale l'applicazione comunica tramite protocollo http.
+Per convertire una richiesta https in una risposta http una soluzione possibile è quella di utilizzare un Reverse-Proxy posto tra il client e il server. In questo caso il reverse proxy adottato NGINX corre in un container docker isolato ed è posto tramite una una network bridge tra il container del gioco e l'interfaccia di rete esterna. Di fatto il reverse-proxy si mette in ascolto sulla stessa porta del container del gioco e ad ogni richiesta URL specifica si attiva filtrando tutte le richieste e creando un layer di sicurezza aggiuntivo tramite certificati SSL Let's Encrypt.
+
+3. Docker fornisce un metodo di tipo mount per preservare volumi di memoria all'interno della macchina host. Nel file docker-compose.yaml, si può notare come è stato rimappata la path al database noSQL dell'app all'esterno su una specifica path dell'host. In questo modo il voltume di memoria relativo a quella specifica path è permanente.
+
 
 <p align="center">
   <img src="design/omino_JS.png" width="20%" />
-  <img src="design/omino_p5.png" width="16%" /> 
+  <img src="design/omino_p5.png" width="16%" />
   <img src="design/docker_img.png" width="22%" />
 </p>
