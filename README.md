@@ -5,7 +5,7 @@
 You're a miner and you got trapped in a cave. Find all crystals :gem: and beat your rivals' time! Watch out for mines!
 
 
- ### Authors \- **</span><span style="color:red">"ACTAM Games.com"**
+### Authors \- **</span><span style="color:red">"ACTAM Games.com"**
 - [Zaccaria Eliseo Carrettoni](https://github.com/IronZack95)
 - [Wendy Wang](https://github.com/WendyWang29)
 - [Alessandro Zullo](https://github.com/Alessandro199762)
@@ -60,7 +60,7 @@ emulating full stack development and deployment.
 
 :small_blue_diamond:  **Panning and Gain** : Player cannot see the mines and the green crystal on the canvas and the only way to locate them is to listen and rotate the eyes using the mouse. Eyes rotation is, in fact, related to sound panning. If the angle between the vector that goes from the player's head to the mouse, and the vector that goes from the player to the mine position (if the mine is close enough) is between -100° and +100° panning can be appreciated.  
 <p align="center">
-  <img src="design/panning_scheme.png" alt="panning image"  width="50%" />
+  <img src="design/panning_scheme.png" alt="panning image"  width="70%" />
 </p>    
 
 Moreover, the sound volume of these objects changes according with the player distance. Starting from a certain distance, the closer the player is to the mine, the higher the gain will be.
@@ -70,18 +70,22 @@ Moreover, the sound volume of these objects changes according with the player di
 :small_blue_diamond:  **Wall Detection** : the green crystal object is invisible but can be found by the player if he gets close enough to it as glimmering sound will be heard. If between the crystal and the player there is a wall, the sound comes muffled, otherwise it comes bright and clear. To detect if there's a wall or not between the player and the crystal the game computes line intersections. If the line that goes from the head of the player to the center of the crystal intersects one of the 4 walls of a wall the sound comes muffled.
 
  <p align="center">
-  <img src="design/walldetection_scheme.png" alt="wall detection image"  width="60%" />
+  <img src="design/walldetection_scheme.png" alt="wall detection image"  width="70%" />
 </p>
 
 :small_blue_diamond:  **Sounds** : All the sounds are loaded at the beginning of the game and loopped according with their duration. Player will hear only mines and green crystal sounds below a certain distance in pixel. Walk sound and eat crystal sound are loaded at the beginning of the game too but they are played only if the related event happens.
 
 ## Utilities
-:small_blue_diamond:  **Perlin Noise** :
+**Perlin Noise** :
 Since we wanted a map that could be different every time the user begins a new game, we've implemented an algorithm capable of generating random noise.
 In order to do so, a noise-generator, in particular a Perlin noise generator, function has been created;
 The Perlin noise is a gradient noise, which means that the signal is derived from a random distribution of vectors in a grid and their subsequent interpolation.
 The result is a random but smooth distribution of the signal.
-Finally, the figure has been lowered in resolution in order to obtain a more pixelated effect.
+Finally, the figure has been lowered in resolution in order to obtain a more pixelated effect.  
+
+<p align="center">
+  <img src="design/rand_maps.png" alt="random maps"  width="50%" />
+</p>
 
 # One Page APP <a name = "onepageapp"></a>
  This application is a single-page app.
@@ -148,7 +152,7 @@ info sul MultiPlayer
   after which Index.js only takes care of instantiating the server.io object inside which all the Socket functions are located.
 
 
-- **Docker**
+- **Docker**  
   
   The deployment of this project was done in several phases that we will illustrate trying to solve the following critical issues:
 
@@ -173,9 +177,18 @@ info sul MultiPlayer
   3. Docker provides a mount-like method for preserving storage volumes within the host machine. In the docker-compose.yaml file, you can see how it has been remapped
   the path to the app's noSQL database on a specific host path. In this way the memory volume related to that specific path is permanent.
 
+    <p align="center">
+  <img src="design/schema_server.png" alt="server scheme"  width="60%" />
+</p>
+
+<br>
 
 <p align="center">
   <img src="design/omino_JS.png" width="20%" />
   <img src="design/omino_p5.png" width="16%" />
   <img src="design/docker_img.png" width="22%" />
 </p>
+<br>
+<p align="center">
+ <img src="design/actamgameslogo.png" alt="title image"  width="30%" />
+ </p>
