@@ -1,15 +1,15 @@
 <p align="center">
-  <img src="design/titolo_v0.png" alt="title image"  width="85%" />
+  <img src="design/titolo_v0.png" alt="title image"  width="90%" />
 </p>
 
 You're a miner and you got trapped in a cave. Find all crystals :gem: and beat your rivals' time! Watch out for mines!
 
 
-### Authors \- **</span><span style="color:red">"ACTAM Games.com"**
+### Authors \- **</span><span style="color:red">"ACTAM Games.com"**<img src="design/actamgameslogo.png" align="right" alt="title image"  width="25%" />
 - [Zaccaria Eliseo Carrettoni](https://github.com/IronZack95)
 - [Wendy Wang](https://github.com/WendyWang29)
 - [Alessandro Zullo](https://github.com/Alessandro199762)
-- [Lorenzo Lellini](https://github.com/LorenzoLellini)
+- [Lorenzo Lellini](https://github.com/LorenzoLellini)  
 
 <!---![alt text](https://imag.malavida.com/mvimgbig/download-fs/among-us-28791-5.jpg) --->
 
@@ -104,6 +104,15 @@ By using async functions we aren't blocking code execution while waiting for the
 - Automatic naming (API)
 When you start a new game, whether in single or multi-player, you are prompted to enter a name; if this is not done the game randomly assigns name.
 To implement this feature, we have created the "randomName()" function in "utility.js", which retrieves a random name from the following API: https://random-names-api.herokuapp.com/random.
+  
+<br>
+
+<p align="center">
+  <img src="design/omino_JS.png" width="20%" />
+  <img src="design/omino_p5.png" width="16%" />
+  <img src="design/docker_img.png" width="22%" />
+</p>
+  
 # Server <a name = "server"></a>
 info sul MultiPlayer                                
 - **Node.js** 
@@ -115,8 +124,8 @@ info sul MultiPlayer
 
 - **Socket.io**
   
-  WebSocket is a communication protocol which provides a full-duplex and low-latency channel between the server and the browser. This takes advantage of the existing TCP 
-  connection
+  [WebSoket](https://socket.io/) is a communication protocol which provides a full-duplex and low-latency channel between the server and the browser. 
+  This takes advantage of the existing TCP connection
   created by HTTP protocol to establish a bidirectional channel. Socket.io is used in two different contexts in the project. In the multiplayer to swap all
   information between the various clients connected to the same game room, to which a specific soket.id is assigned. In the Singleplayer to load updated data at the end of a
   game and download the updated data from the database.
@@ -163,7 +172,7 @@ info sul MultiPlayer
   Now let's see what are the solutions adopted:
 
   1. To meet all the needs of optimizations and compatibility,
-  the best solution was to use Docker container. Dockerization allows
+  the best solution was to use [Docker](https://www.docker.com/) container. Dockerization allows
   programs to run bypassing the SO specific linux distribution and using
   only the linux kernel, this allows a better isolation of the softwares
   and a valid alternative to the virtual machine.
@@ -177,18 +186,13 @@ info sul MultiPlayer
   3. Docker provides a mount-like method for preserving storage volumes within the host machine. In the docker-compose.yaml file, you can see how it has been remapped
   the path to the app's noSQL database on a specific host path. In this way the memory volume related to that specific path is permanent.
 
-    <p align="center">
-  <img src="design/schema_server.png" alt="server scheme"  width="60%" />
-</p>
 
 <br>
-
+  
 <p align="center">
-  <img src="design/omino_JS.png" width="20%" />
-  <img src="design/omino_p5.png" width="16%" />
-  <img src="design/docker_img.png" width="22%" />
+<img src="design/schema_server.png" alt="server scheme"  width="60%" />
 </p>
 <br>
-<p align="center">
- <img src="design/actamgameslogo.png" alt="title image"  width="30%" />
- </p>
+
+  
+  
