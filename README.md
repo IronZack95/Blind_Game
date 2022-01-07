@@ -4,6 +4,11 @@
 
 You're a miner and you got trapped in a cave. Find all crystals :gem: and beat your rivals' time! Watch out for mines!
 
+## Game Link: 
+<p align="center">
+  https://blindgame.ddnsfree.com/
+</p>
+
 
 ### Authors \- **</span><span style="color:red">"ACTAM Games.com"**<img src="design/actamgameslogo.png" align="right" alt="title image"  width="25%" />
 - [Zaccaria Eliseo Carrettoni](https://github.com/IronZack95)
