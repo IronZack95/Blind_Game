@@ -100,50 +100,78 @@ By using async functions we aren't blocking code execution while waiting for the
 - Automatic naming (API)
 When you start a new game, whether in single or multi-player, you are prompted to enter a name; if this is not done the game randomly assigns name.
 To implement this feature, we have created the "randomName()" function in "utility.js", which retrieves a random name from the following API: https://random-names-api.herokuapp.com/random.
-
 # Server <a name = "server"></a>
 info sul MultiPlayer                                
-- Node.js is a Javascript runtime using non-blocking I/O (it does not block itself on only one request at a time) and asynchronous (uses callbacks) programming. npm is used to manage Node.js packages. In our project the following packages are included:  
-:heavy_minus_sign: [Express](https://expressjs.com/it/) framework, to setup a server listening to a specific port;  
-:heavy_minus_sign: [Nodemon](https://github.com/remy/nodemon) wrapper, that allowed us to automatically restart the server everytime a change was made in the code.    
+- **Node.js** 
+  
+  is a Javascript runtime using non-blocking I/O (it does not block itself on only one request at a time) and asynchronous (uses callbacks) programming. npm is used to manage 
+  Node.js packages. In our project the following packages are included:  
+  :heavy_minus_sign: [Express](https://expressjs.com/it/) framework, to setup a server listening to a specific port;  
+  :heavy_minus_sign: [Nodemon](https://github.com/remy/nodemon) wrapper, that allowed us to automatically restart the server everytime a change was made in the code.    
 
-- Socket.io                             
-  WebSocket is a communication protocol which provides a full-duplex and low-latency channel between the server and the browser. Questa Sfrutta la preesistente connessione TCP creata da protocollo HTTP per instaurare un canale bidirezionale. Socket.io viene utilizzato in due Contesti diversi nel progetto. Nel multiplayer per scambiare tutte le informazioni tra i vari client connessi ad una stessa stanza da gioco, a cui è assegnato uno specifico soket.id. Nel Singleplayer per caricare i dati aggiornati a fine di una partita e scaricare i dati aggiornati dal database.
-  Utilizzando Web Socket è possibile mettere in comuniczione due client connessi utilizzando sempre come tramite il server, che in un contesto MultiPlayer memorizza coppie di giocatori e reindirizza i messaggi da uno all'altro emulando una comunicazione diretta tra i due.
-  Principalmente si Sono utilizzate le seguenti comunicazioni Socket.io:
-  1. Emitting/Linstening single events: in questo caso ogni comunicazione per cui è richiesto uno specifico protocollo nella dinamica di gioco viene mappato assegnando lui uno specifico evento. Il client trasmette i dati al server o viceversa, in un'unica direzione. Comunicazioni di tipo broadcast sono possibili lato server, ma mai utilizzate.
-  2. ACKNOWLEDGMENT events: simile al caso precedente, ma chiunque abbia emesso l'evento si aspetta un messaggio di callback di ritorno. Questo tipo di messaggio è utilizzato ad esempio nella gestione delle Lobby di gioco e nella creazione delle partite, in quanto il client deve sapere dal server se la partita è pronta o deve aspettare che si colleghi un altro giocatore.
-  3. Messaggi volatili: questo tipo di messaggi sono simili al primo tipo, ma emulano un comportamento simile a quello che si avrebbe su un canale UDP, ovvero vengono sovrascritti da messaggi dello stesso tipo più recenti senza dover aspettare un messaggio di ACKNOWLEDGMENT di basso livello tipo TCP. Questa caratteristica li rende molto performanti nel trasmettere dati di gioco in tempo reale, in quanto l'unica posizione utile ai fini del gameplay è sempre l'ultima emessa.
+- **Socket.io**
+  
+  WebSocket is a communication protocol which provides a full-duplex and low-latency channel between the server and the browser. This takes advantage of the existing TCP 
+  connection
+  created by HTTP protocol to establish a bidirectional channel. Socket.io is used in two different contexts in the project. In the multiplayer to swap all
+  information between the various clients connected to the same game room, to which a specific soket.id is assigned. In the Singleplayer to load updated data at the end of a
+  game and download the updated data from the database.
+  
+  <p align="center">
+  <img src="https://socket.io/images/bidirectional-communication.png" alt="points image"  width="60%" />
+  </p>
+  
+  To emulate direct communication between two clients, the server is in the middle and routes the data traffic for each pair of players.
+  Mainly we used the following Socket.io communications:
+  1. Emission / listening of single events: in this case, each communication for which a specific protocol is required in the game dynamics is mapped by assigning him one
+  specific event. The client transmits data to the server or vice versa, in one direction only. Broadcast communications are possible on the server side, but never used.
+  2. Event Acknowledgment: Similar to the previous case, but whoever issued the event expects a return recall message. This type of message is used for
+  example in the management of the game Lobby and in the creation of games, as the client must know from the server if the game is ready or must wait for it to connect
+  another player.
+  3. Volatile messages: this type of messages are similar to the first type, but emulate a behavior similar to that which occurs on a UDP channel, ie they are
+  overwritten by more recent messages of the same type without having to wait for a low-level ACKN message such as TCP. This feature makes them a lot
+  performing in transmitting game data in real time position, the last position issued is the one desired.
 
-- GameState (oggetti server game.js, moduli)
-  Il Back-end utilizza principalmente quattro file index.js, game.js server.js utility.js. Tutto parte dal file index.js che si occupa innanzi tutto di caricare gli altri tre file come moduli, nello specifico questi si occupano di:
+- **GameState**
+  
+  The Back-end uses four index.js files, game.js server.js utility.js. It all starts from the index.js file which first of all takes care of loading the other three
+  files as modules, specifically these deal with:
 
-  - server.js caica le impostazioni di express.js e di fatto mette il server in ascolto sulla porta 3000.
-  - Game.js Contiente tutte le classi e i metodi per creare l'oggetto GameState e       gestirne il funzionamento. Un arrey per memorizzare tutti gli oggetti Game state, quindi tutte le partite che possono avvenire quindi contemporaneamente sul server e un arrey per memorizzare tutti i client connessi contemporaneamente attraverso il loro ID.  L'oggetto Game State viene creato alla connessione del primo client nella Lobby-Multi e tiene traccia di ogni variabile inerente al gioco, dalle posizioni dei muri, ai cristalli, alle mine  ai colori dei singoli giocatori.
-  - Utility contiene le informazioni per generare la perlin map del game state lato server.
+  - server.js loads the settings of express.js and actually puts the server listening on port 3000.
+  - Game.js Contains all the classes and methods to create the GameState object and manage its operation. moreover, an arrey to store all the Game state objects, and an arrey to 
+  store all the clients connected at the same time through their ID are created.
+  The Game State object is created at the connection of the first client in the Lobby-Multi and keeps track of every variable related to the game, from the positions of the 
+  walls, to the
+  crystals, mines to the colors of the individual players. As many game state objects can be created as there are games in progress simultaneously.
+  - Utility contains the information to generate the server side game state perlin map.
 
-  dopo di che Index.js si occupa solo di istanziare l'oggetto server.io al cui interno si trovano tutte le funzioni di Socket.
+  after which Index.js only takes care of instantiating the server.io object inside which all the Socket functions are located.
 
 
-- Docker (reverse proxy, https, routing)
-Il deployment di questo progetto è stato fatto in più fasi che illustreremo cercando di risolvere le seguenti criticità:
+- **Docker**
+  
+  The deployment of this project was done in several phases that we will illustrate trying to solve the following critical issues:
 
-1. Ambianete protetto e isolato per far correre l'applicazione lato Server
-2. compatibilità con i moderni browser, quindi utilizzo di un protocollo https
-3. utilizzo di un database no SQL permanente
+  1. Protected and isolated environment to run the application on the Server side
+  2. compatibility with modern browsers, ie use of an https protocol
+  3. permanent noSQL database
 
-Vediamo ora quali sono state le soluzioni adottate:
+  Now let's see what are the solutions adopted:
 
-1. To meet all the needs of optimizations and compatibility,
-the best solution was to use Docker container. Dockerization allows
-programs to run bypassing the SO specific linux distribution and using
-only the linux kernel, this allows a better isolation of the softwares
-and a valid alternative to the virtual machine.
+  1. To meet all the needs of optimizations and compatibility,
+  the best solution was to use Docker container. Dockerization allows
+  programs to run bypassing the SO specific linux distribution and using
+  only the linux kernel, this allows a better isolation of the softwares
+  and a valid alternative to the virtual machine.
 
-2. Allo stato attuale l'applicazione comunica tramite protocollo http.
-Per convertire una richiesta https in una risposta http una soluzione possibile è quella di utilizzare un Reverse-Proxy posto tra il client e il server. In questo caso il reverse proxy adottato NGINX corre in un container docker isolato ed è posto tramite una una network bridge tra il container del gioco e l'interfaccia di rete esterna. Di fatto il reverse-proxy si mette in ascolto sulla stessa porta del container del gioco e ad ogni richiesta URL specifica si attiva filtrando tutte le richieste e creando un layer di sicurezza aggiuntivo tramite certificati SSL Let's Encrypt.
+  2. At present the application communicates via http protocol.
+  To convert an https request into an http response, a possible solution is to use a Reverse-Proxy placed between the client and the server. In this case the
+  reverse proxy adopted NGINX runs in an isolated docker container and is placed via a network bridge between the game container and the external network interface. Of
+  once the reverse-proxy is done, it listens on the same port as the game container and at each specific URL request it is activated by filtering all requests and creating a
+  additional security layer using Let's Encrypt SSL certificates.
 
-3. Docker fornisce un metodo di tipo mount per preservare volumi di memoria all'interno della macchina host. Nel file docker-compose.yaml, si può notare come è stato rimappata la path al database noSQL dell'app all'esterno su una specifica path dell'host. In questo modo il voltume di memoria relativo a quella specifica path è permanente.
+  3. Docker provides a mount-like method for preserving storage volumes within the host machine. In the docker-compose.yaml file, you can see how it has been remapped
+  the path to the app's noSQL database on a specific host path. In this way the memory volume related to that specific path is permanent.
 
 
 <p align="center">
