@@ -237,14 +237,16 @@ class MultiPlayerLobby extends Pagina{
     let pulsante1 = '<button id = "quickGame" class = "button">Quick Game</button>'
     centerPanel.insertAdjacentHTML('beforeEnd', pulsante1);
 
-    let backButton = document.createElement("button");
-    backButton.className = "button";
-    backButton.innerText = "Back";
-    backButton.id = "backButton";
-    centerPanel.appendChild(backButton);
+    let mainMenuButton = document.createElement("button");
+    mainMenuButton.className = "button";
+    mainMenuButton.innerText = "Main Menu";
+    mainMenuButton.id = "mainMenuButton";
+    super.getSchermo().appendChild(mainMenuButton);
 
-    backButton.onclick = function(){
+    mainMenuButton.onclick = function(){
       //inputFieldCaputre();
+      socket.disconnect();
+      mainMenuButton.disabled = true;
       setTimeout(function(){ pagina = new Lobby();},1000)
     }
     /*
@@ -279,15 +281,21 @@ class MultiPlayerLobby extends Pagina{
     });
 
     quickGame.onclick = function(){
-        quickGame.disabled = true;  // disabilito il pulsante se hìl'ho già premuto una volta
+        // disabilito temporaneamente il tasto della lobby finchè non ho una risposta dal server
+        mainMenuButton.disabled = true;
+        // disabilito il pulsante se l'ho già premuto una volta
+        quickGame.disabled = true;
         let msg = {name: playerName};
         socket.emit("Lobby", msg ,(response) => {
+
             console.log("Il server dice: "+response.status+ " la mia stanza è: "+response.room); // ok
             this.room = response.room;
             if(response.status == "start"){
               socket.emit("startMultiplayer", this.room);
             }else if(response.status == "wait"){
               document.getElementById("text").innerText = "Waiting for second player...";
+              //riattivo il pulsante uscita solo se sono in attesa
+              mainMenuButton.disabled = false;
             }
         });
     }
@@ -353,6 +361,7 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
 
     mainMenuButton.onclick = function(){
       //inputFieldCaputre();
+      mainMenuButton.disabled = true;
       setTimeout(function(){ pagina = new Lobby();},1000)
     }
 
@@ -400,6 +409,9 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
         // Rendo sticky la prima riga
         let firstLine = tbody.children[0];
         firstLine.id = "firstLine";
+
+        //Adesso posso disconnettere il Socket
+        socket.disconnect();
       });
     });
 
@@ -489,6 +501,7 @@ class MultiPlayer extends Pagina{
 
       mainMenuButton.onclick = function(){
         //inputFieldCaputre();
+        mainMenuButton.disabled = true;
         setTimeout(function(){ pagina = new Lobby();},1000)
       }
 
@@ -508,9 +521,11 @@ class MultiPlayer extends Pagina{
           txt = txt + '<br> VS. <br>'
         }
       });
-
       a.innerHTML = txt;
       centerPanel.appendChild(a);
+
+      // ora poso disconnettere il clients
+      socket.disconnect();
     }
   }
 

@@ -1,6 +1,6 @@
 const MAX_PLAYERS = 2;
-const MAX_MINES = 15; //30
-const MAX_CRYSTALS = 20; //35;
+const MAX_MINES = 15; //15
+const MAX_CRYSTALS = 1; //20;
 
 const WIDTH = 1200;         //...del canvas
 const HEIGHT = 600;        //...del canvas
@@ -27,8 +27,7 @@ var players = [];
 class GameState{
   constructor(){
       //  oggetto che contiene tutto quello che serve alla partita
-      console.log("creo nuovo oggetto GAME STATE");
-
+      //console.log("creo nuovo oggetto GAME STATE");
       this.name = "";
       this.client = [];
       this.canvas = {width: WIDTH,

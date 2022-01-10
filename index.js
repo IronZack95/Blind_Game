@@ -13,7 +13,7 @@ function endGameFunction(room){
   // elimino la stanza se il gioco è finito
   let deleteElement = game.rooms.splice(game.rooms.indexOf(room), 1);
   // faccio vedere quante stanze rimangono
-  if(deleteElement.length =! 0){console.log("Cancellata",room.getName(),"rimangono",game.rooms.length,"stanze");}
+  if(deleteElement.length =! 0){console.log("DELETED",room.getName()+":",game.rooms.length,"rooms left");}
 }
 
 // socket IO instances
@@ -21,11 +21,10 @@ server.io.on("connection", (socket) => {
 
   // Messaggio che avviene alla connessione di un nuovo Client
   game.players.push(socket.id);
-  console.log("Connessi "+ server.io.engine.clientsCount +" client: "+ game.players);
+  console.log("CONNECT   ", server.io.engine.clientsCount ,"clients: "+ game.players[game.players.length-1]);
 
   // Gestisce la disconnessione di un client
   socket.on("disconnect", () => {
-    console.log("disconnected client : " + socket.id);
     let removeThisIndex;
     game.players.pop(socket.id);
 
@@ -38,7 +37,8 @@ server.io.on("connection", (socket) => {
         });
       }
     )
-
+    // Messaggio che avviene alla disconnessione di un Client
+    console.log("DISCONNECT"  , game.players.length , "remains: " + socket.id );
   });
 
   // GAME  start game  ACKNOWLEDGMENT
@@ -54,19 +54,18 @@ server.io.on("connection", (socket) => {
       game.rooms[lastIndex].pushClient(socket.id,msg.name);
       // iscrivo il primo client alla stanza
       //socket.join(game.room.game.room)
-      console.log("giocatore pronto!");
       response = "wait";
       stanza = game.rooms[lastIndex].getName();
     }else if(game.rooms[lastIndex].getClient().length == 1){
       game.rooms[lastIndex].pushClient(socket.id,msg.name)
       // iscrivo il secondo client alla stanza
       //socket.join(game.room.game.room);
-      console.log("giocatori pronti!");
       response = "start";
       stanza = game.rooms[lastIndex].getName();
     }
     // stampo l'ultimo game state aggiunto
-    console.log(game.rooms[game.rooms.length-1])
+    console.log("READY player: "+socket.id);
+    //console.log(game.rooms[game.rooms.length-1])    // FA VEDERE IL CONTENUTO DELLE STANZE
     callback({
       status: response,
       room: stanza
@@ -79,10 +78,10 @@ server.io.on("connection", (socket) => {
       if(room.getName() == wantedroom){client = room.getClient(); index=i;}
     });
 
-    console.log("Inizio Multiplayer: "+ wantedroom+ " "+ client)
+    console.log("START MULTIPLAYER on", wantedroom, ": "+ client)
     // GENERO CAMPO E GAME STATE
     game.rooms[index].createMatch();
-    console.log("Genero campo: ",game.rooms[index].getGameState());
+    //console.log("Genero campo: ",game.rooms[index].getGameState());
     server.io.in(game.rooms[index].getClient()[1]).in(game.rooms[index].getClient()[0]).emit("startMultiplayer!",game.rooms[index].getGameState());
   });
 
@@ -170,7 +169,7 @@ server.io.on("connection", (socket) => {
       fileContents.sort(function(a, b){
         return b.score-a.score;
       });
-
+      console.log('END SINGLEPLAYER');
       //console.log('Update file', fileContents);
     } catch (err) {
       if (err.code === 'ENOENT') {  // controllo se il file esiste
