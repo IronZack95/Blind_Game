@@ -11,7 +11,7 @@
  const THRESHOLD = 100000;
 
  const NUM_MINE = 15; //15
- const NUM_CRISTALLI = 1;//20
+ const NUM_CRISTALLI = 20;//20
  const NUM_MAGIC_CRYSTAL = 1;
  const MINE_DISTANCE = 80;   //distanza entro cui inizio a sentire mina
  const PPS = 80; //player personal space entro cui non compaiono oggetti
