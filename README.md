@@ -50,6 +50,13 @@ emulating full stack development and deployment.
 ## P5.js library
 **[p5.js](https://p5js.org/)** is a JavaScript library which allowed us, by creating a new p5 instance, to work on a _canvas_ element following the same procedures available in Processing, i.e. setting up the _setup_ and the _draw_ functions. The library also came in handy for images/sounds file handling, vectorial computations and sound file manipulations. For the sound effects in our game we exploited the [p5.Sound](https://p5js.org/reference/#/libraries/p5.sound) core library, which extends p5 with Web Audio funcionalities.   
 
+## Game Loop
+:small_blue_diamond: Our videogame runs on a loop. The loop is made possible thanks to the above mentioned _setup_ and _draw_ functions available with the p5 instance. The loop starts by presenting to the user a situation. The game should then receive the user inputs (in our case mouse movement and keys pressed), interpet these inputs (in our case as movements of the character) and calculate the new situation that results from this act. This involves computing if the player got a crystal, can hear a mine, hits a mine etc. At this point a new situation is proposed to the player and the loop runs again.
+
+<p align="center">
+  <img src="design/game_loop.png" alt="game loop"  width="80%" />
+</p>
+
 ## Game Logic
 :small_blue_diamond:  **Player** : The player figure can be moved in the canvas area with W A S D keys and includes animations during the motion. Legs are moving as it walks and eyes can rotate by 360° following the mouse.
 
