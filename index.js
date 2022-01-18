@@ -3,6 +3,7 @@ const server = require('./server/server')
 const game = require('./server/game')
 const fs = require('fs')
 //const game = require('./server/game')
+var busy = false; // Serve ad impedire al server di scrivere e leggere contemporaneamente il data.json
 
 
 function endGameFunction(room){
@@ -155,49 +156,64 @@ server.io.on("connection", (socket) => {
 
   // GESTIONE END GAME SinglePlayer
   socket.on("EndGame", (data,callback) => {
-    //console.log(data);
-    // Disattivo un'eventuale seconda chiamata
-    const listener = (...args) => {
-      console.log(args);
-    }
-    socket.off("EndGame", listener);
-    // leggo il file
-    var fileContents;
-    try {
-      fileContents = fs.readFileSync(game.DATAPATH);
-      fileContents = JSON.parse(fileContents);
-      fileContents.push(data);
-      // ordino i campi secondo il punteggio e inversamente sul tempo impiegato
-      fileContents.sort(function(a, b){
-        return a.time-b.time;
-      });
 
-      fileContents.sort(function(a, b){
-        return b.score-a.score;
-      });
-      console.log('END SINGLEPLAYER');
-      //console.log('Update file', fileContents);
-    } catch (err) {
-      if (err.code === 'ENOENT') {  // controllo se il file esiste
-        fileContents = [];
-        fileContents.push(data);
-        console.log('File not found! create file', fileContents);
-      } else {
-        fileContents = [];
-        fileContents.push(data);
-        console.log('Altro errore ', fileContents);
-        throw err;
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    // Se la variabile globale è occupata aspetto
+    async function endgame(){
+
+      while(busy){
+          console.log("Database Occupated for",data.name);
+          await sleep(500);
       }
-    }
-    // write file
-    fs.writeFile(game.DATAPATH, JSON.stringify(fileContents),function(err, result) {
-      if(err) console.log('error', err);}
-    );
-    // mando indietro la risposta
-    callback({
-      status: fileContents
-    });
+      busy = true;
+      // Disattivo un'eventuale seconda chiamata dello stesso id
+      const listener = (...args) => {
+        console.log(args);
+      }
+      socket.off("EndGame", listener);
+      // leggo il file
+      var fileContents;
+      try {
+        fileContents = fs.readFileSync(game.DATAPATH);
+        fileContents = JSON.parse(fileContents);
+        fileContents.push(data);
+        // ordino i campi secondo il punteggio e inversamente sul tempo impiegato
+        fileContents.sort(function(a, b){
+          return a.time-b.time;
+        });
 
+        fileContents.sort(function(a, b){
+          return b.score-a.score;
+        });
+        console.log('END SINGLEPLAYER:',data.name);
+        //console.log('Update file', fileContents);
+      } catch (err) {
+        if (err.code === 'ENOENT') {  // controllo se il file esiste
+          fileContents = [];
+          fileContents.push(data);
+          console.log('File not found! create file', fileContents);
+        } else {
+          fileContents = [];
+          fileContents.push(data);
+          console.log('Altro errore ', fileContents);
+          throw err;
+        }
+      }
+      // write file
+      fs.writeFile(game.DATAPATH, JSON.stringify(fileContents),function(err, result) {
+        if(err) console.log('error', err);}
+      );
+      // Libero la scrittura lettura
+      busy = false;
+      // mando indietro la risposta
+      callback({
+        status: fileContents
+      });
+    }
+
+    endgame();
   });
 
   //  ************** OPTIONAL ********************
