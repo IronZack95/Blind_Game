@@ -60,36 +60,6 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     let text = '<div id = "text" class = "text">How do you want to play?</div>'
     centerPanel.insertAdjacentHTML('afterBegin', text);
 
-
-    /*
-    //IMMAGINI
-    let image1 = document.createElement("img");
-    image1.src = "images/sus.png";
-    image1.id = "sus";
-    image1.className = "lobby image";
-    super.getSchermo().appendChild(image1);
-
-    this.i= 0;
-    setInterval(function(){pagina.ciao()},100);
-
-    let image2 = document.createElement("img");
-    image2.src = "images/fire.gif";
-    image2.id = "sus";
-    image2.className = "lobby image";
-    super.getSchermo().appendChild(image2);
-    /*
-    let image2 = document.createElement("img");
-    image2.src = "images/SnakeRed.png";
-    image2.classList.add("snakeRed");
-    super.getSchermo().appendChild(image2);
-    */
-
-    /*
-    pulsante_singlePLayer = document.createElement("button");
-    pulsante_singlePLayer.classList.add("button");
-    centerPanel.insertAdjacentHTML('beforeEnd', pulsante_singlePLayer);
-    */
-
     let buttonContainer = document.createElement("div");
     buttonContainer.id = "buttonContainer";
     centerPanel.appendChild(buttonContainer);
@@ -111,12 +81,16 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
 
     let self = this;
     singleplayer.onclick = function(){
+      singleplayer.disabled = true;
+      multiplayer.disabled = true;
       let txt = self.getText()
       txt.innerText = "Play!!";
       inputFieldCaputre();
       setTimeout(function(){ pagina = new SinglePlayer();},1000)
     }
     multiplayer.onclick = function(){
+      multiplayer.disabled = true;
+      singleplayer.disabled = true;
       inputFieldCaputre();
       setTimeout(function(){ pagina = new MultiPlayerLobby();},1000)
     }
@@ -139,11 +113,6 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     return document.getElementById("text");
   }
 
-  ciao(){
-    document.getElementById("sus").style.left = this.i+"%";
-    this.i += 0.1 ;
-    console.log(this.i)
-  }
 }
 
 class SinglePlayer extends Pagina{    // costruisco la pagina della lobby
@@ -194,7 +163,6 @@ let type;
 class Canvas{
   constructor(canvasContainer,t,schermo){
     // Creo Canvas
-    //new sketch(canvasContainer,type)
     type = t; //tipo del gioco
     new p5(sketch, canvasContainer);
     schermo.appendChild(canvasContainer);
@@ -220,12 +188,6 @@ class MultiPlayerLobby extends Pagina{
      titolo.id = "lobbyImage"
      super.getSchermo().appendChild(titolo);
 
-    // Creo Titolo E Sottotitolo
-    /* let h = document.createElement("h1");
-    h.id= "title";
-    h.innerHTML = "B L I N D"
-    super.getSchermo().appendChild(h); */
-
     let centerPanel = document.createElement("div");
     //centerPanel.className = "center panel";
     centerPanel.classList.add("center")
@@ -249,15 +211,9 @@ class MultiPlayerLobby extends Pagina{
       mainMenuButton.disabled = true;
       setTimeout(function(){ pagina = new Lobby();},1000)
     }
-    /*
-    let pulsante2 = '<button id = "createGame" class = "button">Create Game</button>'
-    centerPanel.insertAdjacentHTML('beforeEnd', pulsante2);
 
-    let pulsante3 = '<button id = "joinGame" class = "button">Join Game</button>'
-    centerPanel.insertAdjacentHTML('beforeEnd', pulsante3);
-    */
     // SOCKET IO
-    socket = io();
+    socket = io({transports: ['websocket'], upgrade: false});
 
     socket.on("connect", () => {
       console.log("Il mio socket ID è: "+socket.id);
@@ -310,12 +266,6 @@ class EndGame extends Pagina{    // costruisco la pagina della lobby
     this.name = name;
     this.score = score;
     this.time = time;
-
-    /* // creo titolo
-    let h1 = document.createElement("h1");
-    h1.id= "title";
-    h1.innerHTML = "GAME OVER"
-    super.getSchermo().appendChild(h1); */
   }
 }
 
@@ -335,17 +285,6 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
     titolo.src= "images/gameover_single.png";
     titolo.id = "gameoverImage"
     super.getSchermo().appendChild(titolo);
-
-    /*
-    // Center  Panel
-    let centerPanel = document.createElement("div");
-    //centerPanel.className = "center";
-    centerPanel.classList.add("center")
-    super.getSchermo().appendChild(centerPanel);
-
-    let text = '<div id = "text">CONGRATS!!</div>'
-    centerPanel.insertAdjacentHTML('afterBegin', text);
-    */
 
     //punteggi fine partita
     let a = document.createElement("h3");
@@ -371,7 +310,7 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
     super.getSchermo().appendChild(cloudpanel);
 
     // SOCKET
-    socket = io();
+    socket = io({transports: ['websocket'], upgrade: false});
 
     socket.on("connect", () => {
       console.log("Il mio socket ID è: "+socket.id);
@@ -393,7 +332,6 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
           i++;
         }
 
-        //console.log(classifica);
         //a.innerHTML = 'Final score:  ' + this.score + '<br>'+'Time :   ' + this.time + '<br>' + 'POSITION: ' + position +'°';
         a.innerHTML = 'Final score:  ' + this.score + '<br>'+'Time :   ' + this.time;
         //centerPanel.appendChild(a);
@@ -504,11 +442,6 @@ class MultiPlayer extends Pagina{
         mainMenuButton.disabled = true;
         setTimeout(function(){ pagina = new Lobby();},1000)
       }
-
-      /*
-      let text = '<div id = "text">CONGRATS!! MULTI</div>'
-      centerPanel.insertAdjacentHTML('afterBegin', text);
-      */
 
       //punteggi fine partita
       let a = document.createElement("h3");

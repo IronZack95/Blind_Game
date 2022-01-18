@@ -156,6 +156,12 @@ server.io.on("connection", (socket) => {
   // GESTIONE END GAME SinglePlayer
   socket.on("EndGame", (data,callback) => {
     //console.log(data);
+    // Disattivo un'eventuale seconda chiamata
+    const listener = (...args) => {
+      console.log(args);
+    }
+    socket.off("EndGame", listener);
+    // leggo il file
     var fileContents;
     try {
       fileContents = fs.readFileSync(game.DATAPATH);
