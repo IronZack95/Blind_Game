@@ -80,7 +80,7 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
     super.getSchermo().insertAdjacentHTML('beforeEnd', tabella);
 
     let self = this;
-    singleplayer.onclick = function(){
+    singleplayer.onmousedown = function(){
       singleplayer.disabled = true;
       multiplayer.disabled = true;
       let txt = self.getText()
@@ -88,7 +88,7 @@ class Lobby extends Pagina{    // costruisco la pagina della lobby
       inputFieldCaputre();
       setTimeout(function(){ pagina = new SinglePlayer();},1000)
     }
-    multiplayer.onclick = function(){
+    multiplayer.onmousedown = function(){
       multiplayer.disabled = true;
       singleplayer.disabled = true;
       inputFieldCaputre();
@@ -205,7 +205,7 @@ class MultiPlayerLobby extends Pagina{
     mainMenuButton.id = "mainMenuButton";
     super.getSchermo().appendChild(mainMenuButton);
 
-    mainMenuButton.onclick = function(){
+    mainMenuButton.onmousedown = function(){
       //inputFieldCaputre();
       socket.disconnect();
       mainMenuButton.disabled = true;
@@ -236,7 +236,7 @@ class MultiPlayerLobby extends Pagina{
       setTimeout(function(){pagina = new MultiPlayer(state);},2000)
     });
 
-    quickGame.onclick = function(){
+    quickGame.onmousedown = function(){
         // disabilito temporaneamente il tasto della lobby finchè non ho una risposta dal server
         mainMenuButton.disabled = true;
         // disabilito il pulsante se l'ho già premuto una volta
@@ -298,7 +298,7 @@ class EndGameSingle extends EndGame{    // costruisco la pagina della lobby
     mainMenuButton.id = "mainMenuButton";
     super.getSchermo().appendChild(mainMenuButton);
 
-    mainMenuButton.onclick = function(){
+    mainMenuButton.onmousedown = function(){
       //inputFieldCaputre();
       mainMenuButton.disabled = true;
       setTimeout(function(){ pagina = new Lobby();},1000)
@@ -437,7 +437,7 @@ class MultiPlayer extends Pagina{
       mainMenuButton.id = "mainMenuButton";
       super.getSchermo().appendChild(mainMenuButton);
 
-      mainMenuButton.onclick = function(){
+      mainMenuButton.onmousedown = function(){
         //inputFieldCaputre();
         mainMenuButton.disabled = true;
         setTimeout(function(){ pagina = new Lobby();},1000)

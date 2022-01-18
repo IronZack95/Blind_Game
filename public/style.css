@@ -75,7 +75,7 @@
  }
 
  button:hover {
-   background-color: #1cd79f
+   background-color: #1cd79f;
  }
 
  button:active {
@@ -91,6 +91,9 @@
   transform: translate(-50%, 0%);
  }
 
+ #mainMenuButton:active {
+   transform: translate(-50%, 25%);
+ }
 
  td,th{
    padding: 7px;
