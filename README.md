@@ -9,7 +9,6 @@ You're a miner and you got trapped in a cave. Find all crystals :gem: and beat y
   https://blindgame.ddnsfree.com/
 </p>
 
-
 ### Authors \- **</span><span style="color:red">"ACTAM Games.com"**<img src="design/actamgameslogo.png" align="right" alt="title image"  width="25%" />
 - [Zaccaria Eliseo Carrettoni](https://github.com/IronZack95)
 - [Wendy Wang](https://github.com/WendyWang29)
@@ -17,6 +16,10 @@ You're a miner and you got trapped in a cave. Find all crystals :gem: and beat y
 - [Lorenzo Lellini](https://github.com/LorenzoLellini)  
 
 <!---![alt text](https://imag.malavida.com/mvimgbig/download-fs/among-us-28791-5.jpg) --->
+## Video Teaser:
+
+[<img alt="alt_text" width="20%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Logo_of_YouTube_%282015-2017%29.svg/502px-Logo_of_YouTube_%282015-2017%29.svg.png" />](https://youtu.be/ebWNFiXy0jo)
+
 
 ## After cloning this repo (only the first time):
 1. _open the terminal_
@@ -40,6 +43,7 @@ You're a miner and you got trapped in a cave. Find all crystals :gem: and beat y
 2. [Gameplay](#gameplay)
 3. [One Page App](#onepageapp)
 4. [Server](#server)
+5. [Legal](#legal)
 
 # Introduction <a name = "intro"></a>
  **Advanced Coding Tools**  _and Metodologies_ \- **Final Project**  
@@ -198,5 +202,9 @@ the path to the app's noSQL database on a specific host path. In this way the me
 </p>
 <br>
 
-  
+ # Legal Notices <a name = "legal"></a>
+:warning: This project is not intended for redistribution or commercial use by anyone except the authors. :warning:
+ <p align="left">
+<img src="https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-nd.eu.png" alt="server scheme"  width="20%" />
+</p> 
   
