@@ -43,8 +43,9 @@ You're a miner and you got trapped in a cave. Find all crystals :gem: and beat y
 2. [Gameplay](#gameplay)
 3. [One Page App](#onepageapp)
 4. [Server](#server)
-5. [Legal Notices](#legal)
-6. [Future Improvements](#future)
+5. [Future Improvements](#future)
+6. [Legal Notices](#legal)
+
 
 # Introduction <a name = "intro"></a>
  **Advanced Coding Tools**  _and Metodologies_ \- **Final Project**  
