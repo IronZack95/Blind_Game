@@ -11,7 +11,7 @@ You're a miner and you got trapped in a cave. Find all crystals :gem: and beat y
 
 ### Authors \- **</span><span style="color:red">"ACTAM Games.com"**<img src="design/actamgameslogo.png" align="right" alt="title image"  width="25%" />
 - [Zaccaria Eliseo Carrettoni](https://github.com/IronZack95)
-- [Wendy Wang](https://github.com/WendyWang29)
+- [Wendy Edda Wang](https://github.com/WendyWang29)
 - [Alessandro Zullo](https://github.com/Alessandro199762)
 - [Lorenzo Lellini](https://github.com/LorenzoLellini)  
 
@@ -44,6 +44,7 @@ You're a miner and you got trapped in a cave. Find all crystals :gem: and beat y
 3. [One Page App](#onepageapp)
 4. [Server](#server)
 5. [Legal Notices](#legal)
+6. [Future Improvements](#future)
 
 # Introduction <a name = "intro"></a>
  **Advanced Coding Tools**  _and Metodologies_ \- **Final Project**  
@@ -195,12 +196,22 @@ additional security layer using Let's Encrypt SSL certificates.
 the path to the app's noSQL database on a specific host path. In this way the memory volume related to that specific path is permanent.
 
 
-<br>
-  
+<br>  
 <p align="center">
 <img src="design/schema_server.png" alt="server scheme"  width="60%" />
 </p>
 <br>
+  
+  # Future improvements <a name = "future"></a>     
+1. NoSQL to SQL DataBase into container
+2. User Login
+3. Customizable players' options
+4. Flags for identified mine's positions
+5. Volume sliders
+6. Interactions between players
+7. Customizable Matches
+8. In-game purchases 
+9. Player Skins
 
  # Legal Notices <a name = "legal"></a>
 :warning: This project is not intended for redistribution or commercial use by anyone except the authors. :warning:
