@@ -4,9 +4,9 @@
 
 You're a miner and you got trapped in a cave. Find all crystals :gem: and beat your rivals' time! Watch out for mines!
 
-## Game Link: 
+## Game Link:
 <p align="center">
-  https://blindgame.ddnsfree.com/
+
 </p>
 
 ### Authors \- **</span><span style="color:red">"ACTAM Games.com"**<img src="design/actamgameslogo.png" align="right" alt="title image"  width="25%" />
@@ -122,7 +122,7 @@ By using async functions we aren't blocking code execution while waiting for the
 :small_blue_diamond:  **Automatic Naming (API)**:
 When you start a new game, whether in single or multi-player, you are prompted to enter a name; if this is not done the game randomly assigns name.
 To implement this feature, we have created the "randomName()" function in "utility.js", which retrieves a random name from the following [API](https://random-names-api.herokuapp.com/random).
-  
+
 <br>
 
 <p align="center">
@@ -130,15 +130,15 @@ To implement this feature, we have created the "randomName()" function in "utili
   <img src="design/omino_p5.png" width="16%" />
   <img src="design/docker_img.png" width="22%" />
 </p>
-  
+
 # Server <a name = "server"></a>
 info sul MultiPlayer                                
-:small_blue_diamond:  **Node.js**: is a Javascript runtime using non-blocking I/O (it does not block itself on only one request at a time) and asynchronous (uses callbacks) programming. npm is used to manage 
+:small_blue_diamond:  **Node.js**: is a Javascript runtime using non-blocking I/O (it does not block itself on only one request at a time) and asynchronous (uses callbacks) programming. npm is used to manage
 Node.js packages. In our project the following packages are included:  
 :heavy_minus_sign: [Express](https://expressjs.com/it/) framework, to setup a server listening to a specific port;  
 :heavy_minus_sign: [Nodemon](https://github.com/remy/nodemon) wrapper, that allowed us to automatically restart the server everytime a change was made in the code.    
 
-:small_blue_diamond:  **Socket.io**: [WebSoket](https://socket.io/) is a communication protocol which provides a full-duplex and low-latency channel between the server and the browser. 
+:small_blue_diamond:  **Socket.io**: [WebSoket](https://socket.io/) is a communication protocol which provides a full-duplex and low-latency channel between the server and the browser.
 This takes advantage of the existing TCP connection
 created by HTTP protocol to establish a bidirectional channel. Socket.io is used in two different contexts in the project. In the multiplayer to swap all
 information between the various clients connected to the same game room, to which a specific soket.id is assigned. In the Singleplayer to load updated data at the end of a
@@ -163,9 +163,9 @@ performing in transmitting game data in real time position, the last position is
 files as modules, specifically these deal with:
 
 - server.js loads the settings of express.js and actually puts the server listening on port 3000.
-- Game.js Contains all the classes and methods to create the GameState object and manage its operation. moreover, an arrey to store all the Game state objects, and an arrey to 
+- Game.js Contains all the classes and methods to create the GameState object and manage its operation. moreover, an arrey to store all the Game state objects, and an arrey to
 store all the clients connected at the same time through their ID are created.
-The Game State object is created at the connection of the first client in the Lobby-Multi and keeps track of every variable related to the game, from the positions of the 
+The Game State object is created at the connection of the first client in the Lobby-Multi and keeps track of every variable related to the game, from the positions of the
 walls, to the
 crystals, mines to the colors of the individual players. As many game state objects can be created as there are games in progress simultaneously.
 - Utility contains the information to generate the server side game state perlin map.
@@ -202,7 +202,7 @@ the path to the app's noSQL database on a specific host path. In this way the me
 <img src="design/schema_server.png" alt="server scheme"  width="60%" />
 </p>
 <br>
-  
+
   # Future improvements <a name = "future"></a>     
 1. NoSQL to SQL DataBase into container
 2. User Login
@@ -218,5 +218,4 @@ the path to the app's noSQL database on a specific host path. In this way the me
 :warning: This project is not intended for redistribution or commercial use by anyone except the authors. :warning:
  <p align="left">
 <img src="https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-nd.eu.png" alt="server scheme"  width="20%" />
-</p> 
-  
+</p>
