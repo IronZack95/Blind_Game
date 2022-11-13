@@ -4,3 +4,4 @@ package-lock.json
 .parcel-cache/
 .cache/
 .vs
+.DS_Store
